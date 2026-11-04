@@ -23,4 +23,6 @@ Consult these guides before working on related tasks:
 
 ## Rules:
 
+- Chat: reply in the conversation's language.
+- Code, names, comments, git commit: English.
 - **Git** use Conventional Commits: type(scope): subject, where type is feat, fix, docs, style, refactor, perf, test, build, ci or chore and the scope is optional. Keep it short: a subject line, plus a brief body only when the change needs explaining. 
