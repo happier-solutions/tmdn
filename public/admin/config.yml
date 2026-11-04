@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://unpkg.com/@sveltia/cms/schema/sveltia-cms.json
+backend:
+  name: github
+  repo: happier-solutions/tmdn
+  branch: main
+
+media_folder: public/images
+public_folder: /images
+
+# Slug không dấu, ví dụ "Đường đi" thành "duong-di"
+slug:
+  encoding: ascii
+  clean_accents: true
+
+# Tránh lỗi "data does not match collection schema" khi field tuỳ chọn để trống
+output:
+  omit_empty_optional_fields: true
+
+collections:
+  - name: blog
+    label: Bài viết
+    label_singular: Bài viết
+    folder: src/content/blog
+    path: '{{slug}}/index'
+    media_folder: ''
+    public_folder: ''
+    create: true
+    fields:
+      - { name: title, label: Tiêu đề, widget: string }
+      - { name: description, label: Mô tả, widget: string }
+      - { name: pubDate, label: Ngày đăng, widget: datetime }
+      - { name: updatedDate, label: Ngày cập nhật, widget: datetime, required: false }
+      - { name: heroImage, label: Ảnh đại diện, widget: image, required: false }
+      - { name: body, label: Nội dung, widget: markdown }
