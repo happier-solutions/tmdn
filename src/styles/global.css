@@ -4,28 +4,10 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+@import './tokens.css';
 @import './transitions.css';
 @import './links.css';
 
-:root {
-	/* Bảng màu thương hiệu */
-	--ink: #111110;
-	--paper: #f4efe6;
-	--ivory: #fbf8f2;
-	--gold: #b8935a;
-	--gold-light: #c9a56b;
-	--gold-deep: #a57f45;
-
-	/* Vàng đồng chỉ đạt 2.5:1 trên giấy kem nên chỉ dùng để trang trí.
-	   Chữ và link dùng tông đồng sậm, đạt chuẩn AA (5.5:1). */
-	--accent: #7a5a2b;
-	--accent-dark: #5c4320;
-
-	--black: 17, 17, 16;
-	--gray: 107, 98, 86;
-	--gray-light: 229, 222, 209;
-	--gray-dark: 42, 38, 33;
-}
 html {
 	/* Keeps anchor and focus targets clear of the pinned header. */
 	scroll-padding-top: 5rem;
@@ -40,7 +22,7 @@ body {
 	background: var(--paper);
 	word-wrap: break-word;
 	overflow-wrap: break-word;
-	color: rgb(var(--gray-dark));
+	color: var(--gray-dark);
 	font-size: 1.125rem;
 	line-height: 1.7;
 }
@@ -66,7 +48,7 @@ h4,
 h5,
 h6 {
 	margin: 0 0 0.5rem 0;
-	color: rgb(var(--black));
+	color: var(--black);
 	font-family: var(--font-heading);
 	font-weight: 400;
 	line-height: 1.25;
@@ -113,7 +95,7 @@ img {
 }
 code {
 	padding: 2px 5px;
-	background-color: rgb(var(--gray-light));
+	background-color: var(--gray-light);
 	border-radius: 2px;
 }
 pre {
@@ -155,11 +137,11 @@ hr {
 	z-index: 2;
 	padding: 0.5rem 1rem;
 	background: var(--ink);
-	color: var(--paper);
+	color: var(--on-ink);
 }
 .skip-link:focus {
 	top: 0.5rem;
-	color: var(--paper);
+	color: var(--on-ink);
 }
 
 .post-list {

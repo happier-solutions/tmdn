@@ -1,6 +1,7 @@
 ---
 import { SITE_TITLE } from '../consts';
 import { CATEGORIES } from '../data/taxonomy';
+import ThemeSwitch from './ThemeSwitch.astro';
 
 const navItems = [
 	...CATEGORIES.map(({ slug, label }) => ({ slug, label })),
@@ -33,6 +34,7 @@ const ariaCurrent = (slug: string) => {
 					<li><a href={`/${slug}/`} aria-current={ariaCurrent(slug)}><span class="link-line">{label}</span></a></li>
 				))}
 			</ul>
+			<ThemeSwitch />
 		</nav>
 	</div>
 </header>
@@ -64,7 +66,7 @@ const ariaCurrent = (slug: string) => {
 		align-items: center;
 		gap: 0.6em;
 		padding-block: 0.75rem;
-		color: rgb(var(--black));
+		color: var(--black);
 		font-family: var(--font-heading);
 		font-size: 1.25rem;
 	}
@@ -78,7 +80,7 @@ const ariaCurrent = (slug: string) => {
 	.site-nav ul {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0 1.25rem;
+		gap: 0 1.75rem;
 		margin: 0;
 		padding: 0 0 0.75rem;
 		list-style: none;
@@ -86,17 +88,13 @@ const ariaCurrent = (slug: string) => {
 	.site-nav a {
 		display: block;
 		padding-block: 0.5rem;
-		color: rgb(var(--gray-dark));
+		color: var(--gray-dark);
 		font-size: 0.875rem;
-		font-weight: 600;
 	}
-	.site-nav a:hover,
-	.site-nav a[aria-current] {
-		color: var(--accent);
-	}
+	/* The sprig stays a hover detail; the current page keeps only color and rule. */
 	.site-nav a[aria-current] {
 		--line: 1;
-		--leaf: 1;
+		color: var(--accent);
 	}
 	/* Without popover support the links stay visible as a wrapped row. */
 	.menu-button {
@@ -105,7 +103,7 @@ const ariaCurrent = (slug: string) => {
 		padding-inline: 0.75rem;
 		border: 1px solid var(--gold);
 		background: none;
-		color: rgb(var(--black));
+		color: var(--black);
 		font: inherit;
 		font-size: 0.875rem;
 		font-weight: 600;
@@ -129,7 +127,7 @@ const ariaCurrent = (slug: string) => {
 				color: inherit;
 			}
 			.site-nav::backdrop {
-				background: rgba(var(--black), 0.4);
+				background: color-mix(in srgb, var(--ink) 40%, transparent);
 			}
 			.site-nav ul {
 				flex-direction: column;
@@ -143,7 +141,9 @@ const ariaCurrent = (slug: string) => {
 	/* Popover is only a small-screen behaviour: on wide screens the nav is a normal row. */
 	@media (min-width: 60rem) {
 		.site-nav {
-			display: block;
+			display: flex;
+			align-items: center;
+			gap: 1.5rem;
 			position: static;
 			inset: auto;
 			width: auto;

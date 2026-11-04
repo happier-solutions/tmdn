@@ -26,7 +26,28 @@ const fontPreload = [
 <!-- Global Metadata -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<meta name="theme-color" content="#FBF8F2" />
+<meta name="theme-color" data-scheme="light" media="(prefers-color-scheme: light)" content="#fbf8f2" />
+<meta name="theme-color" data-scheme="dark" media="(prefers-color-scheme: dark)" content="#23201a" />
+<meta name="color-scheme" content="light dark" />
+<!-- Inline and first, so a pinned scheme applies before the first paint. No stored value means system. -->
+<script is:inline>
+	window.readColorScheme = () => {
+		try {
+			const scheme = localStorage.getItem('color-scheme');
+			return scheme === 'light' || scheme === 'dark' ? scheme : null;
+		} catch {
+			return null;
+		}
+	};
+	window.applyColorScheme = (scheme) => {
+		document.querySelector('meta[name="color-scheme"]').content = scheme ?? 'light dark';
+		for (const meta of document.querySelectorAll('meta[name="theme-color"]')) {
+			const own = meta.dataset.scheme;
+			meta.media = scheme ? (scheme === own ? 'all' : 'not all') : `(prefers-color-scheme: ${own})`;
+		}
+	};
+	applyColorScheme(readColorScheme());
+</script>
 <link rel="icon" href="/favicon.ico" sizes="48x48" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="apple-touch-icon" href="/apple-touch-icon.png" />

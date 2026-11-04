@@ -1,0 +1,113 @@
+---
+const moon = 'M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z';
+const sun =
+	'M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10z M12 1v2 M12 21v2 M4.2 4.2l1.4 1.4 M18.4 18.4l1.4 1.4 M1 12h2 M21 12h2 M4.2 19.8l1.4-1.4 M18.4 5.6l1.4-1.4';
+const labels = { system: 'Giao diện: Theo hệ thống', light: 'Giao diện: Sáng', dark: 'Giao diện: Tối' };
+---
+
+<button class="theme-switch" type="button" data-scheme="system" aria-label={labels.system} title={labels.system}>
+	<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+		<g class="icon-system">
+			<circle cx="12" cy="12" r="9" />
+			<path class="half" d="M12 3a9 9 0 0 1 0 18z" />
+		</g>
+		<path class="icon-light" d={sun} />
+		<path class="icon-dark" d={moon} />
+	</svg>
+</button>
+<!-- Inline, so a returning reader never sees the system icon for a moment on each page. -->
+<script is:inline define:vars={{ labels }}>
+	const button = document.querySelector('.theme-switch');
+	const show = (scheme) => {
+		const current = scheme ?? 'system';
+		button.dataset.scheme = current;
+		button.title = labels[current];
+		button.setAttribute('aria-label', labels[current]);
+		applyColorScheme(scheme);
+	};
+	const sync = () => show(readColorScheme());
+	sync();
+	button.addEventListener('click', () => {
+		// The step after system is always the opposite of the OS, so the first click visibly changes the page.
+		const order = matchMedia('(prefers-color-scheme: dark)').matches
+			? ['system', 'light', 'dark']
+			: ['system', 'dark', 'light'];
+		const next = order[(order.indexOf(button.dataset.scheme) + 1) % order.length];
+		const scheme = next === 'system' ? null : next;
+		show(scheme);
+		try {
+			if (scheme) localStorage.setItem('color-scheme', scheme);
+			else localStorage.removeItem('color-scheme');
+		} catch {}
+	});
+	// Another tab changed it, or this page came back from the bfcache with an old value.
+	addEventListener('storage', ({ key }) => {
+		if (key === 'color-scheme' || key === null) sync();
+	});
+	addEventListener('pageshow', ({ persisted }) => {
+		if (persisted) sync();
+	});
+</script>
+<style>
+	.theme-switch {
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		/* Pulled out by the empty space around the icon, so the icon lines up with the links. */
+		margin: 1rem 0 0 -0.8125rem;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--gray-dark);
+		cursor: pointer;
+	}
+	@media (hover: hover) {
+		.theme-switch:hover {
+			color: var(--accent);
+		}
+	}
+	.theme-switch:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	svg {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.icon-system,
+	.icon-light,
+	.icon-dark {
+		display: none;
+	}
+	[data-scheme='system'] .icon-system,
+	[data-scheme='light'] .icon-light,
+	[data-scheme='dark'] .icon-dark {
+		display: inline;
+	}
+	.half {
+		fill: currentColor;
+		stroke: none;
+	}
+	@media (min-width: 60rem) {
+		.theme-switch {
+			width: 2.25rem;
+			height: 2.25rem;
+			margin: 0 -0.5625rem;
+		}
+	}
+	/* Nothing to switch without JS or light-dark(); the site then follows its default. */
+	@media (scripting: none) {
+		.theme-switch {
+			display: none;
+		}
+	}
+	@supports not (color: light-dark(#000, #fff)) {
+		.theme-switch {
+			display: none;
+		}
+	}
+</style>

@@ -1,0 +1,44 @@
+/* Follows the system unless <meta name="color-scheme"> pins a scheme (see BaseHead, ThemeSwitch). */
+:root {
+	color-scheme: light dark;
+	&:has(> head > meta[name='color-scheme'][content='light']) {
+		color-scheme: light;
+	}
+	&:has(> head > meta[name='color-scheme'][content='dark']) {
+		color-scheme: dark;
+	}
+
+	/* Same in both schemes: the footer stays dark, and gold on ink keeps its contrast. */
+	--ink: #111110;
+	--on-ink: #f4efe6;
+	--gold-light: #c9a56b;
+	--gold-deep: #a57f45;
+
+	--paper: light-dark(#f4efe6, #191713);
+	--ivory: light-dark(#fbf8f2, #23201a);
+	--gold: light-dark(#b8935a, #9a7b4c);
+
+	/* Gold is only 2.5:1 on light paper, so it stays decorative. Text and links use these (AA). */
+	--accent: light-dark(#7a5a2b, #d4b27a);
+	--accent-dark: light-dark(#5c4320, #ecd5a8);
+
+	--black: light-dark(#111110, #f4efe6);
+	--gray-dark: light-dark(#2a2621, #e3dccf);
+	--gray: light-dark(#6b6256, #a89e8e);
+	--gray-light: light-dark(#e5ded1, #2e2a23);
+}
+/* Without light-dark() (Safari below 17.5) the site stays light; ThemeSwitch hides itself. */
+@supports not (color: light-dark(#000, #fff)) {
+	:root {
+		color-scheme: light;
+		--paper: #f4efe6;
+		--ivory: #fbf8f2;
+		--gold: #b8935a;
+		--accent: #7a5a2b;
+		--accent-dark: #5c4320;
+		--black: #111110;
+		--gray-dark: #2a2621;
+		--gray: #6b6256;
+		--gray-light: #e5ded1;
+	}
+}
