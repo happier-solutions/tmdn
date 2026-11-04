@@ -31,15 +31,24 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		<span></span>
 	</div>
 	<dialog class="thanks" closedby="any" aria-labelledby="thanks-title" aria-describedby="thanks-body">
-		<svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
-			<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-		</svg>
-		<h2 id="thanks-title">Cảm ơn bạn đã thả tim</h2>
-		<div id="thanks-body">
-			<p class="proverb"></p>
-			<p class="wish"></p>
-			<p class="signature">{SITE_TITLE}</p>
+		<div class="letter">
+			<p class="date"></p>
+			<p class="greeting">Gửi bạn,</p>
+			<h2 id="thanks-title">Cảm ơn bạn đã thả tim</h2>
+			<div id="thanks-body">
+				<p class="proverb"></p>
+				<p class="wish"></p>
+				<p class="closing">Thân mến,</p>
+				<p class="signature">{SITE_TITLE}</p>
+			</div>
 		</div>
+		<svg class="pocket" viewBox="0 0 400 160" aria-hidden="true">
+			<path class="side" d="M0 0 160 160H0ZM400 0 240 160H400Z" />
+			<path class="front" d="M80 160 170 70Q200 40 230 70L320 160Z" />
+		</svg>
+		<svg class="flap" viewBox="0 0 400 160" aria-hidden="true">
+			<path d="M0 0H400L225 95Q200 117 175 95Z" />
+		</svg>
 		<form method="dialog">
 			<button autofocus>Đóng</button>
 		</form>
@@ -57,9 +66,10 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 	const heartCount = heart?.querySelector('.hearts');
 	const thanks = share?.querySelector('dialog');
 	const thanksTitle = thanks?.querySelector('h2');
+	const thanksDate = thanks?.querySelector('.date');
 	const proverb = thanks?.querySelector('.proverb');
 	const wish = thanks?.querySelector('.wish');
-	if (share && status && toast && toastText && heart && heartCount && thanks && thanksTitle && proverb && wish) {
+	if (share && status && toast && toastText && heart && heartCount && thanks && thanksTitle && thanksDate && proverb && wish) {
 		const { url = '' } = share.dataset;
 		let timer: ReturnType<typeof setTimeout>;
 		// Fades out before leaving the top layer, since Firefox and Safari can't animate that exit.
@@ -106,11 +116,30 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 			saveHearts(path, hearts);
 			showHearts();
 			thanksTitle.textContent = hearts > 1 ? `Cảm ơn bạn đã thả tim lần thứ ${hearts}` : 'Cảm ơn bạn đã thả tim';
+			const today = new Date();
+			thanksDate.textContent = `Ngày ${today.getDate()} tháng ${today.getMonth() + 1} năm ${today.getFullYear()}`;
 			message = pickThanksMessage(message);
 			proverb.textContent = message.proverb;
 			wish.textContent = message.wish;
 			thanks.showModal();
+			// On a short screen, focus on the button would open the letter at its end.
+			thanks.scrollTop = 0;
 		};
+		// Every way out comes through here, so the letter can fold away before the dialog leaves the top layer.
+		const closeThanks = async () => {
+			if (thanks.hasAttribute('data-closing')) return;
+			thanks.toggleAttribute('data-closing', true);
+			await Promise.allSettled(thanks.getAnimations({ subtree: true }).map(({ finished }) => finished));
+			// A second Esc can close it natively in the meantime.
+			if (thanks.hasAttribute('data-closing')) thanks.close();
+		};
+		thanks.addEventListener('close', () => thanks.removeAttribute('data-closing'));
+		for (const type of ['submit', 'cancel']) {
+			thanks.addEventListener(type, (event) => {
+				event.preventDefault();
+				closeThanks();
+			});
+		}
 		share.addEventListener('click', ({ target }) => {
 			const action = (target as Element).closest('button')?.dataset.action;
 			if (action === 'copy') copy();
@@ -127,7 +156,7 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 				pressedOutside = outside(event);
 			});
 			thanks.addEventListener('pointerup', (event) => {
-				if (pressedOutside && outside(event)) thanks.close();
+				if (pressedOutside && outside(event)) closeThanks();
 			});
 		}
 	}
@@ -239,102 +268,237 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		display: none;
 	}
 	.thanks {
-		--rise: 0.5rem;
 		box-sizing: border-box;
-		width: min(24rem, 100vw - 2rem);
+		width: min(28rem, 100vw - 2rem);
 		margin: auto;
-		padding: 2rem 1.5rem;
-		border: 1px solid var(--gold);
-		background: var(--paper);
+		padding: 0;
+		border: 0;
+		/* Every line of text sits on this grid, so it stays on the rules. */
+		--line: 1.875rem;
+		background-color: var(--gray-light);
 		color: var(--gray-dark);
-		text-align: center;
-		opacity: 0;
-		transform: translateY(var(--rise));
+		font-family: var(--font-hand);
+		font-size: 1.1875rem;
+		line-height: var(--line);
 		overscroll-behavior: contain;
-		/* Firefox and Safari skip the exit and close at once. */
-		transition-property: opacity, transform, display, overlay;
-		transition-duration: 220ms;
-		transition-timing-function: ease-out;
-		transition-behavior: allow-discrete;
+		transition: opacity 200ms ease-out;
 	}
-	.thanks[open] {
-		opacity: 1;
-		transform: none;
+	.thanks[data-closing] {
+		opacity: 0;
 	}
 	.thanks::backdrop {
 		overflow: hidden;
 		overscroll-behavior: contain;
-		background: transparent;
-		transition-property: background-color, display, overlay;
-		transition-duration: 220ms;
-		transition-timing-function: ease-out;
-		transition-behavior: allow-discrete;
-	}
-	.thanks[open]::backdrop {
 		background: color-mix(in srgb, var(--ink) 60%, transparent);
+		transition: background-color 200ms ease-out;
+	}
+	.thanks[data-closing]::backdrop {
+		background: transparent;
 	}
 	@starting-style {
 		.thanks[open] {
 			opacity: 0;
-			transform: translateY(var(--rise));
 		}
 		.thanks[open]::backdrop {
 			background: transparent;
 		}
 	}
-	.thanks svg {
-		display: block;
-		margin: 0 auto 1rem;
-		fill: var(--gold);
-		stroke: var(--accent);
-		stroke-width: 1.5;
-	}
-	.thanks h2 {
-		margin-bottom: 1rem;
-		font-size: 1.25rem;
+	/* Esc turns on focus rings: skip them on the dialog, which holds focus after a click on the letter, and on the way out. */
+	.thanks:focus-visible,
+	.thanks[data-closing] button {
+		outline: none;
 	}
 	.thanks p {
 		margin: 0;
 	}
-	.thanks .proverb {
-		padding-block: 1rem;
-		border-block: 1px solid var(--gold);
-		color: var(--accent);
-		font-family: var(--font-heading);
-		font-size: 1.125rem;
-		line-height: 1.5;
-		white-space: pre-line;
-		text-wrap: balance;
+	/* Bottom padding keeps the text clear of the flaps. */
+	.letter {
+		position: relative;
+		z-index: 1;
+		transform-origin: 50% 100%;
+		margin: 1.5rem 6% 0;
+		padding: var(--line) 1.5rem 31%;
+		background: conic-gradient(from 180deg at 75% calc(100% - 1px), color-mix(in oklab, var(--gold) 60%, transparent) 90deg, transparent 0) 0 -5px / 1.25rem var(--line) var(--paper);
 	}
-	.thanks .wish {
-		margin-top: 1rem;
+	.thanks .date {
+		margin-bottom: var(--line);
+		color: var(--gray);
 		font-size: 1rem;
-		line-height: 1.6;
+		text-align: end;
+	}
+	.thanks h2 {
+		margin: 0;
+		font-family: inherit;
+		font-size: 1.5rem;
+		line-height: inherit;
+	}
+	.thanks .proverb {
+		margin-block: var(--line);
+		padding-inline-start: 1rem;
+		color: var(--accent);
+		white-space: pre-line;
 		text-wrap: pretty;
 	}
-	.thanks .signature {
-		margin-block: 0.75rem 1.5rem;
-		color: var(--gray);
-		font-size: 0.875rem;
+	.thanks .wish {
+		text-wrap: pretty;
 	}
+	.thanks .closing {
+		margin-top: var(--line);
+		text-align: end;
+	}
+	.thanks .signature {
+		color: var(--black);
+		text-align: end;
+	}
+	/* The envelope stays put, so a letter too long to fit slides out of it as it scrolls. */
+	.pocket,
+	.flap,
+	.thanks form,
+	.thanks::after {
+		position: sticky;
+		bottom: 0;
+		display: block;
+		margin-top: -40%;
+	}
+	/* Pinned, the envelope would leave too little of a short screen to read in. */
+	@media (max-height: 34rem) {
+		.pocket,
+		.flap,
+		.thanks form,
+		.thanks::after {
+			position: relative;
+			bottom: auto;
+		}
+	}
+	.pocket,
+	.flap {
+		width: 100%;
+		height: auto;
+		stroke: var(--gold);
+		stroke-width: 1;
+	}
+	.pocket {
+		z-index: 2;
+	}
+	.side {
+		fill: color-mix(in oklab, var(--gold) 45%, var(--paper));
+	}
+	.front {
+		fill: color-mix(in oklab, var(--gold) 30%, var(--paper));
+	}
+	/* Open, the top flap is out of sight behind the letter. */
+	.flap {
+		z-index: 0;
+		visibility: hidden;
+		fill: color-mix(in oklab, var(--gold) 65%, var(--paper));
+		/* A flat flip. rotateX would swing its box toward the viewer and past the dialog's edges, which adds scrollbars. */
+		transform: scaleY(-1);
+		transform-origin: 50% 0;
+	}
+	.thanks form {
+		z-index: 4;
+		display: flex;
+		justify-content: center;
+		align-items: flex-end;
+		aspect-ratio: 5 / 2;
+	}
+	/* The envelope's back, behind the letter. */
+	.thanks::after {
+		content: '';
+		z-index: -1;
+		aspect-ratio: 2;
+		margin-top: -50%;
+		background: color-mix(in oklab, var(--gold) 65%, var(--paper));
+		clip-path: polygon(10% 0, 90% 0, 100% 20%, 100% 100%, 0 100%, 0 20%);
+	}
+	/* A wax seal on the flap. The transparent border draws its edge in forced colors. */
 	.thanks button {
-		min-height: 3rem;
-		padding-inline: 1.5rem;
-		border: 0;
+		/* Scales down so it stays inside the flap on the narrowest phones. */
+		width: clamp(3rem, 18%, 3.5rem);
+		aspect-ratio: 1;
+		margin-bottom: 5%;
+		padding: 0;
+		border: 1px solid transparent;
+		border-radius: 48% 52% 50% 50% / 52% 48% 52% 48%;
 		background: var(--accent);
+		box-shadow: inset 0 0 0 2px var(--accent), inset 0 0 0 3px var(--paper);
 		color: var(--paper);
 		font: inherit;
-		font-size: 1rem;
-		font-weight: 600;
 		cursor: pointer;
 	}
 	.thanks button:hover {
-		background: var(--accent-dark);
+		--accent: var(--accent-dark);
 	}
 	@media (prefers-reduced-motion: reduce) {
-		.toast,
-		.thanks {
+		.toast {
 			--rise: 0;
+		}
+	}
+	/* Opens in three steps: the flap lifts, the letter unfolds, the paper behind fades in. Closing runs them back. */
+	@media (prefers-reduced-motion: no-preference) {
+		.thanks {
+			--folded: perspective(60rem) rotateX(90deg);
+			--shut: scaleY(1);
+			--flat: polygon(10% 20%, 90% 20%, 100% 20%, 100% 100%, 0 100%, 0 20%);
+			transition:
+				opacity 120ms ease-out,
+				background-color 180ms ease-out 350ms;
+		}
+		.letter {
+			transition: transform 300ms ease-out 350ms;
+		}
+		/* The flap swaps layers halfway, while it is edge-on and can't be seen. */
+		.flap {
+			transition:
+				transform 300ms ease-in-out 100ms,
+				z-index 0s linear 250ms,
+				visibility 0s linear 650ms;
+		}
+		/* The back's corners only stand above the envelope once the flap has lifted. */
+		.thanks::after {
+			transition: clip-path 150ms ease-out 250ms;
+		}
+		.thanks[data-closing]::after {
+			clip-path: var(--flat);
+			transition: clip-path 100ms ease-in 170ms;
+		}
+		.thanks[data-closing] {
+			background-color: transparent;
+			transition:
+				opacity 120ms ease-in 370ms,
+				background-color 100ms ease-out;
+		}
+		.thanks[data-closing]::backdrop {
+			transition: background-color 120ms ease-in 370ms;
+		}
+		.thanks[data-closing] .letter {
+			transform: var(--folded);
+			transition: transform 200ms ease-in;
+		}
+		.thanks[data-closing] .flap {
+			z-index: 3;
+			visibility: visible;
+			transform: var(--shut);
+			transition:
+				transform 200ms ease-in-out 170ms,
+				z-index 0s linear 270ms,
+				visibility 0s;
+		}
+		@starting-style {
+			.thanks[open] {
+				background-color: transparent;
+			}
+			.thanks[open]::after {
+				clip-path: var(--flat);
+			}
+			.thanks[open] .letter {
+				transform: var(--folded);
+			}
+			.thanks[open] .flap {
+				z-index: 3;
+				visibility: visible;
+				transform: var(--shut);
+			}
 		}
 	}
 	/* The rail beside the post, from the same width as the grid in PostLayout. */

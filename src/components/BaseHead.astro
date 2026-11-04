@@ -63,6 +63,8 @@ const fontPreload = [
 
 <Font cssVariable="--font-body" preload={fontPreload} />
 <Font cssVariable="--font-heading" preload={fontPreload} />
+<!-- Only the thanks letter uses it, so it loads when the letter first opens. -->
+<Font cssVariable="--font-hand" />
 
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />

@@ -30,5 +30,14 @@ export default defineConfig({
 			subsets: ['vietnamese', 'latin', 'latin-ext'],
 			fallbacks: ['serif'],
 		},
+		{
+			provider: fontProviders.fontsource(),
+			name: 'Patrick Hand',
+			cssVariable: '--font-hand',
+			weights: [400],
+			styles: ['normal'],
+			subsets: ['vietnamese', 'latin', 'latin-ext'],
+			fallbacks: ['cursive'],
+		},
 	],
 });
