@@ -4,6 +4,8 @@
   License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
  */
 
+@import './transitions.css';
+
 :root {
 	/* Bảng màu thương hiệu */
 	--ink: #111110;
@@ -21,6 +23,10 @@
 	--gray: 107, 98, 86;
 	--gray-light: 229, 222, 209;
 	--gray-dark: 42, 38, 33;
+}
+html {
+	/* Keeps anchor and focus targets clear of the pinned header. */
+	scroll-padding-top: 5rem;
 }
 body {
 	font-family: var(--font-body);
@@ -154,7 +160,7 @@ hr {
 	position: absolute;
 	top: -100%;
 	left: 1rem;
-	z-index: 1;
+	z-index: 2;
 	padding: 0.5rem 1rem;
 	background: var(--ink);
 	color: var(--paper);

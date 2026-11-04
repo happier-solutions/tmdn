@@ -17,7 +17,7 @@ const ariaCurrent = (slug: string) => {
 };
 ---
 
-<header>
+<header class="site-header">
 	<div class="wrap wrap-wide bar">
 		<a class="brand" href="/">
 			<img src="/favicon.svg" width="40" height="40" alt="" />
@@ -37,8 +37,20 @@ const ariaCurrent = (slug: string) => {
 	</div>
 </header>
 <style>
-	header {
+	.site-header {
 		border-bottom: 1px solid var(--gold);
+		background: var(--paper);
+	}
+	/* Pinned while reading, except where it would take too much height:
+	   landscape phones and the wrapped-row fallback without popover support. */
+	@media (min-height: 34rem) {
+		@supports selector(:popover-open) {
+			.site-header {
+				position: sticky;
+				top: 0;
+				z-index: 1;
+			}
+		}
 	}
 	.bar {
 		display: flex;

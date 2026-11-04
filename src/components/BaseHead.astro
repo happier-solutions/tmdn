@@ -45,6 +45,23 @@ const fontPreload = [
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
+<!-- Hold the first paint until <main> is parsed so the page transition never reveals a blank page. -->
+<link rel="expect" href="#main" blocking="render" />
+
+<!-- Prefetch same-origin links on user intent; /admin/ is the CMS, not a reading page. Ignored by browsers without support. -->
+<script is:inline type="speculationrules">
+	{
+		"prefetch": [
+			{
+				"where": {
+					"and": [{ "href_matches": "/*" }, { "not": { "href_matches": "/admin/*" } }]
+				},
+				"eagerness": "moderate"
+			}
+		]
+	}
+</script>
+
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="description" content={description} />

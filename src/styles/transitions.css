@@ -1,0 +1,37 @@
+/* Page change: header and footer swap instantly, only the content fades in.
+   No cross-fade, so old and new text never overlap.
+   Browsers without support navigate as usual. */
+@media (prefers-reduced-motion: no-preference) {
+	@view-transition {
+		navigation: auto;
+	}
+	main {
+		view-transition-name: page;
+	}
+	/* Its own layer, or main would paint over the pinned header when restoring a scrolled page. */
+	.site-header {
+		view-transition-name: site-header;
+	}
+	::view-transition-old(root),
+	::view-transition-old(page),
+	::view-transition-old(site-header) {
+		display: none;
+	}
+	::view-transition-new(root),
+	::view-transition-new(site-header) {
+		animation: none;
+	}
+	::view-transition-group(page),
+	::view-transition-group(site-header) {
+		animation: none;
+	}
+	::view-transition-new(page) {
+		animation: 220ms ease-out both page-in;
+	}
+}
+@keyframes page-in {
+	from {
+		opacity: 0;
+		transform: translateY(0.5rem);
+	}
+}
