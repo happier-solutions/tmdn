@@ -317,7 +317,7 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		z-index: 1;
 		transform-origin: 50% 100%;
 		margin: 1.5rem 6% 0;
-		padding: var(--line) 1.5rem 31%;
+		padding: var(--line) clamp(1rem, 5.4%, 1.5rem) 31%;
 		background: conic-gradient(from 180deg at 75% calc(100% - 1px), color-mix(in oklab, var(--gold) 60%, transparent) 90deg, transparent 0) 0 -5px / 1.25rem var(--line) var(--paper);
 	}
 	.thanks .date {
