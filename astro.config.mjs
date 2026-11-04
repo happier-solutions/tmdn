@@ -11,12 +11,21 @@ export default defineConfig({
 	fonts: [
 		{
 			provider: fontProviders.fontsource(),
-			name: 'Be Vietnam Pro',
+			name: 'Montserrat',
 			cssVariable: '--font-body',
 			weights: [400, 700],
 			styles: ['normal'],
 			subsets: ['vietnamese', 'latin', 'latin-ext'],
 			fallbacks: ['sans-serif'],
+		},
+		{
+			provider: fontProviders.fontsource(),
+			name: 'Playfair Display',
+			cssVariable: '--font-heading',
+			weights: [400],
+			styles: ['normal'],
+			subsets: ['vietnamese', 'latin', 'latin-ext'],
+			fallbacks: ['serif'],
 		},
 	],
 });
