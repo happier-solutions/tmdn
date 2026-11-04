@@ -35,12 +35,10 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 			<button type="submit">Đăng ký</button>
 			<p id="signup-error" class="message">Bạn nhập giúp một địa chỉ email hợp lệ, ví dụ ten@gmail.com.</p>
 			<p class="message sent" role="status" hidden>
-				Thư đã soạn sẵn, bạn chỉ cần bấm gửi. Không thấy ứng dụng thư mở ra? Gửi đến
-				<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+				Thư đã soạn sẵn, bạn chỉ cần bấm gửi. Không thấy ứng dụng thư mở ra?
+				Gửi đến <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
 			</p>
-			<p class="note">
-				Chỉ gửi bài mới, không quảng cáo, hủy lúc nào cũng được. Hoặc theo dõi qua <a href="/rss.xml">RSS</a>.
-			</p>
+			<p class="note">Chỉ gửi bài mới, không quảng cáo, hủy lúc nào cũng được.</p>
 		</form>
 	</div>
 </section>
