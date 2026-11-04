@@ -1,6 +1,6 @@
 # Design system
 
-Describes the current UI (baseline, see `docs/plan.md`). Sources: `src/styles/global.css`, `src/styles/transitions.css`, fonts in `astro.config.mjs`. If this file and the code disagree, the code wins; fix this file.
+Describes the current UI (baseline, see `docs/plan.md`). Sources: `src/styles/global.css`, `src/styles/links.css`, `src/styles/transitions.css`, fonts in `astro.config.mjs`. If this file and the code disagree, the code wins; fix this file.
 
 ## Principles
 
@@ -11,7 +11,7 @@ A reflective notebook: minimal, calm, comfortable for long reading.
 - Mobile first: most readers are on phones.
 - No annoying popups, ads, or screen-filling banners.
 - Hierarchy comes from type and thin rules. No cards or shadows.
-- No motion, except the page content fading in on navigation.
+- No motion, except the page content fading in on navigation and link hovers.
 
 ## Colors
 
@@ -79,7 +79,7 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 |---|---|
 | `Header` | Logo and title left, nav right, gold bottom rule, `--paper` background. Pinned to the top (`position: sticky`, `z-index: 1`) from `34rem` viewport height and with popover support. `html` has `scroll-padding-top: 5rem` to match, so grow it if the bar grows. Below `60rem`: right drawer via Popover API, width `min(20rem, 85vw)`; wrapped row without popover support |
 | Menu buttons | Gold border, no fill, square, min height `2.75rem` |
-| Nav links | `--gray-dark`, no underline; `--accent` and underline on hover or `aria-current` |
+| Nav links | `--gray-dark`, `--accent` on hover. Same hover as every link (see States), held on for `aria-current` |
 | `Footer` | `--ink` background, `--paper` text, `--gold-light` links, `--paper` on hover |
 | `PostCard` | Meta, title, `--gray` description. No border or background |
 | `PostMeta` | Dates, category, reading time, confidence level |
@@ -91,7 +91,7 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 
 ## States and accessibility
 
-- Links are underlined, except `PostCard` titles, brand, and nav links.
+- Links, nav included, have no underline at rest and rely on color. On hover (`links.css`) the color darkens, a 1px `currentColor` rule draws from the left (300ms), then the logo's sprig (`public/sprig.svg`, as a mask) grows from its end (260ms, 180ms delay). Hover only under `(hover: hover)`; no animation under `prefers-reduced-motion`. A link that is a block or flex item wraps its text in `.link-line`. In `PostMeta` the separator after the category fades out on hover and the sprig takes its place. In running text in `.prose` the sprig is off, since it would cover the text; these links keep the rule at rest, because color alone doesn't set them apart, and it thickens to 2px on hover. The skip link opts out.
 - Link focus: `outline: 2px solid var(--accent)`, offset `2px`.
 - Skip link is hidden until focused and sits above the pinned header (`z-index: 2`). Use `.sr-only` for screen-reader-only text.
 - Page transition: native `@view-transition` in `transitions.css`. Header and footer swap instantly; `main` fades in over 220ms and rises `0.5rem`. The header has its own transition name so `main` never paints over it. Off under `prefers-reduced-motion`; Firefox navigates instantly. `<link rel="expect">` in `BaseHead` waits for `#main`, so keep that id in the layout.
@@ -99,12 +99,13 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 
 ## Brand
 
-- Logos: `public/logo.svg`, `public/favicon.svg`.
+- Logos: `public/logo.svg`, `public/favicon.svg`. `public/sprig.svg` is the logo's branch alone, used as the link hover mask.
 - Colors are also hardcoded in those files and in `theme-color` in `BaseHead.astro`; update them with the palette.
 - UI copy is Vietnamese, first person, as a learner rather than an expert (for example "Tôi đã đổi quan điểm").
 
 ## Known gaps
 
+- Category links in `PostMeta` and `PostCard`: `--accent` barely differs from the surrounding `--gray` meta text, so they are hard to spot without an underline.
 - Footer focus outline: `--accent` on `--ink` is 2.99:1, below 3:1.
 - Menu buttons have no custom focus style.
 - `.prose` only sets `text-wrap`; `table` only sets `width: 100%`.

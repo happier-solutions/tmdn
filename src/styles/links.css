@@ -1,0 +1,73 @@
+/* Every link, nav included: a rule draws from the left, then the logo's sprig grows from its end.
+   Both follow wrapped lines and need no markup. A link that is a block or flex item
+   wraps its text in `.link-line`, so the rule hugs the text. */
+a {
+	--line: 0;
+	--leaf: 0;
+	--leaf-delay: 0ms;
+	color: var(--accent);
+	text-decoration: none;
+}
+:where(a:not(.skip-link, :has(.link-line)), .link-line) {
+	/* Inline padding lowers the rule, clear of marks like ạ and ọ, without moving any text. */
+	padding-bottom: 0.15em;
+	background: linear-gradient(currentColor, currentColor) 0 100% / calc(var(--line) * 100%) 1px no-repeat;
+	@media (prefers-reduced-motion: no-preference) {
+		transition:
+			color 200ms ease-out,
+			background-size 300ms ease-out;
+	}
+	/* Zero net width and no effect on line height, so showing it never reflows the text. */
+	&::after {
+		content: '';
+		display: inline-block;
+		width: 1em;
+		height: 1.1em;
+		margin-right: -1em;
+		vertical-align: -0.2em;
+		background: currentColor;
+		mask: url('/sprig.svg') center / contain no-repeat;
+		translate: 0 0.2em;
+		rotate: calc((1 - var(--leaf)) * 40deg);
+		scale: var(--leaf);
+		transform-origin: left bottom;
+		@media (prefers-reduced-motion: no-preference) {
+			transition:
+				rotate 260ms ease-out var(--leaf-delay),
+				scale 260ms ease-out var(--leaf-delay);
+		}
+	}
+}
+a:hover {
+	color: var(--accent-dark);
+}
+/* Hover only where it exists, so a tap doesn't leave the state stuck on touch screens. */
+@media (hover: hover) {
+	a:hover {
+		--line: 1;
+		--leaf: 1;
+		--leaf-delay: 180ms;
+	}
+}
+a:focus-visible {
+	outline: 2px solid var(--accent);
+	outline-offset: 2px;
+}
+/* In running text, color alone doesn't set a link apart, so the rule is always there. */
+.prose :is(p, :not(.tags) > li) a {
+	--line: 1;
+	@media (hover: hover) {
+		&:hover {
+			background-size: 100% 2px;
+		}
+	}
+}
+/* Text follows these links on the same line, and the sprig would cover it. */
+.prose :is(p, :not(.tags) > li) a::after {
+	display: none;
+}
+/* A sprig near the viewport edge must not add a horizontal scrollbar. */
+main,
+footer {
+	overflow-x: clip;
+}

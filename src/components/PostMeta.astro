@@ -13,9 +13,8 @@ const { pubDate, updatedDate, category, confidence } = post.data;
 
 <div class="meta">
 	<FormattedDate date={pubDate} />
-	{updatedDate && <>{' · Cập nhật '}<FormattedDate date={updatedDate} /></>}
-	{' · '}<a href={`/${category}/`}>{labelOf(CATEGORIES, category)}</a>
-	{' · '}{getReadingMinutes(post)} phút đọc
+	{updatedDate && <><span class="sep">{' · '}</span>{'Cập nhật '}<FormattedDate date={updatedDate} /></>}
+	<span class="sep">{' · '}</span><a href={`/${category}/`}>{labelOf(CATEGORIES, category)}</a><span class="sep">{' · '}</span>{getReadingMinutes(post)} phút đọc
 </div>
 <p class="confidence">Mức độ chắc chắn: <strong>{labelOf(CONFIDENCE_LEVELS, confidence)}</strong></p>
 <style>
@@ -24,5 +23,20 @@ const { pubDate, updatedDate, category, confidence } = post.data;
 		margin: 0.5rem 0 0;
 		color: rgb(var(--gray));
 		font-size: 0.875rem;
+	}
+	/* The hover sprig takes the separator's place, so the text after it never moves.
+	   The margin makes that place wide enough for the sprig. */
+	.sep {
+		margin-inline: 0.2em;
+	}
+	@media (hover: hover) {
+		.meta a:hover + .sep {
+			opacity: 0;
+		}
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.sep {
+			transition: opacity 200ms ease-out;
+		}
 	}
 </style>

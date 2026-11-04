@@ -13,14 +13,14 @@ const { newer, older } = Astro.props;
 	<nav aria-label="Bài trước và bài sau">
 		{older && (
 			<a class="older" href={postUrl(older)} rel="prev">
-				<span>Bài trước</span>
-				{older.data.title}
+				<span class="label">Bài trước</span>
+				<span class="link-line">{older.data.title}</span>
 			</a>
 		)}
 		{newer && (
 			<a class="newer" href={postUrl(newer)} rel="next">
-				<span>Bài sau</span>
-				{newer.data.title}
+				<span class="label">Bài sau</span>
+				<span class="link-line">{newer.data.title}</span>
 			</a>
 		)}
 	</nav>
@@ -40,7 +40,7 @@ const { newer, older } = Astro.props;
 		grid-column: -2 / -1;
 		text-align: right;
 	}
-	span {
+	.label {
 		display: block;
 		color: rgb(var(--gray));
 		font-size: 0.875rem;

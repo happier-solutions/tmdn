@@ -21,7 +21,7 @@ const ariaCurrent = (slug: string) => {
 	<div class="wrap wrap-wide bar">
 		<a class="brand" href="/">
 			<img src="/favicon.svg" width="40" height="40" alt="" />
-			<span>{SITE_TITLE}</span>
+			<span><span class="link-line">{SITE_TITLE}</span></span>
 		</a>
 		<button class="menu-button" type="button" popovertarget="site-nav">Menu</button>
 		<nav id="site-nav" class="site-nav" popover aria-label="Menu chính">
@@ -30,7 +30,7 @@ const ariaCurrent = (slug: string) => {
 			</button>
 			<ul>
 				{navItems.map(({ slug, label }) => (
-					<li><a href={`/${slug}/`} aria-current={ariaCurrent(slug)}>{label}</a></li>
+					<li><a href={`/${slug}/`} aria-current={ariaCurrent(slug)}><span class="link-line">{label}</span></a></li>
 				))}
 			</ul>
 		</nav>
@@ -67,7 +67,9 @@ const ariaCurrent = (slug: string) => {
 		color: rgb(var(--black));
 		font-family: var(--font-heading);
 		font-size: 1.25rem;
-		text-decoration: none;
+	}
+	.brand:hover {
+		color: var(--accent);
 	}
 	.brand img {
 		display: block;
@@ -86,13 +88,14 @@ const ariaCurrent = (slug: string) => {
 		padding-block: 0.5rem;
 		color: rgb(var(--gray-dark));
 		font-size: 1rem;
-		text-decoration: none;
 	}
 	.site-nav a:hover,
 	.site-nav a[aria-current] {
 		color: var(--accent);
-		text-decoration: underline;
-		text-underline-offset: 0.3em;
+	}
+	.site-nav a[aria-current] {
+		--line: 1;
+		--leaf: 1;
 	}
 	/* Without popover support the links stay visible as a wrapped row. */
 	.menu-button {

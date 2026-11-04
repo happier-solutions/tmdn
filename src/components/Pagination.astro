@@ -10,9 +10,9 @@ const { page } = Astro.props;
 
 {page.lastPage > 1 && (
 	<nav aria-label="Phân trang">
-		{page.url.prev ? <a href={page.url.prev} rel="prev">← Mới hơn</a> : <span />}
+		{page.url.prev ? <a href={page.url.prev} rel="prev"><span class="link-line">← Mới hơn</span></a> : <span />}
 		<span>Trang {page.currentPage}/{page.lastPage}</span>
-		{page.url.next ? <a href={page.url.next} rel="next">Cũ hơn →</a> : <span />}
+		{page.url.next ? <a href={page.url.next} rel="next"><span class="link-line">Cũ hơn →</span></a> : <span />}
 	</nav>
 )}
 <style>
