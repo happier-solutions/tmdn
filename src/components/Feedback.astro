@@ -1,0 +1,174 @@
+---
+import { CONTACT_EMAIL } from '../consts';
+import StarRating from './StarRating.astro';
+
+const subject = encodeURIComponent('Đánh giá và góp ý');
+---
+
+<!-- Without JS the browser still opens the mail app, with the bare fields as the body. -->
+<form class="ruled feedback" method="post" enctype="text/plain" action={`mailto:${CONTACT_EMAIL}?subject=${subject}`}>
+	<div class="cell">
+		<fieldset role="radiogroup" aria-errormessage="feedback-error">
+			<legend>Bạn thấy blog này thế nào?</legend>
+			<StarRating />
+			<p id="feedback-error" class="message">Bạn chọn giúp một mức từ 1 đến 5 sao.</p>
+		</fieldset>
+	</div>
+	<div class="cell field">
+		<label class="title" for="feedback-message">Bạn muốn góp ý điều gì? <span>(không bắt buộc)</span></label>
+		<textarea id="feedback-message" name="message" rows="5" maxlength="500" aria-describedby="feedback-hint"></textarea>
+		<p id="feedback-hint" class="note">Tối đa 500 ký tự.</p>
+	</div>
+	<div class="cell foot">
+		<div class="actions">
+			<p class="note">Bấm gửi sẽ mở ứng dụng thư của bạn, với nội dung đã soạn sẵn.</p>
+			<button type="submit">Gửi đánh giá</button>
+		</div>
+		<!-- Stays in the page while empty, so screen readers announce what appears in it. -->
+		<div role="status">
+			<p class="message sent" hidden>
+				Thư đã soạn sẵn, bạn chỉ cần bấm gửi. Không thấy ứng dụng thư mở ra?
+				Gửi đến <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+			</p>
+		</div>
+	</div>
+</form>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('.feedback');
+	const group = form?.querySelector('fieldset');
+	const firstStar = group?.querySelector('input');
+
+	if (form && group && firstStar) {
+		// `invalid` doesn't bubble. The inline message replaces the browser's bubble, which ignores the page language.
+		form.addEventListener(
+			'invalid',
+			(event) => {
+				event.preventDefault();
+				group.setAttribute('aria-invalid', 'true');
+				firstStar.focus();
+			},
+			true,
+		);
+		group.addEventListener('change', () => group.removeAttribute('aria-invalid'));
+		form.addEventListener('submit', (event) => {
+			event.preventDefault();
+			const data = new FormData(form);
+			const message = String(data.get('message')).trim().replace(/\n/g, '\r\n');
+			const lines = ['Xin chào,', '', `Đánh giá: ${data.get('rating')}/5 sao`];
+			if (message) lines.push('', 'Góp ý:', message);
+			location.href = `${form.action}&body=${encodeURIComponent(lines.join('\r\n'))}`;
+			// A missing mail app fails silently, so always show the address to write to.
+			form.querySelector<HTMLElement>('.sent')?.removeAttribute('hidden');
+		});
+	}
+</script>
+
+<style>
+	p {
+		margin: 0;
+	}
+	fieldset {
+		min-width: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	legend {
+		padding: 0;
+	}
+	legend,
+	.title {
+		display: block;
+		margin-bottom: 0.75rem;
+		color: var(--black);
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+		line-height: 1.25;
+	}
+	.title span {
+		color: var(--gray);
+		font-family: var(--font-body);
+		font-size: 0.875rem;
+	}
+	.note {
+		color: var(--gray);
+		font-size: 0.875rem;
+	}
+
+	textarea {
+		display: block;
+		box-sizing: border-box;
+		width: 100%;
+		/* Grows with the text where supported, and `rows` holds the size elsewhere. */
+		field-sizing: content;
+		min-block-size: 5lh;
+		max-block-size: 16lh;
+		margin-bottom: 0.5rem;
+		padding: 0.75rem;
+		border: 1px solid var(--gray);
+		border-radius: 0;
+		background: transparent;
+		color: var(--gray-dark);
+		font: inherit;
+		/* Below 1rem iOS zooms in on focus. */
+		font-size: 1rem;
+		resize: vertical;
+	}
+
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 2rem;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.actions .note {
+		flex: 1 1 16rem;
+	}
+	button {
+		min-height: 3rem;
+		padding-inline: 1.25rem;
+		border: 0;
+		border-radius: 0;
+		background: var(--accent);
+		color: var(--paper);
+		font: inherit;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	button:hover {
+		background: var(--accent-dark);
+	}
+	:is(textarea, button):focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+
+	.message {
+		padding-inline-start: 0.5rem;
+		border-inline-start: 3px solid var(--gold);
+		color: var(--gray-dark);
+		font-size: 0.875rem;
+	}
+	.sent {
+		margin-top: 1rem;
+	}
+	#feedback-error {
+		display: none;
+		margin-top: 0.5rem;
+	}
+	fieldset[aria-invalid='true'] #feedback-error {
+		display: block;
+	}
+
+	@media (min-width: 40rem) {
+		.feedback {
+			grid-template-columns: 2fr 3fr;
+		}
+		.foot {
+			grid-column: 1 / -1;
+		}
+	}
+</style>

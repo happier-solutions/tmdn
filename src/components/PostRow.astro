@@ -1,0 +1,196 @@
+---
+import { Image } from 'astro:assets';
+import { CATEGORIES, CONFIDENCE_LEVELS, labelOf } from '../data/taxonomy';
+import { getReadingMinutes, type Post, postUrl } from '../lib/posts';
+import CategoryIcon from './CategoryIcon.astro';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	post: Post;
+	/** The list's lead post: spans the whole list, with a large image beside the text, loaded first. */
+	featured?: boolean;
+	/** Off on a category's own page, where the link would only repeat the page. */
+	showCategory?: boolean;
+}
+
+const { post, featured = false, showCategory = true } = Astro.props;
+const { title, description, pubDate, category, confidence, heroImage } = post.data;
+---
+
+<article class:list={{ featured }}>
+	<div class="layout">
+		<div class="thumb">
+			{heroImage ? (
+				<Image
+					src={heroImage}
+					alt=""
+					sizes={featured ? '(min-width: 72rem) 48rem, (min-width: 64rem) 67vw, (min-width: 40rem) 50vw, 100vw' : '(min-width: 72rem) 24rem, (min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 6rem'}
+					widths={featured ? [480, 800, 1200, 1600] : [192, 480, 800]}
+					loading={featured ? 'eager' : 'lazy'}
+					fetchpriority={featured ? 'high' : undefined}
+				/>
+			) : (
+				<CategoryIcon slug={category} size={featured ? 64 : 36} />
+			)}
+		</div>
+		<div class="text">
+			{featured && <p class="lead">Mới nhất</p>}
+			<h2><a href={postUrl(post)}>{title}</a></h2>
+			<p class="description">{description}</p>
+			<p class="meta">
+				<FormattedDate date={pubDate} />{' · '}{getReadingMinutes(post)} phút đọc{' · '}{labelOf(CONFIDENCE_LEVELS, confidence)}
+				{showCategory && <>{' · '}<a href={`/${category}/`}>{labelOf(CATEGORIES, category)}</a></>}
+			</p>
+		</div>
+	</div>
+</article>
+<style>
+	article {
+		position: relative;
+		container-type: inline-size;
+	}
+	article,
+	.layout {
+		height: 100%;
+	}
+	.layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) 6rem;
+	}
+
+	/* `width` and `align-self` let a taller text column stretch the frame past its ratio. */
+	.thumb {
+		position: relative;
+		grid-area: 1 / 2;
+		display: grid;
+		place-items: center;
+		align-self: stretch;
+		width: 100%;
+		aspect-ratio: 1;
+		overflow: clip;
+		background: var(--gray-light);
+	}
+	.thumb img {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 0;
+	}
+
+	.text {
+		grid-area: 1 / 1;
+		display: flex;
+		flex-direction: column;
+		align-items: start;
+		gap: 0.5rem;
+		min-width: 0;
+		padding: var(--py) var(--px);
+	}
+	.text p {
+		margin: 0;
+	}
+	h2 {
+		margin: 0;
+		font-size: 1.25rem;
+	}
+	h2 a {
+		color: inherit;
+	}
+	/* The title's link covers the row, and it keeps the link's hover rule and sprig. */
+	h2 a::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+	.description {
+		max-width: 42rem;
+		color: var(--gray);
+		font-size: 1rem;
+		text-wrap: pretty;
+	}
+	.lead,
+	.meta {
+		font-size: 0.875rem;
+	}
+	.lead {
+		color: var(--accent);
+	}
+	/* At the post's foot, so the meta lines up across a row. `.text` outranks `.text p`. */
+	.text .meta {
+		margin-top: auto;
+		padding-top: 0.25rem;
+		color: var(--gray);
+	}
+	.meta a {
+		position: relative;
+		z-index: 1;
+	}
+
+	article:has(h2 a:hover) {
+		background: var(--gray-light);
+	}
+	h2 a:focus-visible {
+		outline: none;
+	}
+	article:has(h2 a:focus-visible) {
+		outline: 2px solid var(--accent);
+		outline-offset: -3px;
+	}
+	/* The painting drifts closer inside its frame, slower than the link's own hover. */
+	@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+		.thumb img {
+			transition: scale 500ms ease-out;
+		}
+		article:has(h2 a:hover) img {
+			scale: 1.04;
+		}
+	}
+
+	.featured .layout {
+		grid-template-columns: minmax(0, 1fr);
+	}
+	.featured .thumb {
+		grid-area: 1 / 1;
+		aspect-ratio: 3 / 2;
+	}
+	.featured .text {
+		grid-area: 2 / 1;
+	}
+	.featured h2 {
+		font-size: clamp(1.5rem, 1.25rem + 1.5cqi, 2.25rem);
+	}
+
+	/* The list's columns start here, so this follows the viewport, not the post's own width. */
+	@media (min-width: 40rem) {
+		.layout {
+			grid-template: auto 1fr / minmax(0, 1fr);
+		}
+		.thumb {
+			grid-area: 1 / 1;
+			aspect-ratio: 3 / 2;
+		}
+		.text {
+			grid-area: 2 / 1;
+		}
+
+		/* `minmax(0, …)`: the frame's height, through its ratio, must not widen its own track.
+		   The image takes as many of the list's columns as it can, leaving one for the text. */
+		.featured .layout {
+			grid-template: auto / repeat(2, minmax(0, 1fr));
+		}
+		.featured .text {
+			grid-area: 1 / 2;
+			justify-content: center;
+		}
+		.featured .meta {
+			margin-top: 0;
+		}
+	}
+	@media (min-width: 64rem) {
+		.featured .layout {
+			grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+		}
+	}
+</style>

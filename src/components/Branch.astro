@@ -1,0 +1,103 @@
+---
+// The logo's leaves along a stem: x, y, angle, scale. The points sit on the stem's curve, so keep them in step with `d`.
+const leaves = [
+	[55.8, 43.8, -42, 0.8],
+	[77.2, 43.1, 32, 0.76],
+	[111.1, 41.2, -44, 0.7],
+	[131.5, 39.5, 29, 0.66],
+	[163.9, 35.7, -46, 0.58],
+	[183.6, 32.7, 22, 0.54],
+	[212.7, 27.2, -48, 0.46],
+	[229.6, 23.2, 16, 0.42],
+	[256, 16, -17, 0.42],
+];
+---
+
+<div class="wrap wrap-wide branch" aria-hidden="true">
+	<span class="rule"></span>
+	<svg viewBox="0 0 256 64" width="256" height="64" fill="none">
+		<path class="stem" pathLength="1" d="M0 44.5C96 44.5 176 40 256 16" />
+		{leaves.map(([x, y, angle, scale], i) => (
+			<g transform={`translate(${x} ${y}) rotate(${angle}) scale(${scale})`}>
+				<g class="leaf" style={`--i: ${i}`}>
+					<path fill="var(--gold-light)" d="M0 0C9-5.5 24-6.5 36 0 24 1 10 1 0 0Z" />
+					<path fill="var(--gold-deep)" d="M0 0C10 1 24 1 36 0 24 3.6 9 3.6 0 0Z" />
+				</g>
+			</g>
+		))}
+	</svg>
+</div>
+
+<script>
+	// Waits until the branch is on screen. Without this script it just grows on load, out of sight.
+	const branch = document.querySelector<HTMLElement>('.branch');
+	if (branch) {
+		branch.dataset.wait = '';
+		const observer = new IntersectionObserver(([entry]) => {
+			if (!entry.isIntersecting) return;
+			observer.disconnect();
+			delete branch.dataset.wait;
+		});
+		observer.observe(branch);
+	}
+</script>
+
+<style>
+	.branch {
+		display: flex;
+		padding-block-start: 1.5rem;
+	}
+	/* Lines up with the start of the stem, at y = 44 in the SVG. */
+	.rule {
+		flex: 1;
+		height: 1px;
+		margin-block-start: 44px;
+		background: var(--gold);
+		mask: linear-gradient(to right, transparent, #000 40%);
+		transform-origin: left;
+	}
+	/* The last leaf reaches past the stem's tip, so the margin keeps it inside the column. */
+	svg {
+		flex: none;
+		margin-inline-end: 1rem;
+		overflow: visible;
+	}
+	.stem {
+		stroke: var(--gold);
+		stroke-dasharray: 1;
+	}
+
+	/* Screen only, so a paused animation can't print as an empty band. */
+	@media screen and (prefers-reduced-motion: no-preference) {
+		.rule {
+			animation: branch-rule 900ms cubic-bezier(0.5, 0, 0.9, 0.7) backwards;
+		}
+		.stem {
+			animation: branch-stem 900ms cubic-bezier(0.2, 0.6, 0.4, 1) 900ms backwards;
+		}
+		.leaf {
+			animation: branch-leaf 700ms cubic-bezier(0.2, 0.7, 0.3, 1) calc(1000ms + var(--i) * 90ms) backwards;
+		}
+		.branch[data-wait] :is(.rule, .stem, .leaf) {
+			animation-play-state: paused;
+		}
+	}
+
+	@keyframes branch-rule {
+		from {
+			transform: scaleX(0);
+		}
+	}
+	@keyframes branch-stem {
+		from {
+			stroke-dashoffset: 1;
+		}
+	}
+	@keyframes branch-leaf {
+		from {
+			opacity: 0;
+			rotate: 24deg;
+			scale: 0;
+		}
+	}
+</style>

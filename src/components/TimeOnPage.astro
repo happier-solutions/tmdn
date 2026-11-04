@@ -1,0 +1,102 @@
+---
+const label = 'Bạn đã ở đây chưa đầy một phút';
+---
+
+<div class="time-on-page" role="img" aria-label={label} title={label}>
+	<span class="ring"><span class="count"></span></span>
+	<span class="unit">phút</span>
+</div>
+<script>
+	import { trackForegroundTime } from '../lib/foreground-time';
+
+	const root = document.querySelector<HTMLElement>('.time-on-page');
+	const count = root?.querySelector('.count');
+	const unit = root?.querySelector('.unit');
+	if (root && count && unit) {
+		const foregroundTime = trackForegroundTime();
+		let shown = 0;
+		const tick = () => {
+			if (document.hidden) return;
+			const seconds = foregroundTime() / 1000;
+			const minutes = Math.floor(seconds / 60);
+			root.style.setProperty('--turn', String((seconds % 60) / 60));
+			// Draws one minute and erases the next, so the arc never jumps back in the corner of the eye.
+			root.toggleAttribute('data-erasing', minutes % 2 === 1);
+			if (minutes === shown) return;
+			shown = minutes;
+			const [value, name] = minutes < 60 ? [minutes, 'phút'] : [Math.floor(minutes / 60), 'giờ'];
+			const label = `Bạn đã ở đây ${value} ${name}`;
+			count.textContent = String(value);
+			unit.textContent = name;
+			root.ariaLabel = label;
+			root.title = label;
+			root.toggleAttribute('data-counting', true);
+		};
+		tick();
+		setInterval(tick, 1000);
+	}
+</script>
+<style>
+	.time-on-page {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--gray);
+		font-size: 0.875rem;
+		line-height: 1.25;
+	}
+	.ring {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		color: var(--gray-dark);
+		font-variant-numeric: tabular-nums;
+	}
+	/* A 1px ring at any size, so it matches the borders of the buttons above it. */
+	.ring::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		border-radius: 50%;
+		background: var(--gray-light);
+		mask: radial-gradient(farthest-side, transparent calc(100% - 1px), #000 calc(100% - 0.5px));
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.ring::before {
+			background: conic-gradient(var(--gold) calc(var(--turn, 0) * 1turn), var(--gray-light) 0);
+		}
+		[data-erasing] .ring::before {
+			background: conic-gradient(var(--gray-light) calc(var(--turn, 0) * 1turn), var(--gold) 0);
+		}
+	}
+	/* The first minute is the ring alone: "0 phút" says nothing. The unit keeps its space until then. */
+	.count,
+	.unit {
+		opacity: 0;
+		transition: opacity 400ms ease-out;
+	}
+	[data-counting] .count,
+	[data-counting] .unit {
+		opacity: 1;
+	}
+	/* The rail beside the post, from the same width as the grid in PostLayout. */
+	@media (min-width: 64rem) {
+		.time-on-page {
+			flex-direction: column;
+			gap: 0.25rem;
+			width: 2.25rem;
+			white-space: nowrap;
+		}
+		.ring {
+			width: 2.25rem;
+			height: 2.25rem;
+		}
+	}
+	@media (scripting: none), print {
+		.time-on-page {
+			display: none;
+		}
+	}
+</style>

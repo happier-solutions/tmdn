@@ -29,6 +29,8 @@ export const CATEGORIES = [
 	},
 ] as const;
 
+export type CategorySlug = (typeof CATEGORIES)[number]['slug'];
+
 export const TAGS = [
 	{ slug: 'ra-quyet-dinh', label: 'Ra quyết định' },
 	{ slug: 'xay-doi-ngu', label: 'Xây đội ngũ' },

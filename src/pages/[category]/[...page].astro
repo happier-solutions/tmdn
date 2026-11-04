@@ -7,17 +7,19 @@ import { getPublishedPosts, type Post } from '../../lib/posts';
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const posts = await getPublishedPosts();
-	return CATEGORIES.flatMap((category) =>
-		paginate(
-			posts.filter((post) => post.data.category === category.slug),
-			{ params: { category: category.slug }, props: { category }, pageSize: PAGE_SIZE },
-		),
-	);
+	return CATEGORIES.flatMap((category) => {
+		const inCategory = posts.filter((post) => post.data.category === category.slug);
+		return paginate(inCategory, {
+			params: { category: category.slug },
+			props: { category, newest: inCategory[0]?.data.pubDate },
+			pageSize: PAGE_SIZE,
+		});
+	});
 }) satisfies GetStaticPaths;
 
-type Props = { page: Page<Post>; category: (typeof CATEGORIES)[number] };
+type Props = { page: Page<Post>; category: (typeof CATEGORIES)[number]; newest?: Date };
 
-const { page, category } = Astro.props;
+const { page, category, newest } = Astro.props;
 ---
 
-<ListLayout title={category.label} description={category.description} {page} />
+<ListLayout title={category.label} description={category.description} category={category.slug} {newest} {page} />

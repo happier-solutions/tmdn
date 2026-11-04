@@ -1,9 +1,10 @@
 ---
-import CategoryIcon from '../components/CategoryIcon.astro';
+import Feedback from '../components/Feedback.astro';
+import HomeCategories from '../components/HomeCategories.astro';
 import HomeStats from '../components/HomeStats.astro';
 import PostCard from '../components/PostCard.astro';
+import VisitThanks from '../components/VisitThanks.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
-import { CATEGORIES } from '../data/taxonomy';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts } from '../lib/posts';
 
@@ -12,8 +13,6 @@ const HOME_POSTS = 7;
 
 const posts = await getPublishedPosts();
 const latest = posts.slice(0, HOME_POSTS);
-
-const countOf = (slug: string) => posts.filter((post) => post.data.category === slug).length;
 ---
 
 <BaseLayout description={SITE_DESCRIPTION} wide>
@@ -63,19 +62,7 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 				<h2 id="categories-heading">Danh mục</h2>
 				<p>Năm chặng, từ điều tôi thấy đến điều tôi rút ra được.</p>
 			</div>
-			<div class="ruled categories">
-				{CATEGORIES.map(({ slug, label, description }) => {
-					const count = countOf(slug);
-					return (
-						<div class="cell linked">
-							<CategoryIcon {slug} />
-							<h3><a href={`/${slug}/`}>{label}</a></h3>
-							<p>{description}</p>
-							<p class="count">{count ? `${count} bài` : 'Chưa có bài'}</p>
-						</div>
-					);
-				})}
-			</div>
+			<HomeCategories {posts} />
 		</section>
 
 		{posts.length > 0 && (
@@ -87,6 +74,16 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 				<HomeStats {posts} />
 			</section>
 		)}
+
+		<section aria-labelledby="feedback-heading">
+			<VisitThanks>
+				<div class="head">
+					<h2 id="feedback-heading">Đánh giá và góp ý</h2>
+					<p>Chỗ nào chưa ổn, mong bạn nói thẳng.</p>
+				</div>
+				<Feedback />
+			</VisitThanks>
+		</section>
 	</div>
 </BaseLayout>
 <style>
@@ -98,10 +95,6 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 	h2 {
 		margin: 0;
 		font-size: 2rem;
-	}
-	h3 {
-		margin: 0;
-		font-size: 1.25rem;
 	}
 	p {
 		margin: 0;
@@ -116,8 +109,7 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 		margin-bottom: 1.25rem;
 		font-size: 1rem;
 	}
-	.head p,
-	.linked p {
+	.head p {
 		color: var(--gray);
 		font-size: 1rem;
 	}
@@ -169,45 +161,9 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 		font-size: 1rem;
 	}
 
-	/* Cards wrap by themselves: five in a row at full width, and the last row stretches, so no cell is empty. */
-	.categories {
-		display: flex;
-		flex-wrap: wrap;
-	}
-	.categories .cell {
-		--px: 1.5rem;
-		flex: 1 1 10rem;
-	}
-	.linked {
-		position: relative;
-		display: flex;
-		flex-direction: column;
-		gap: 0.5rem;
-	}
-	/* The whole cell is the link, and it keeps the link's hover rule and sprig. */
-	.linked a::before {
-		content: '';
-		position: absolute;
-		inset: 0;
-	}
-	.linked:has(a:hover) {
-		background: var(--gray-light);
-	}
-	.linked:has(a:focus-visible) a {
-		outline: none;
-	}
-	.linked:has(a:focus-visible) {
-		outline: 2px solid var(--accent);
-		outline-offset: -3px;
-	}
 	.linked .all {
 		font-family: var(--font-heading);
 		font-size: 1.25rem;
-	}
-	.linked .count {
-		margin-top: auto;
-		padding-top: 1rem;
-		font-size: 0.875rem;
 	}
 
 	@media (min-width: 40rem) {

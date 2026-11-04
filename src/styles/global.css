@@ -151,12 +151,3 @@ hr {
 	top: 0.5rem;
 	color: var(--on-ink);
 }
-
-.post-list {
-	margin: 0;
-	padding: 0;
-	list-style: none;
-}
-.post-list > li + li {
-	margin-top: 2.5rem;
-}

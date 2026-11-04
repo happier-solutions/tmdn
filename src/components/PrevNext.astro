@@ -1,5 +1,6 @@
 ---
-import { type Post, postUrl } from '../lib/posts';
+import type { Post } from '../lib/posts';
+import PostTile from './PostTile.astro';
 
 interface Props {
 	newer?: Post;
@@ -10,39 +11,42 @@ const { newer, older } = Astro.props;
 ---
 
 {(newer || older) && (
-	<nav aria-label="Bài trước và bài sau">
-		{older && (
-			<a class="older" href={postUrl(older)} rel="prev">
-				<span class="label">Bài trước</span>
-				<span class="link-line">{older.data.title}</span>
-			</a>
+	<nav aria-labelledby="prev-next-heading">
+		<h2 id="prev-next-heading" class="sr-only">Bài trước và bài sau</h2>
+		{older ? (
+			<div class="cell"><PostTile post={older} label="← Bài trước" rel="prev" alignDate /></div>
+		) : (
+			<p class="cell note">Đây là bài đầu tiên.</p>
 		)}
-		{newer && (
-			<a class="newer" href={postUrl(newer)} rel="next">
-				<span class="label">Bài sau</span>
-				<span class="link-line">{newer.data.title}</span>
-			</a>
+		{newer ? (
+			<div class="cell"><PostTile post={newer} label="Bài sau →" rel="next" alignDate /></div>
+		) : (
+			<p class="cell note">Đây là bài mới nhất.</p>
 		)}
 	</nav>
 )}
 <style>
 	nav {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
-		gap: 1rem 2rem;
+		gap: 1.5rem;
 		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--gold);
 	}
-	a {
-		font-size: 1rem;
-		line-height: 1.4;
-	}
-	.newer {
-		grid-column: -2 / -1;
-		text-align: right;
-	}
-	.label {
-		display: block;
+	/* The end of the list has nowhere to go, so a phone's single column drops the note. */
+	.note {
+		display: none;
+		margin: 0;
 		color: var(--gray);
-		font-size: 0.875rem;
+		font-size: 1rem;
+	}
+	@media (min-width: 40rem) {
+		nav {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 3rem;
+		}
+		.note {
+			display: block;
+		}
 	}
 </style>

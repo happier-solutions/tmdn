@@ -4,12 +4,14 @@ import { PAGE_SIZE } from '../../consts';
 import ListLayout from '../../layouts/ListLayout.astro';
 import { getPublishedPosts, type Post } from '../../lib/posts';
 
-export const getStaticPaths = (async ({ paginate }) =>
-	paginate(await getPublishedPosts(), { pageSize: PAGE_SIZE })) satisfies GetStaticPaths;
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getPublishedPosts();
+	return paginate(posts, { pageSize: PAGE_SIZE, props: { newest: posts[0]?.data.pubDate } });
+}) satisfies GetStaticPaths;
 
-type Props = { page: Page<Post> };
+type Props = { page: Page<Post>; newest?: Date };
 
-const { page } = Astro.props;
+const { page, newest } = Astro.props;
 ---
 
-<ListLayout title="Tất cả bài viết" description="Mọi ghi chép trên hành trình học, mới nhất trước." {page} />
+<ListLayout title="Tất cả bài viết" description="Mọi ghi chép trên hành trình học, mới nhất trước." {newest} {page} />

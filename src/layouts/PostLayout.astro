@@ -1,10 +1,13 @@
 ---
 import type { MarkdownHeading } from 'astro';
 import { getImage, Image } from 'astro:assets';
+import AuthorBio from '../components/AuthorBio.astro';
+import PostFeedback from '../components/PostFeedback.astro';
 import PostMeta from '../components/PostMeta.astro';
 import PrevNext from '../components/PrevNext.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
 import ShareLinks from '../components/ShareLinks.astro';
+import TimeOnPage from '../components/TimeOnPage.astro';
 import Toc from '../components/Toc.astro';
 import UpdateNote from '../components/UpdateNote.astro';
 import { labelOf, TAGS } from '../data/taxonomy';
@@ -57,13 +60,18 @@ const hasToc = tocHeadings.length >= 3;
 				</ul>
 			)}
 		</article>
-		<ShareLinks {title} />
+		<div class="post-rail">
+			<ShareLinks {title} />
+			<TimeOnPage />
+		</div>
 		{hasToc && (
 			<aside class="toc-rail">
 				<p class="toc-title">Mục lục</p>
 				<Toc headings={tocHeadings} />
 			</aside>
 		)}
+		<PostFeedback {title} />
+		<AuthorBio />
 		<RelatedPosts posts={related} />
 		<PrevNext {newer} {older} />
 	</div>
@@ -96,6 +104,13 @@ const hasToc = tocHeadings.length >= 3;
 		padding: 0;
 		list-style: none;
 		font-size: 0.875rem;
+	}
+	.post-rail {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.5rem;
+		margin-top: 2.5rem;
 	}
 	.toc-inline {
 		margin-bottom: 2rem;
@@ -136,8 +151,17 @@ const hasToc = tocHeadings.length >= 3;
 		.post-grid > :global(*) {
 			grid-column: 2;
 		}
-		.post-grid > :global(.share) {
+		.post-grid > .post-rail {
+			position: sticky;
+			top: 6rem;
 			grid-area: 1 / 1;
+			flex-direction: column;
+			align-items: flex-end;
+			justify-content: flex-start;
+			gap: 1rem;
+			align-self: start;
+			justify-self: end;
+			margin-top: 0;
 		}
 		.post-grid > article {
 			grid-row: 1;

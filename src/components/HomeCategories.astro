@@ -1,0 +1,192 @@
+---
+import { CATEGORIES } from '../data/taxonomy';
+import type { Post } from '../lib/posts';
+import CategoryIcon from './CategoryIcon.astro';
+
+interface Props {
+	posts: Post[];
+}
+
+const { posts } = Astro.props;
+
+// One tip per category, clockwise from the top, on a circle of radius 100.
+const TIPS = [
+	[0, -100],
+	[95.1, -30.9],
+	[58.8, 80.9],
+	[-58.8, 80.9],
+	[-95.1, -30.9],
+];
+// Joining every second tip draws the star in one line.
+const starPath = `M${[0, 2, 4, 1, 3].map((tip) => TIPS[tip].join(' ')).join('L')}Z`;
+
+const sideOf = (x: number) => (x === 0 ? 'top' : x > 0 ? 'right' : 'left');
+const countOf = (slug: string) => posts.filter((post) => post.data.category === slug).length;
+---
+
+<div class="ruled categories">
+	<div class="cell star" aria-hidden="true">
+		<svg viewBox="-110 -114 220 209">
+			<path d={starPath} />
+			<g class="numbers">
+				{TIPS.map(([x, y], index) => (
+					<>
+						<circle cx={x} cy={y} r="13" />
+						<text {x} {y}>{index + 1}</text>
+					</>
+				))}
+			</g>
+		</svg>
+	</div>
+	{CATEGORIES.map(({ slug, label, description }, index) => {
+		const [x, y] = TIPS[index];
+		const count = countOf(slug);
+		return (
+			<div class:list={['cell linked tip', sideOf(x)]} style={`--x: ${x / 100}; --y: ${y / 100}`}>
+				<CategoryIcon {slug} />
+				<div class="copy">
+					<h3><a href={`/${slug}/`}>{label}</a></h3>
+					<p>{description}</p>
+					<p class="count">Chặng {index + 1} · {count ? `${count} bài` : 'Chưa có bài'}</p>
+				</div>
+			</div>
+		);
+	})}
+</div>
+<style>
+	.categories {
+		/* The home page's focal point. Always dark, so tokens resolve to their dark values here, as in the footer. */
+		color-scheme: dark;
+		display: flex;
+		flex-wrap: wrap;
+		background: var(--ink);
+	}
+	h3 {
+		margin: 0;
+		font-size: 1.25rem;
+	}
+	p {
+		margin: 0;
+	}
+	path,
+	circle {
+		fill: var(--ink);
+		stroke: var(--gold);
+		stroke-width: 1px;
+		vector-effect: non-scaling-stroke;
+	}
+	path {
+		fill: none;
+	}
+	text {
+		fill: var(--accent);
+		font-size: 14px;
+		text-anchor: middle;
+		dominant-baseline: central;
+	}
+
+	/* Too narrow for text beside the star: a small star above, numbered to match the cells. */
+	.cell {
+		--px: 1.5rem;
+		flex: 1 1 10rem;
+	}
+	.star {
+		flex-basis: 100%;
+	}
+	.star svg {
+		display: block;
+		width: min(14rem, 100%);
+		margin-inline: auto;
+	}
+	.copy {
+		display: flex;
+		flex: 1;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+
+	/* Each icon sits on its tip, with the text outward from the star. Tips are at --x and --y radii from the center. */
+	@media (min-width: 64rem) {
+		.categories {
+			--r: 12rem;
+			--center: 25rem;
+			--disc-half: 1.6875rem;
+			position: relative;
+			display: block;
+			height: 41rem;
+		}
+		.star,
+		.tip {
+			position: absolute;
+			margin: 0;
+			padding: 0;
+			border: 0;
+		}
+		/* The viewBox starts 114 above the center and is 220 wide, on a radius of 100. */
+		.star {
+			top: calc(var(--center) - 1.14 * var(--r));
+			left: 50%;
+			width: calc(2.2 * var(--r));
+			translate: -50% 0;
+		}
+		.star svg {
+			width: 100%;
+		}
+		.numbers {
+			display: none;
+		}
+		.tip {
+			top: calc(var(--center) + var(--y) * var(--r));
+			flex-direction: row;
+			gap: 1rem;
+			align-items: center;
+			translate: 0 -50%;
+		}
+		.tip > :global(svg) {
+			box-sizing: content-box;
+			width: 2.25rem;
+			height: 2.25rem;
+			padding: 0.5rem;
+			border: 1px solid var(--gold);
+			border-radius: 50%;
+			background: var(--ink);
+		}
+		.copy {
+			flex: 0 1 18rem;
+		}
+		.right {
+			right: 2rem;
+			left: calc(50% + var(--x) * var(--r) - var(--disc-half));
+		}
+		.left {
+			right: calc(50% - var(--x) * var(--r) - var(--disc-half));
+			left: 2rem;
+			flex-direction: row-reverse;
+			text-align: end;
+		}
+		.top {
+			top: calc(var(--center) - var(--r) + var(--disc-half));
+			left: 50%;
+			width: 26rem;
+			flex-direction: column-reverse;
+			text-align: center;
+			translate: -50% -100%;
+		}
+		.top .copy {
+			flex: none;
+		}
+		.tip .count {
+			padding-top: 0.25rem;
+		}
+		/* A filled rectangle would cover the star's lines, so the disc takes the hover. */
+		.categories .tip:has(a:hover) {
+			background: none;
+		}
+		.tip:has(a:hover) > :global(svg) {
+			background: var(--gray-light);
+		}
+		.categories .tip:has(a:focus-visible) {
+			outline-offset: 0.5rem;
+		}
+	}
+</style>

@@ -1,7 +1,11 @@
 ---
 import type { Page } from 'astro';
+import CategoryIcon from '../components/CategoryIcon.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import Pagination from '../components/Pagination.astro';
-import PostCard from '../components/PostCard.astro';
+import PostRow from '../components/PostRow.astro';
+import StageNav from '../components/StageNav.astro';
+import { CATEGORIES, type CategorySlug } from '../data/taxonomy';
 import type { Post } from '../lib/posts';
 import BaseLayout from './BaseLayout.astro';
 
@@ -9,29 +13,158 @@ interface Props {
 	title: string;
 	description: string;
 	page: Page<Post>;
+	/** Date of the newest post in the whole list, not just this page. */
+	newest?: Date;
+	/** Shows the page as one stage of the journey: its icon, its number and links to its neighbours. */
+	category?: CategorySlug;
 }
 
-const { title, description, page } = Astro.props;
+const { title, description, page, newest, category } = Astro.props;
 const pageTitle = page.currentPage > 1 ? `${title} (trang ${page.currentPage})` : title;
+const stage = CATEGORIES.findIndex(({ slug }) => slug === category) + 1;
+const isFirstPage = page.currentPage === 1;
 ---
 
-<BaseLayout title={pageTitle} {description}>
-	<header class="list-header">
-		<h1>{title}</h1>
-		<p>{description}</p>
-	</header>
-	{page.data.length === 0 && <p>Chưa có bài viết.</p>}
-	<ul class="post-list">
-		{page.data.map((post) => <li><PostCard {post} /></li>)}
-	</ul>
+<BaseLayout title={pageTitle} {description} wide>
+	<div class="ruled intro">
+		<header class="cell">
+			{category && <CategoryIcon slug={category} size={64} />}
+			<div>
+				{category && <p class="stage">Chặng {stage}/{CATEGORIES.length}</p>}
+				<h1>{title}</h1>
+				<p class="description">{description}</p>
+			</div>
+		</header>
+		<dl class="cell facts">
+			<div>
+				<dt>Số bài</dt>
+				<dd>{page.total}</dd>
+			</div>
+			{newest && (
+				<div>
+					<dt>Mới nhất</dt>
+					<dd><FormattedDate date={newest} /></dd>
+				</div>
+			)}
+		</dl>
+	</div>
+	{page.data.length ? (
+		<ul class="ruled posts">
+			{page.data.map((post, index) => {
+				const featured = isFirstPage && index === 0;
+				return (
+					<li class:list={['cell', { featured }]}>
+						<PostRow {post} {featured} showCategory={!category} />
+					</li>
+				);
+			})}
+		</ul>
+	) : (
+		<div class="ruled">
+			<div class="cell"><p class="empty">Chưa có bài viết.</p></div>
+		</div>
+	)}
 	<Pagination {page} />
+	{category && <StageNav slug={category} />}
 </BaseLayout>
 <style>
-	.list-header {
-		margin-bottom: 2.5rem;
+	/* The two frames read as one, sharing the rule between them. */
+	.ruled + .ruled {
+		margin-top: -1px;
 	}
-	.list-header p {
+	/* Each cell closes its own right and bottom edges, so a short last row still reads as cells.
+	   The frame draws those two edges on the same pixels, behind the cells, to enclose the empty space. */
+	.intro,
+	.posts {
+		border-width: 1px 0 0 1px;
+		box-shadow: inset -1px -1px var(--gold);
+	}
+	.intro .cell,
+	.posts .cell {
+		border: 1px solid var(--gold);
+	}
+	.intro header {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.stage {
+		margin: 0 0 0.25rem;
+		color: var(--accent);
+		font-size: 0.875rem;
+	}
+	.description {
+		max-width: 38rem;
 		margin: 0;
 		color: var(--gray);
+		text-wrap: pretty;
+	}
+
+	.facts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem 2rem;
+		font-size: 0.875rem;
+	}
+	.facts dt {
+		color: var(--gray);
+	}
+	.facts dd {
+		margin: 0;
+		color: var(--black);
+		font-size: 1rem;
+	}
+
+	.posts {
+		grid-template-columns: minmax(0, 1fr);
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	/* The post draws its own padding, so its image can sit flush with the rules.
+	   Positioned, so each cell's rules paint over the image of the post before it. */
+	.posts .cell {
+		position: relative;
+		padding: 0;
+	}
+	.posts .featured {
+		grid-column: 1 / -1;
+	}
+	.empty {
+		margin: 0;
+	}
+
+	@media (min-width: 40rem) {
+		.intro {
+			grid-template-columns: minmax(0, 1fr) 14rem;
+		}
+		.posts {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+		.intro .cell,
+		.posts .cell {
+			--px: 1.5rem;
+		}
+		.posts .cell {
+			--py: 1.5rem;
+		}
+		.intro header {
+			flex-direction: row;
+			gap: 1.5rem;
+		}
+		.facts {
+			flex-direction: column;
+			flex-wrap: nowrap;
+			justify-content: end;
+		}
+	}
+	@media (min-width: 64rem) {
+		/* The facts cell takes the last of the three post columns, so the rule runs on through the list. */
+		.intro {
+			grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+		}
+		.posts {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
 	}
 </style>

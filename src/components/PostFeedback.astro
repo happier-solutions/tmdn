@@ -1,0 +1,201 @@
+---
+import { CONTACT_EMAIL } from '../consts';
+import StarRating from './StarRating.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+const url = new URL(Astro.url.pathname, Astro.site).href;
+const subject = encodeURIComponent(`Đánh giá bài viết: ${title}`);
+---
+
+<!-- Without JS the browser still opens the mail app, with the post's title as the subject. -->
+<form
+	class="post-feedback"
+	method="post"
+	enctype="text/plain"
+	action={`mailto:${CONTACT_EMAIL}?subject=${subject}`}
+	data-url={url}
+>
+	<fieldset>
+		<legend>Bạn thấy bài viết này thế nào?</legend>
+		<StarRating small />
+	</fieldset>
+	<!-- Shown once a star is chosen, so the button can't be pressed without a rating. -->
+	<div class="more">
+		<label for="post-feedback-message">
+			<!-- The question follows the rating: what was missing, or what helped. -->
+			<span class="ask-low">Bài viết còn thiếu điều gì?</span>
+			<span class="ask-high">Phần nào có ích nhất với bạn?</span>{' '}
+			<span class="optional">(không bắt buộc)</span>
+		</label>
+		<textarea
+			id="post-feedback-message"
+			name="message"
+			rows="3"
+			maxlength="300"
+			aria-describedby="post-feedback-hint"></textarea>
+		<div class="actions">
+			<p id="post-feedback-hint" class="note">Tối đa 300 ký tự. Bấm gửi sẽ mở ứng dụng thư của bạn.</p>
+			<button type="submit">Gửi đánh giá</button>
+		</div>
+		<!-- Stays in the page while empty, so screen readers announce what appears in it. -->
+		<div role="status">
+			<p class="message" hidden>
+				Thư đã soạn sẵn, bạn chỉ cần bấm gửi. Không thấy ứng dụng thư mở ra?
+				Gửi đến <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
+			</p>
+		</div>
+	</div>
+</form>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('.post-feedback');
+
+	form?.addEventListener('submit', (event) => {
+		event.preventDefault();
+		const data = new FormData(form);
+		const message = String(data.get('message')).trim().replace(/\n/g, '\r\n');
+		const lines = ['Xin chào,', '', `Bài viết: ${form.dataset.url}`, `Đánh giá: ${data.get('rating')}/5 sao`];
+		if (message) lines.push('', 'Góp ý:', message);
+		location.href = `${form.action}&body=${encodeURIComponent(lines.join('\r\n'))}`;
+		// A missing mail app fails silently, so always show the address to write to.
+		form.querySelector<HTMLElement>('.message')?.removeAttribute('hidden');
+	});
+</script>
+
+<style>
+	form {
+		margin-top: 3rem;
+		font-size: 0.875rem;
+	}
+	p {
+		margin: 0;
+	}
+	fieldset {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 1rem;
+		align-items: center;
+		min-width: 0;
+		margin: 0;
+		padding: 0;
+		border: 0;
+	}
+	/* Floating it makes the legend an ordinary flex item, so it sits in a row with the stars. */
+	legend {
+		float: left;
+		padding: 0;
+		color: var(--gray-dark);
+		font-size: 1rem;
+	}
+
+	.more {
+		display: none;
+	}
+	form:has(input:checked) .more {
+		display: flow-root;
+	}
+	/* Radios can't be unchecked, so the block only ever enters. */
+	@media (prefers-reduced-motion: no-preference) {
+		.more {
+			transition: opacity 240ms ease-out, translate 240ms ease-out;
+		}
+		@starting-style {
+			form:has(input:checked) .more {
+				opacity: 0;
+				translate: 0 -0.25rem;
+			}
+		}
+		/* Elsewhere the post's end just moves down at once. The margin keeps focus outlines visible. */
+		@supports (interpolate-size: allow-keywords) {
+			.more {
+				interpolate-size: allow-keywords;
+				overflow: clip;
+				overflow-clip-margin: 0.25rem;
+				transition-property: opacity, translate, block-size;
+			}
+			@starting-style {
+				form:has(input:checked) .more {
+					block-size: 0;
+				}
+			}
+		}
+	}
+	label[for] {
+		display: block;
+		margin-block: 0.5rem;
+		color: var(--gray-dark);
+	}
+	.ask-high,
+	form:has(:is(input[value='4'], input[value='5']):checked) .ask-low {
+		display: none;
+	}
+	form:has(:is(input[value='4'], input[value='5']):checked) .ask-high {
+		display: inline;
+	}
+	.optional,
+	.note {
+		color: var(--gray);
+	}
+	textarea {
+		display: block;
+		box-sizing: border-box;
+		width: 100%;
+		/* Grows with the text where supported, and `rows` holds the size elsewhere. */
+		field-sizing: content;
+		min-block-size: 4lh;
+		max-block-size: 12lh;
+		padding: 0.75rem;
+		border: 1px solid var(--gray);
+		border-radius: 0;
+		background: transparent;
+		color: var(--gray-dark);
+		font: inherit;
+		/* Below 1rem iOS zooms in on focus. */
+		font-size: 1rem;
+		resize: vertical;
+	}
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem 1.5rem;
+		align-items: center;
+		justify-content: space-between;
+		margin-top: 0.75rem;
+	}
+	.note {
+		flex: 1 1 16rem;
+	}
+	button {
+		min-height: 3rem;
+		padding-inline: 1.25rem;
+		border: 0;
+		border-radius: 0;
+		background: var(--accent);
+		color: var(--paper);
+		font: inherit;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	button:hover {
+		background: var(--accent-dark);
+	}
+	:is(textarea, button):focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.message {
+		margin-top: 0.75rem;
+		padding-inline-start: 0.5rem;
+		border-inline-start: 3px solid var(--gold);
+		color: var(--gray-dark);
+	}
+	@media print {
+		form {
+			display: none;
+		}
+	}
+</style>

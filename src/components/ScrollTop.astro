@@ -1,0 +1,99 @@
+---
+const label = 'Lên đầu trang';
+---
+
+<div class="scroll-top-sentinel"></div>
+<button class="scroll-top" type="button" aria-label={label} title={label}>
+	<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+		<path d="M12 19V5 M6 11l6-6 6 6" />
+	</svg>
+</button>
+<script>
+	const sentinel = document.querySelector('.scroll-top-sentinel');
+	const button = document.querySelector<HTMLElement>('.scroll-top');
+	if (sentinel && button) {
+		// Once the sentinel has left the viewport. scroll-state queries can't set a distance.
+		new IntersectionObserver((entries) => {
+			button.toggleAttribute('data-shown', !entries[entries.length - 1].isIntersecting);
+		}).observe(sentinel);
+		button.addEventListener('click', () => {
+			const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+			scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+			// The button is about to hide, so a keyboard reader carries on from the top of the page.
+			document.querySelector<HTMLElement>('.brand')?.focus({ preventScroll: true });
+		});
+	}
+</script>
+<style>
+	/* The scroll distance before the button shows: fixed, so tall screens and short pages still reach it.
+	   Its containing block is the page, as body isn't positioned. */
+	.scroll-top-sentinel {
+		position: absolute;
+		top: 0;
+		width: 0;
+		height: 12.5rem;
+	}
+	.scroll-top {
+		position: fixed;
+		right: 1rem;
+		bottom: 1.5rem;
+		z-index: 1;
+		display: grid;
+		place-items: center;
+		box-sizing: border-box;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: 1px solid var(--gold);
+		border-radius: 50%;
+		background: var(--paper);
+		color: var(--gray-dark);
+		cursor: pointer;
+		visibility: hidden;
+		opacity: 0;
+		translate: 0 0.5rem;
+		transition:
+			opacity 220ms ease-out,
+			translate 220ms ease-out,
+			visibility 220ms;
+	}
+	.scroll-top[data-shown] {
+		visibility: visible;
+		opacity: 1;
+		translate: 0;
+	}
+	@media (hover: hover) {
+		.scroll-top:hover {
+			border-color: var(--accent);
+			color: var(--accent);
+		}
+	}
+	.scroll-top:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	svg {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 2;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.scroll-top {
+			translate: 0;
+		}
+	}
+	/* Same width as the rail in PostLayout and the smaller ShareLinks buttons. */
+	@media (min-width: 64rem) {
+		.scroll-top {
+			width: 2.25rem;
+			height: 2.25rem;
+		}
+	}
+	@media print {
+		.scroll-top {
+			display: none;
+		}
+	}
+</style>

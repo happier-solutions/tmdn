@@ -6,15 +6,16 @@ import { getPublishedPosts, getRelatedPosts, type Post } from '../../lib/posts';
 
 export const getStaticPaths = (async () => {
 	const posts = await getPublishedPosts();
-	return posts.map((post, index) => ({
-		params: { category: post.data.category, slug: post.id },
-		props: {
-			post,
-			related: getRelatedPosts(post, posts),
-			newer: posts[index - 1],
-			older: posts[index + 1],
-		},
-	}));
+	return posts.map((post, index) => {
+		const newer = posts[index - 1];
+		const older = posts[index + 1];
+		// These two already show in `PrevNext`, so related posts don't repeat them.
+		const candidates = posts.filter((other) => other !== newer && other !== older);
+		return {
+			params: { category: post.data.category, slug: post.id },
+			props: { post, related: getRelatedPosts(post, candidates), newer, older },
+		};
+	});
 }) satisfies GetStaticPaths;
 
 type Props = { post: Post; related: Post[]; newer?: Post; older?: Post };

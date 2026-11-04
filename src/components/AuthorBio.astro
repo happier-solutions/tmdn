@@ -1,0 +1,61 @@
+---
+import { AUTHOR_BIO, SITE_TITLE } from '../consts';
+---
+
+<section aria-labelledby="author-heading">
+	<img src="/logo.svg" alt="" width="64" height="64" loading="lazy" />
+	<div>
+		<p class="label">Tác giả</p>
+		<h2 id="author-heading">{SITE_TITLE}</h2>
+	</div>
+	<div class="about">
+		<p class="bio">{AUTHOR_BIO}</p>
+		<p class="more"><a href="/gioi-thieu/" rel="author">Đọc thêm về tôi</a></p>
+	</div>
+</section>
+<style>
+	/* The bio takes the full width on a phone, where the logo's column would squeeze it. */
+	section {
+		margin-top: 3rem;
+		display: grid;
+		grid-template-columns: 4rem minmax(0, 1fr);
+		gap: 1rem;
+		align-items: center;
+	}
+	.about {
+		grid-column: 1 / -1;
+	}
+	img {
+		display: block;
+	}
+	p {
+		margin: 0;
+		font-size: 0.875rem;
+	}
+	.label {
+		color: var(--gray);
+	}
+	h2 {
+		margin: 0.25rem 0 0;
+		font-size: 1.25rem;
+	}
+	.bio {
+		font-size: 1rem;
+	}
+	.more {
+		margin-top: 0.75rem;
+	}
+	@media (min-width: 40rem) {
+		section {
+			column-gap: 1.5rem;
+			row-gap: 0.5rem;
+		}
+		img {
+			grid-row: 1 / span 2;
+			align-self: start;
+		}
+		.about {
+			grid-column: 2;
+		}
+	}
+</style>

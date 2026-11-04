@@ -7,17 +7,19 @@ import { getPublishedPosts, type Post } from '../../../lib/posts';
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const posts = await getPublishedPosts();
-	return TAGS.flatMap((tag) =>
-		paginate(
-			posts.filter((post) => (post.data.tags as string[]).includes(tag.slug)),
-			{ params: { tag: tag.slug }, props: { tag }, pageSize: PAGE_SIZE },
-		),
-	);
+	return TAGS.flatMap((tag) => {
+		const tagged = posts.filter((post) => (post.data.tags as string[]).includes(tag.slug));
+		return paginate(tagged, {
+			params: { tag: tag.slug },
+			props: { tag, newest: tagged[0]?.data.pubDate },
+			pageSize: PAGE_SIZE,
+		});
+	});
 }) satisfies GetStaticPaths;
 
-type Props = { page: Page<Post>; tag: (typeof TAGS)[number] };
+type Props = { page: Page<Post>; tag: (typeof TAGS)[number]; newest?: Date };
 
-const { page, tag } = Astro.props;
+const { page, tag, newest } = Astro.props;
 ---
 
-<ListLayout title={tag.label} description={`Các bài viết về chủ đề ${tag.label.toLowerCase()}.`} {page} />
+<ListLayout title={tag.label} description={`Các bài viết về chủ đề ${tag.label.toLowerCase()}.`} {newest} {page} />

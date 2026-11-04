@@ -1,0 +1,86 @@
+---
+import { CATEGORIES, type CategorySlug } from '../data/taxonomy';
+import CategoryIcon from './CategoryIcon.astro';
+
+interface Props {
+	slug: CategorySlug;
+}
+
+const { slug } = Astro.props;
+const index = CATEGORIES.findIndex((category) => category.slug === slug);
+const previous = CATEGORIES[index - 1];
+const next = CATEGORIES[index + 1];
+---
+
+<nav class="ruled" aria-label="Các chặng của hành trình">
+	{previous ? (
+		<a class="cell" href={`/${previous.slug}/`} rel="prev">
+			<CategoryIcon slug={previous.slug} />
+			<span>
+				<span class="label">← Chặng trước</span>
+				<span class="link-line title">{previous.label}</span>
+			</span>
+		</a>
+	) : (
+		<p class="cell note">Đây là chặng đầu của hành trình.</p>
+	)}
+	{next ? (
+		<a class="cell next" href={`/${next.slug}/`} rel="next">
+			<CategoryIcon slug={next.slug} />
+			<span>
+				<span class="label">Chặng tiếp →</span>
+				<span class="link-line title">{next.label}</span>
+			</span>
+		</a>
+	) : (
+		<p class="cell note">Đây là chặng cuối của hành trình.</p>
+	)}
+</nav>
+<style>
+	nav {
+		margin-top: 3rem;
+	}
+	.cell {
+		display: flex;
+		gap: 1rem;
+		align-items: center;
+	}
+	a:hover {
+		background: var(--gray-light);
+	}
+	a:focus-visible {
+		outline-offset: -3px;
+	}
+	.label {
+		display: block;
+		color: var(--gray);
+		font-size: 0.875rem;
+	}
+	.title {
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+	}
+	/* The edge of the journey has nowhere to go, so a phone's single column drops the note. */
+	.note {
+		display: none;
+		margin-bottom: 0;
+		color: var(--gray);
+		font-size: 1rem;
+	}
+	@media (min-width: 40rem) {
+		nav {
+			grid-template-columns: 1fr 1fr;
+		}
+		.next {
+			flex-direction: row-reverse;
+			text-align: end;
+		}
+		.note {
+			display: flex;
+		}
+		.note:last-child {
+			justify-content: end;
+			text-align: end;
+		}
+	}
+</style>

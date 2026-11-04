@@ -4,10 +4,12 @@
 export const SITE_TITLE = 'Tư Mã Đại Nhân';
 export const SITE_DESCRIPTION = 'Hành trình ký: quan sát, suy ngẫm, trưởng thành.';
 
-export const PAGE_SIZE = 5;
+/** Shown under each post. The blog has one author, who writes under SITE_TITLE. */
+export const AUTHOR_BIO =
+	'Tôi đang quan sát môi trường điều hành doanh nghiệp, đặt câu hỏi và nghiên cứu bản chất để chuyển hóa thành bài học có ích cho người khác. Tôi viết để ghi lại quá trình đang học, không phải để chứng minh mình đã giỏi.';
 
-/**
- * POST URL of the signup form, from the email provider. The field is named `email`.
- * Empty: production shows an RSS link instead of the form, dev shows a form that sends nothing.
- */
-export const NEWSLETTER_ACTION: string = '';
+// The featured post and twelve more make full rows at one, two and three columns.
+export const PAGE_SIZE = 13;
+
+/** Receives signup requests and feedback, which the forms send through the reader's mail app. */
+export const CONTACT_EMAIL = 'lienhe@tumadainhan.com';

@@ -92,7 +92,6 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 0.5rem;
-		margin-top: 2.5rem;
 	}
 	a,
 	button {
@@ -179,14 +178,9 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 	/* The rail beside the post, from the same width as the grid in PostLayout. */
 	@media (min-width: 64rem) {
 		.share {
-			position: sticky;
-			top: 6rem;
 			flex-direction: column;
 			flex-wrap: nowrap;
 			align-items: flex-end;
-			align-self: start;
-			justify-self: end;
-			margin-top: 0;
 		}
 		a,
 		button {
