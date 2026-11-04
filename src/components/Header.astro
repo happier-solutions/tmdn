@@ -97,10 +97,15 @@ const ariaCurrent = (slug: string) => {
 		color: var(--gray-dark);
 		font-size: 0.875rem;
 	}
-	/* The sprig stays a hover detail; the current page keeps only color and rule. */
+	/* The current page is set apart by color alone; the rule and sprig stay hover details. */
 	.site-nav a[aria-current] {
-		--line: 1;
 		color: var(--accent);
+	}
+	/* Forced colors drop the link color, so the state needs another mark there. */
+	@media (forced-colors: active) {
+		.site-nav a[aria-current] .link-line {
+			text-decoration: underline;
+		}
 	}
 	/* Without popover support the links stay visible as a wrapped row. */
 	.menu-button {

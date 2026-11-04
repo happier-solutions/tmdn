@@ -9,16 +9,17 @@ interface Props {
 
 const { posts } = Astro.props;
 
-// One tip per category, clockwise from the top, on a circle of radius 100.
+// One tip per category, on a circle of radius 100, in the order one line draws the star: each tip is two along from the last.
 const TIPS = [
 	[0, -100],
-	[95.1, -30.9],
 	[58.8, 80.9],
-	[-58.8, 80.9],
 	[-95.1, -30.9],
+	[95.1, -30.9],
+	[-58.8, 80.9],
 ];
-// Joining every second tip draws the star in one line.
-const starPath = `M${[0, 2, 4, 1, 3].map((tip) => TIPS[tip].join(' ')).join('L')}Z`;
+// Five chords, one per stage, each from its tip to the next stage's. The line turns 144deg at every tip.
+const CHORD = 190.2;
+const chordAngle = (index: number) => 72 + 144 * index;
 
 const sideOf = (x: number) => (x === 0 ? 'top' : x > 0 ? 'right' : 'left');
 const countOf = (slug: string) => posts.filter((post) => post.data.category === slug).length;
@@ -27,13 +28,19 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 <div class="ruled categories">
 	<div class="cell star" aria-hidden="true">
 		<svg viewBox="-110 -114 220 209">
-			<path d={starPath} />
+			{TIPS.map(([x, y], index) => (
+				<g transform={`translate(${x} ${y}) rotate(${chordAngle(index)})`}>
+					<line class="chord" x2={CHORD} style={`--i: ${index}`} />
+				</g>
+			))}
 			<g class="numbers">
 				{TIPS.map(([x, y], index) => (
-					<>
-						<circle cx={x} cy={y} r="13" />
-						<text {x} {y}>{index + 1}</text>
-					</>
+					<g transform={`translate(${x} ${y})`}>
+						<g class="number" style={`--i: ${index}`}>
+							<circle r="13" />
+							<text>{index + 1}</text>
+						</g>
+					</g>
 				))}
 			</g>
 		</svg>
@@ -42,7 +49,7 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 		const [x, y] = TIPS[index];
 		const count = countOf(slug);
 		return (
-			<div class:list={['cell linked tip', sideOf(x)]} style={`--x: ${x / 100}; --y: ${y / 100}`}>
+			<div class:list={['cell linked tip', sideOf(x)]} style={`--x: ${x / 100}; --y: ${y / 100}; --i: ${index}`}>
 				<CategoryIcon {slug} />
 				<div class="copy">
 					<h3><a href={`/${slug}/`}>{label}</a></h3>
@@ -53,13 +60,32 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 		);
 	})}
 </div>
+
+<script>
+	// Waits until the star is on screen. Without this script it just draws on load, out of sight.
+	const categories = document.querySelector<HTMLElement>('.categories');
+	const star = categories?.querySelector('.star');
+	if (categories && star) {
+		categories.dataset.wait = '';
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				observer.disconnect();
+				delete categories.dataset.wait;
+			},
+			{ threshold: 0.5 },
+		);
+		observer.observe(star);
+	}
+</script>
+
 <style>
 	.categories {
 		/* The home page's focal point. Always dark, so tokens resolve to their dark values here, as in the footer. */
 		color-scheme: dark;
 		display: flex;
 		flex-wrap: wrap;
-		background: var(--ink);
+		background: var(--paper);
 	}
 	h3 {
 		margin: 0;
@@ -68,15 +94,12 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 	p {
 		margin: 0;
 	}
-	path,
+	line,
 	circle {
-		fill: var(--ink);
+		fill: var(--paper);
 		stroke: var(--gold);
 		stroke-width: 1px;
 		vector-effect: non-scaling-stroke;
-	}
-	path {
-		fill: none;
 	}
 	text {
 		fill: var(--accent);
@@ -149,7 +172,7 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 			padding: 0.5rem;
 			border: 1px solid var(--gold);
 			border-radius: 50%;
-			background: var(--ink);
+			background: var(--paper);
 		}
 		.copy {
 			flex: 0 1 18rem;
@@ -187,6 +210,40 @@ const countOf = (slug: string) => posts.filter((post) => post.data.category === 
 		}
 		.categories .tip:has(a:focus-visible) {
 			outline-offset: 0.5rem;
+		}
+	}
+
+	/* One line, stage by stage: a chord arrives, the stage's marker appears, the next chord leaves. Screen only, so a paused animation can't print as a blank star. */
+	@media screen and (prefers-reduced-motion: no-preference) {
+		.chord {
+			animation: categories-chord 500ms cubic-bezier(0.4, 0, 0.4, 1) calc(100ms + var(--i) * 600ms) backwards;
+		}
+		.number {
+			animation: categories-marker 400ms cubic-bezier(0.2, 0.7, 0.3, 1) calc(var(--i) * 600ms) backwards;
+		}
+		.categories[data-wait] :is(.chord, .number) {
+			animation-play-state: paused;
+		}
+	}
+	@media screen and (prefers-reduced-motion: no-preference) and (min-width: 64rem) {
+		.tip > :global(svg) {
+			animation: categories-marker 400ms cubic-bezier(0.2, 0.7, 0.3, 1) calc(var(--i) * 600ms) backwards;
+		}
+		.categories[data-wait] .tip > :global(svg) {
+			animation-play-state: paused;
+		}
+	}
+
+	/* Scales along the line instead of using a dash offset, which breaks with a non-scaling stroke. */
+	@keyframes categories-chord {
+		from {
+			scale: 0 1;
+		}
+	}
+	@keyframes categories-marker {
+		from {
+			opacity: 0;
+			scale: 0.6;
 		}
 	}
 </style>
