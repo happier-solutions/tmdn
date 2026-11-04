@@ -10,6 +10,8 @@ import { getPublishedPosts } from '../lib/posts';
 
 // Seven posts and the "all posts" cell make full rows at one, two and four columns.
 const HOME_POSTS = 7;
+// The first row at four columns, which also covers what a phone shows first.
+const EAGER_POSTS = 4;
 
 const posts = await getPublishedPosts();
 const latest = posts.slice(0, HOME_POSTS);
@@ -61,9 +63,9 @@ const latest = posts.slice(0, HOME_POSTS);
 			</div>
 			{latest.length ? (
 				<div class="ruled posts">
-					{latest.map((post) => (
+					{latest.map((post, i) => (
 						<div class="cell post">
-							<PostCard {post} imageSizes="(min-width: 64rem) 18rem, (min-width: 40rem) 50vw, 40vw" />
+							<PostCard {post} eager={i < EAGER_POSTS} imageSizes="(min-width: 64rem) 18rem, (min-width: 40rem) 50vw, 40vw" />
 						</div>
 					))}
 					<div class="cell linked">

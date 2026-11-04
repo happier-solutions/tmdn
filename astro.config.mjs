@@ -8,6 +8,8 @@ import { defineConfig, fontProviders } from 'astro/config';
 export default defineConfig({
 	site: 'https://tmdn.pages.dev',
 	trailingSlash: 'always',
+	// No render-blocking stylesheet request before the first paint.
+	build: { inlineStylesheets: 'always' },
 	integrations: [mdx(), sitemap()],
 	fonts: [
 		{

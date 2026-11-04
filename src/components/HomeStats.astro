@@ -86,23 +86,23 @@ const ticks = [...new Set([0, Math.ceil(total / 2), total])];
 
 	<div class="cell timeline">
 		<h3>Số bài theo thời gian</h3>
-		<div class="plot">
+		<div class="plot" aria-hidden="true">
 			{ticks.map((tick) => (
 				<span class="tick" style={`--y: ${100 - (tick / total) * 100}`}>{tick}</span>
 			))}
-			<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+			<svg viewBox="0 0 100 100" preserveAspectRatio="none">
 				<path class="area" d={area} />
 				<path class="line" d={`M${line}`} />
 			</svg>
 			{points.map(({ post, total: running, x, y }) => (
-				<a class="point" href={postUrl(post)} style={`--x: ${x}; --y: ${y}`}>
+				<span class="point" style={`--x: ${x}; --y: ${y}`}>
 					<span class="dot" />
 					<span class:list={['tip', y < 50 ? 'below' : 'above']}>
 						<strong>Tổng {running} bài</strong>
 						<FormattedDate date={post.data.pubDate} />
 						<span>{post.data.title}</span>
 					</span>
-				</a>
+				</span>
 			))}
 		</div>
 		<div class="axis">
@@ -113,13 +113,13 @@ const ticks = [...new Set([0, Math.ceil(total / 2), total])];
 			<summary>Xem dạng bảng</summary>
 			<table>
 				<thead>
-					<tr><th>Ngày</th><th>Bài viết</th><th>Tổng</th></tr>
+					<tr><th scope="col">Ngày</th><th scope="col">Bài viết</th><th scope="col">Tổng</th></tr>
 				</thead>
 				<tbody>
 					{points.toReversed().map(({ post, total: running }) => (
 						<tr>
 							<td><FormattedDate date={post.data.pubDate} /></td>
-							<td>{post.data.title}</td>
+							<td><a href={postUrl(post)}>{post.data.title}</a></td>
 							<td>{running}</td>
 						</tr>
 					))}
@@ -271,7 +271,8 @@ const ticks = [...new Set([0, Math.ceil(total / 2), total])];
 		stroke-linejoin: round;
 		vector-effect: non-scaling-stroke;
 	}
-	/* Each point is a full-height 24px link, so the pointer only has to find the date. */
+	/* Each point is a full-height 24px hover area, so the pointer only has to find the date.
+	   Points get too dense to tap as posts add up, so the links live in the table below. */
 	.point {
 		position: absolute;
 		top: 0;
@@ -279,15 +280,11 @@ const ticks = [...new Set([0, Math.ceil(total / 2), total])];
 		left: calc(var(--x) * 1%);
 		width: 1.5rem;
 		margin-left: -0.75rem;
-		background: none;
 	}
-	.point::after {
-		display: none;
-	}
-	.point:is(:hover, :focus-visible) {
+	.point:hover {
 		z-index: 1;
 	}
-	.point:is(:hover, :focus-visible)::before {
+	.point:hover::before {
 		content: '';
 		position: absolute;
 		top: 0;
@@ -307,7 +304,7 @@ const ticks = [...new Set([0, Math.ceil(total / 2), total])];
 		box-shadow: 0 0 0 2px var(--paper);
 		translate: -50% -50%;
 	}
-	/* Kept in the accessibility tree, where it names the link. Shifting by --x holds it inside the plot. */
+	/* Shifting by --x holds it inside the plot. */
 	.tip {
 		position: absolute;
 		left: 50%;
@@ -329,7 +326,7 @@ const ticks = [...new Set([0, Math.ceil(total / 2), total])];
 	.above {
 		bottom: calc((100 - var(--y)) * 1% + 0.75rem);
 	}
-	.point:is(:hover, :focus-visible) .tip {
+	.point:hover .tip {
 		opacity: 1;
 	}
 	.axis {
@@ -340,16 +337,26 @@ const ticks = [...new Set([0, Math.ceil(total / 2), total])];
 		font-size: 0.875rem;
 	}
 	details {
-		margin-top: 1rem;
+		margin-top: 0.5rem;
 		font-size: 0.875rem;
 	}
 	summary {
+		padding-block: 0.5rem;
 		color: var(--accent);
 		cursor: pointer;
 	}
 	table {
 		margin-top: 0.5rem;
 		border-collapse: collapse;
+	}
+	/* The whole row is the link. */
+	tr {
+		position: relative;
+	}
+	td a::before {
+		content: '';
+		position: absolute;
+		inset: 0;
 	}
 	th,
 	td {

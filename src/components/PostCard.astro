@@ -8,9 +8,11 @@ interface Props {
 	post: Post;
 	/** `sizes` for the hero image. Without it the card is text only. */
 	imageSizes?: string;
+	/** Load the image right away, for cards that can be in the first viewport. */
+	eager?: boolean;
 }
 
-const { post, imageSizes } = Astro.props;
+const { post, imageSizes, eager = false } = Astro.props;
 const { title, description, pubDate, category, heroImage } = post.data;
 const image = imageSizes ? heroImage : undefined;
 ---
@@ -18,7 +20,7 @@ const image = imageSizes ? heroImage : undefined;
 <article class:list={{ 'has-image': image }}>
 	{image && (
 		<div class="thumb">
-			<Image src={image} sizes={imageSizes} widths={[320, 480, 800, 1200]} alt="" loading="lazy" />
+			<Image src={image} sizes={imageSizes} widths={[320, 480, 800, 1200]} alt="" loading={eager ? 'eager' : 'lazy'} />
 		</div>
 	)}
 	<h2><a href={postUrl(post)}>{title}</a></h2>
