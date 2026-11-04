@@ -36,7 +36,6 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 			<p class="greeting">Gửi bạn,</p>
 			<h2 id="thanks-title">Cảm ơn bạn đã thả tim</h2>
 			<div id="thanks-body">
-				<p class="proverb"></p>
 				<p class="wish"></p>
 				<p class="closing">Thân mến,</p>
 				<p class="signature">{SITE_TITLE}</p>
@@ -56,7 +55,7 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 </section>
 <script>
 	import { readHearts, saveHearts } from '../lib/post-hearts';
-	import { pickThanksMessage, type ThanksMessage } from '../lib/thanks-messages';
+	import { pickThanksMessage } from '../lib/thanks-messages';
 
 	const share = document.querySelector<HTMLElement>('.share');
 	const status = share?.querySelector('[role="status"]');
@@ -67,9 +66,8 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 	const thanks = share?.querySelector('dialog');
 	const thanksTitle = thanks?.querySelector('h2');
 	const thanksDate = thanks?.querySelector('.date');
-	const proverb = thanks?.querySelector('.proverb');
 	const wish = thanks?.querySelector('.wish');
-	if (share && status && toast && toastText && heart && heartCount && thanks && thanksTitle && thanksDate && proverb && wish) {
+	if (share && status && toast && toastText && heart && heartCount && thanks && thanksTitle && thanksDate && wish) {
 		const { url = '' } = share.dataset;
 		let timer: ReturnType<typeof setTimeout>;
 		// Fades out before leaving the top layer, since Firefox and Safari can't animate that exit.
@@ -109,7 +107,29 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 			heartCount.textContent = hearts > 99 ? '99+' : hearts ? String(hearts) : '';
 		};
 		showHearts();
-		let message: ThanksMessage | undefined;
+		let message: string | undefined;
+		let typing: ReturnType<typeof setTimeout>;
+		const stopTyping = () => {
+			clearTimeout(typing);
+			CSS.highlights?.delete('unwritten');
+		};
+		// Painted transparent, the text still to come keeps its place, so lines don't rewrap, and screen readers get it whole.
+		const startTyping = () => {
+			if (!('highlights' in CSS) || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+			const lines = Array.from(thanks.querySelectorAll('.greeting, h2, .wish, .closing, .signature'), ({ firstChild }) => firstChild as Text);
+			const unwritten = new Range();
+			unwritten.setStart(lines[0], 0);
+			unwritten.setEndAfter(lines[lines.length - 1]);
+			CSS.highlights.set('unwritten', new Highlight(unwritten));
+			const type = (line: number, character: number) => {
+				if (line === lines.length) return stopTyping();
+				unwritten.setStart(lines[line], character);
+				const lineDone = character === lines[line].length;
+				typing = setTimeout(type, lineDone ? 150 : 20, lineDone ? line + 1 : line, lineDone ? 0 : character + 1);
+			};
+			// Starts once the letter has unfolded.
+			typing = setTimeout(type, 650, 0, 0);
+		};
 		const showThanks = () => {
 			// Read again, as another tab may have added to it.
 			hearts = Math.max(hearts, readHearts(path)) + 1;
@@ -119,8 +139,8 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 			const today = new Date();
 			thanksDate.textContent = `Ngày ${today.getDate()} tháng ${today.getMonth() + 1} năm ${today.getFullYear()}`;
 			message = pickThanksMessage(message);
-			proverb.textContent = message.proverb;
-			wish.textContent = message.wish;
+			wish.textContent = message;
+			startTyping();
 			thanks.showModal();
 			// On a short screen, focus on the button would open the letter at its end.
 			thanks.scrollTop = 0;
@@ -133,7 +153,12 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 			// A second Esc can close it natively in the meantime.
 			if (thanks.hasAttribute('data-closing')) thanks.close();
 		};
-		thanks.addEventListener('close', () => thanks.removeAttribute('data-closing'));
+		thanks.addEventListener('close', () => {
+			thanks.removeAttribute('data-closing');
+			stopTyping();
+		});
+		// A click skips the typing, for anyone who has seen it before.
+		thanks.addEventListener('click', stopTyping);
 		for (const type of ['submit', 'cancel']) {
 			thanks.addEventListener(type, (event) => {
 				event.preventDefault();
@@ -332,14 +357,11 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		font-size: 1.5rem;
 		line-height: inherit;
 	}
-	.thanks .proverb {
-		margin-block: var(--line);
-		padding-inline-start: 1rem;
-		color: var(--accent);
-		white-space: pre-line;
-		text-wrap: pretty;
+	:global(::highlight(unwritten)) {
+		color: transparent;
 	}
 	.thanks .wish {
+		margin-top: var(--line);
 		text-wrap: pretty;
 	}
 	.thanks .closing {
