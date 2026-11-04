@@ -26,6 +26,13 @@ body {
 	font-size: 1.125rem;
 	line-height: 1.7;
 }
+/* On short pages the signup band ends the first screen and the footer links sit below it.
+   4.0625rem is the header's height. svh keeps it from jumping as a phone's URL bar collapses. */
+.first-screen {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(100svh - 4.0625rem);
+}
 main,
 .wrap {
 	box-sizing: border-box;

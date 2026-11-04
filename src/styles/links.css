@@ -54,7 +54,7 @@ a:focus-visible {
 	outline-offset: 2px;
 }
 /* In running text, color alone doesn't set a link apart, so the rule is always there. */
-.prose :is(p, :not(.tags) > li) a {
+.prose :is(p, :not(.tags, .toc-list) > li) a {
 	--line: 1;
 	@media (hover: hover) {
 		&:hover {

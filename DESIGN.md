@@ -11,7 +11,7 @@ A reflective notebook: minimal, calm, comfortable for long reading.
 - Mobile first: most readers are on phones.
 - No annoying popups, ads, or screen-filling banners.
 - Hierarchy comes from type and thin rules. No cards or shadows.
-- No motion, except the page content fading in on navigation and link hovers.
+- No motion, except the page content fading in on navigation, link hovers, and the `ShareLinks` toast.
 
 ## Colors
 
@@ -51,6 +51,7 @@ Loaded with Astro Fonts (Fontsource), subsets `vietnamese`, `latin`, `latin-ext`
 | `h1` | `clamp(2rem, 1.5rem + 2.5vw, 2.75rem)` |
 | `h2` / `h3` / `h4` / `h5` | `1.75em` / `1.4em` / `1.2em` / `1.1em` |
 | `PostCard` title | `1.5rem` |
+| `Signup` heading | `clamp(1.5rem, 1.25rem + 1.25vw, 2rem)` |
 | Brand, related posts heading | `1.25rem` |
 | Body | `1.125rem` |
 | Blockquote | `1.125em` |
@@ -62,9 +63,11 @@ Line height: body 1.7, headings 1.25. Headings use `text-wrap: balance`; `.prose
 ## Layout
 
 - Content column (`main`, `.wrap`): max `44rem`, inline padding `1rem`.
-- Wide column (`.wrap-wide`): max `72rem`, for header and footer.
+- Wide column (`.wrap-wide`): max `72rem`, for header and footer, and for `main` on posts (`wide` prop of `BaseLayout`).
+- Post grid (`PostLayout`): from `64rem`, three columns with a `2rem` gap, the middle one max `42rem` (the same reading width as the content column). Below that, one `42rem` column.
 - `main` block padding: `3rem`, or `2rem` at `max-width: 720px`.
 - `body` is a column flexbox with `min-height: 100dvh`, keeping the footer at the bottom.
+- `.first-screen` wraps `main` and `Signup` with `min-height: calc(100svh - 4.0625rem)`, the header's height. On short pages `Signup` ends the first screen and `Footer` sits below it, so update it if the header's height changes.
 - Nav breakpoint: drawer below `60rem`, row from `60rem`.
 - Spacing has no tokens. Use these `rem` values: `0.25 0.5 0.75 1 1.25 1.5 2 2.5 3 3.5`.
 - Common gaps: home sections `3.5rem`, end-of-post blocks `3rem`, post list items `2.5rem`, post header and hero `2rem`.
@@ -72,7 +75,7 @@ Line height: body 1.7, headings 1.25. Headings use `text-wrap: balance`; `.prose
 ## Shapes
 
 - Rules: `1px solid var(--gold)`. Left bars: `3px solid var(--gold)`.
-- Radius: images and `pre` `8px`, inline code `2px`, logo and buttons `0`.
+- Radius: images and `pre` `8px`, inline code `2px`, logo and buttons `0`, except the round `ShareLinks` buttons and their toast (`1.25rem`).
 - Hero image: 2:1 (1020x510), full column width.
 
 ## Components
@@ -85,10 +88,13 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 | Menu buttons | Gold border, no fill, weight 600, square, min height `2.75rem` |
 | Nav links | `--gray-dark`, weight 400, `1.75rem` apart in the row. Hover draws the rule and sprig (see States) but keeps the color. `aria-current`: `--accent` and the rule, sprig on hover only |
 | `ThemeSwitch` | One icon button, no border or fill, `--gray-dark` icon, `--accent` on hover. The icon shows the current mode and each click moves to the next: system, the opposite of the OS, then the other pinned scheme. Icons: half-filled circle (system), sun, moon. Negative margins line the icon up with the links. Last in `.site-nav`: at the end of the row from `60rem` (`2.25rem`), under the links in the drawer (`2.75rem`). Hidden without JS |
-| `Footer` | `--ink` background, `--on-ink` text, `--gold-light` links, `--on-ink` on hover |
+| `Signup` | Band above `Footer`, same `--ink` background, `color-scheme: dark`. Text left and form right from `60rem`, stacked below. Visible label, `--on-ink` square input, `--gold-light` square button with `--ink` text and weight 600 (`--on-ink` on hover), both min height `3rem` and `1rem` text. Plain POST to `NEWSLETTER_ACTION` in `consts.ts`, field `email`. The error shows after interaction (`:user-invalid`) as text with a `3px` left bar and replaces the browser's bubble. Without an endpoint, production shows an RSS link instead and dev shows a form that sends nothing |
+| `Footer` | `--ink` background, `--on-ink` text, `--gold-light` links, `--on-ink` on hover. Sets `color-scheme: dark`, so tokens and focus outlines resolve to their dark values. Link columns (`Chuyên mục`, `Chủ đề`, `Về blog`; auto-fit, min `9rem`), then logo and copyright, split by gold rules |
 | `PostCard` | Meta, title, `--gray` description. No border or background |
 | `PostMeta` | Dates, category, reading time, confidence level |
 | `UpdateNote` | `--gray-light` background, gold left bar |
+| `ShareLinks` | Facebook link, Zalo button, copy-link button: round, `1px` gold border, `--gray-dark` stroke icon, `--accent` on hover, no brand colors or counts. A row at the end of the post below `64rem` (`2.75rem`), a pinned column left of the post from `64rem` (`2.25rem`). Zalo opens the share sheet on touch screens and copies the link elsewhere. The result shows for 4s in a toast centered `1.5rem` above the bottom edge: `--black` background, `--paper` text at `0.875rem` (inverted in both schemes), `--gold` check on success, no icon on failure, no shadow or close button, clicks pass through. It fades and rises `0.5rem` over 220ms (fade only under `prefers-reduced-motion`). A separate `.sr-only` `role="status"` announces the same text. No third-party scripts. Buttons are hidden without JS |
+| `Toc` | Only on posts with 3 or more `h2`/`h3`. `0.875rem`, `--gray` links, `h3` indented. Current section: `--accent` and a `3px` gold left bar, tracked with `scroll-target-group`, or a scroll listener where unsupported. A closed `details` under the post header below `64rem`, a pinned column right of the post from `64rem` |
 | `RelatedPosts` | Link list, gold top rule |
 | `PrevNext` | Auto-fit two-column grid, newer post right-aligned |
 | `Pagination` | Three-column grid: previous, `Trang x/y`, next |
@@ -96,7 +102,7 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 
 ## States and accessibility
 
-- Links, nav included, have no underline at rest and rely on color. On hover (`links.css`) the color changes to `--accent-dark`, a 1px `currentColor` rule draws from the left (300ms), then the logo's sprig (`public/sprig.svg`, as a mask) grows from its end (260ms, 180ms delay). Hover only under `(hover: hover)`; no animation under `prefers-reduced-motion`. A link that is a block or flex item wraps its text in `.link-line`. In `PostMeta` the separator after the category fades out on hover and the sprig takes its place. In running text in `.prose` the sprig is off, since it would cover the text; these links keep the rule at rest, because color alone doesn't set them apart, and it thickens to 2px on hover. The skip link opts out.
+- Links, nav included, have no underline at rest and rely on color. On hover (`links.css`) the color changes to `--accent-dark`, a 1px `currentColor` rule draws from the left (300ms), then the logo's sprig (`public/sprig.svg`, as a mask) grows from its end (260ms, 180ms delay). Hover only under `(hover: hover)`; no animation under `prefers-reduced-motion`. A link that is a block or flex item wraps its text in `.link-line`. In `PostMeta` the separator after the category fades out on hover and the sprig takes its place. In running text in `.prose` the sprig is off, since it would cover the text; these links keep the rule at rest, because color alone doesn't set them apart, and it thickens to 2px on hover. `Toc` links also have no sprig, and `ShareLinks` has neither rule nor sprig. The skip link opts out.
 - Link focus: `outline: 2px solid var(--accent)`, offset `2px`.
 - Skip link is hidden until focused and sits above the pinned header (`z-index: 2`). Use `.sr-only` for screen-reader-only text.
 - Page transition: native `@view-transition` in `transitions.css`. Header and footer swap instantly; `main` fades in over 220ms and rises `0.5rem`. The header has its own transition name so `main` never paints over it. Off under `prefers-reduced-motion`; Firefox navigates instantly. `<link rel="expect">` in `BaseHead` waits for `#main`, so keep that id in the layout.
@@ -111,7 +117,7 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 ## Known gaps
 
 - Category links in `PostMeta` and `PostCard`: `--accent` barely differs from the surrounding `--gray` meta text, so they are hard to spot without an underline.
-- Footer focus outline: `--accent` on `--ink` is 2.99:1, below 3:1.
+- Footer focus outline: stays `#7a5a2b` without `light-dark()` (Safari below 17.5), 2.99:1 on `--ink`.
 - Menu buttons have no custom focus style.
 - `pre` stays dark in both schemes.
 - `.prose` only sets `text-wrap`; `table` only sets `width: 100%`.

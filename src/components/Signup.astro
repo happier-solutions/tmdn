@@ -1,0 +1,164 @@
+---
+import { NEWSLETTER_ACTION } from '../consts';
+
+// Without an endpoint a form would lose readers' emails, so only dev shows it, as a preview.
+const preview = import.meta.env.DEV && !NEWSLETTER_ACTION;
+---
+
+<section class="cta-band" aria-labelledby="signup-title">
+	<div class="wrap wrap-wide cta">
+		<div>
+			<p class="eyebrow">Nhận bài mới</p>
+			<h2 id="signup-title">Mỗi khi tôi học được điều gì mới, bạn sẽ biết ngay.</h2>
+		</div>
+		{NEWSLETTER_ACTION || preview ? (
+			<form class="signup" method="post" action={NEWSLETTER_ACTION || undefined} data-preview={preview || undefined}>
+				<label for="signup-email">Email của bạn</label>
+				<input
+					id="signup-email"
+					type="email"
+					name="email"
+					required
+					autocomplete="email"
+					autocapitalize="off"
+					autocorrect="off"
+					spellcheck="false"
+					enterkeyhint="send"
+					aria-errormessage="signup-error"
+				/>
+				<button type="submit">Đăng ký</button>
+				<p id="signup-error" class="error">Bạn nhập giúp một địa chỉ email hợp lệ, ví dụ ten@gmail.com.</p>
+				{preview && <p class="error preview" hidden>Bản xem trước: chưa nối dịch vụ gửi thư nên chưa gửi gì.</p>}
+				<p class="note">
+					Chỉ gửi bài mới, không quảng cáo, hủy lúc nào cũng được. Hoặc theo dõi qua <a href="/rss.xml">RSS</a>.
+				</p>
+			</form>
+		) : (
+			<p class="rss"><a href="/rss.xml">Theo dõi qua RSS</a></p>
+		)}
+	</div>
+</section>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('.signup');
+	const email = form?.querySelector('input');
+
+	if (form && email) {
+		// :user-invalid doesn't reach assistive tech on its own, so mirror it in aria-invalid.
+		const syncAria = () => {
+			if (email.matches(':user-invalid')) email.setAttribute('aria-invalid', 'true');
+			else email.removeAttribute('aria-invalid');
+		};
+		email.addEventListener('blur', syncAria);
+		email.addEventListener('input', syncAria);
+		// The inline message replaces the browser's bubble, which ignores the page language.
+		email.addEventListener('invalid', (event) => {
+			event.preventDefault();
+			email.setAttribute('aria-invalid', 'true');
+			email.focus();
+		});
+		form.addEventListener('submit', (event) => {
+			if (form.dataset.preview === undefined) return;
+			event.preventDefault();
+			form.querySelector<HTMLElement>('.preview')?.removeAttribute('hidden');
+		});
+	}
+</script>
+
+<style>
+	.cta-band {
+		/* Always dark, so tokens, autofill, and the focus outline resolve to their dark values here. */
+		color-scheme: dark;
+		overflow-x: clip;
+		background: var(--ink);
+		color: var(--on-ink);
+		font-size: 0.875rem;
+	}
+	a {
+		color: var(--gold-light);
+	}
+	a:hover {
+		color: var(--on-ink);
+	}
+	p {
+		margin: 0;
+	}
+
+	.cta {
+		display: grid;
+		gap: 2rem;
+		padding-block: 3.5rem;
+	}
+	.eyebrow {
+		margin-bottom: 0.75rem;
+		color: var(--gold-light);
+	}
+	h2 {
+		margin: 0;
+		color: var(--on-ink);
+		font-size: clamp(1.5rem, 1.25rem + 1.25vw, 2rem);
+	}
+	@media (min-width: 60rem) {
+		.cta {
+			grid-template-columns: 1fr 1fr;
+			gap: 3.5rem;
+			align-items: end;
+		}
+	}
+
+	.signup {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 0.5rem;
+	}
+	label,
+	.signup p {
+		grid-column: 1 / -1;
+	}
+	input,
+	button {
+		box-sizing: border-box;
+		min-height: 3rem;
+		border: 0;
+		border-radius: 0;
+		font: inherit;
+		/* Below 1rem iOS zooms in on focus. */
+		font-size: 1rem;
+	}
+	input {
+		width: 100%;
+		padding-inline: 0.75rem;
+		background: var(--on-ink);
+		color: var(--ink);
+	}
+	button {
+		padding-inline: 1.25rem;
+		background: var(--gold-light);
+		color: var(--ink);
+		font-weight: 600;
+		cursor: pointer;
+	}
+	button:hover {
+		background: var(--on-ink);
+	}
+	:is(input, button):focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.error {
+		padding-inline-start: 0.5rem;
+		border-inline-start: 3px solid var(--gold-light);
+	}
+	#signup-error {
+		display: none;
+	}
+	input:user-invalid ~ #signup-error {
+		display: block;
+	}
+	.note {
+		color: color-mix(in srgb, var(--on-ink) 75%, transparent);
+	}
+	.rss {
+		font-size: 1rem;
+	}
+</style>

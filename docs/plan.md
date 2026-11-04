@@ -19,7 +19,8 @@ Phần còn mở: tài liệu vừa ghi ngân sách 0đ vừa ghi "unlimited".
 
 - **Header:** tên blog | Quan sát · Câu hỏi · Nghiên cứu · Bài học · Nhật ký học tập | Giới thiệu
 - **Điện thoại (dưới 960px):** tên blog và nút Menu, bấm vào mở ngăn kéo bên phải.
-- **Footer:** Tất cả bài viết · Chủ đề · Liên hệ · Quy tắc ẩn danh · RSS
+- **Khối đăng ký nhận bài:** ngay trên footer, ở cuối màn hình đầu với trang ít nội dung
+- **Footer:** Chuyên mục · Chủ đề · Về blog (Giới thiệu, Liên hệ, Quy tắc ẩn danh, RSS) | bản quyền
 - **Trang chủ:** blog là gì và dành cho ai → Hành trình học (5 chuyên mục) → Bài mới nhất
 
 ## URL
@@ -102,8 +103,8 @@ Mọi bài dưới đây đều là nội dung giả để dựng khung, cần t
 
 - [ ] Tìm kiếm (Pagefind)
 - [ ] Bình luận (Giscus) và góp ý qua email
-- [ ] Đăng ký nhận bài
-- [ ] Chia sẻ mạng xã hội
+- [ ] Đăng ký nhận bài: đã có giao diện (`Signup`, ngay trên footer), còn chọn dịch vụ gửi thư và điền `NEWSLETTER_ACTION` (`src/consts.ts`)
+- [x] Chia sẻ mạng xã hội
 - [ ] Hẹn giờ đăng
 - [ ] Thống kê truy cập, Google Search Console
 

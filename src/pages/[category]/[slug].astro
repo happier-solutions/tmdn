@@ -20,9 +20,9 @@ export const getStaticPaths = (async () => {
 type Props = { post: Post; related: Post[]; newer?: Post; older?: Post };
 
 const { post, related, newer, older } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
-<PostLayout {post} {related} {newer} {older}>
+<PostLayout {post} {headings} {related} {newer} {older}>
 	<Content />
 </PostLayout>

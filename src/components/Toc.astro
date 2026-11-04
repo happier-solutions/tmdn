@@ -1,0 +1,89 @@
+---
+import type { MarkdownHeading } from 'astro';
+
+interface Props {
+	headings: MarkdownHeading[];
+}
+
+const { headings } = Astro.props;
+---
+
+<nav class="toc" aria-label="Mục lục">
+	<ol class="toc-list">
+		{headings.map(({ depth, slug, text }) => (
+			<li class:list={{ nested: depth > 2 }}>
+				<a href={`#${slug}`}><span class="link-line">{text}</span></a>
+			</li>
+		))}
+	</ol>
+</nav>
+<script>
+	const links = [...document.querySelectorAll<HTMLAnchorElement>('.toc a')];
+	const setAriaCurrent = (isCurrent: (link: HTMLAnchorElement) => boolean) => {
+		for (const link of links) link.setAttribute('aria-current', String(isCurrent(link)));
+	};
+
+	if (CSS.supports('scroll-target-group: auto')) {
+		const sync = () => setAriaCurrent((link) => link.matches(':target-current'));
+		sync();
+		// :target-current only updates with the next frame, so reading it during scrollend gets the old section.
+		document.addEventListener('scrollend', () => requestAnimationFrame(() => requestAnimationFrame(sync)));
+	} else {
+		// `getAttribute`, because `link.hash` percent-encodes the Vietnamese letters kept in heading ids.
+		const hrefOf = (link: HTMLAnchorElement) => link.getAttribute('href') ?? '';
+		const headings = [...new Set(links.map(hrefOf))]
+			.map((href) => document.getElementById(href.slice(1)))
+			.filter((heading) => heading !== null);
+		const update = () => {
+			const line = innerHeight * 0.4;
+			const current = headings.findLast((heading) => heading.getBoundingClientRect().top <= line) ?? headings[0];
+			const isCurrent = (link: HTMLAnchorElement) => hrefOf(link) === `#${current?.id}`;
+			for (const link of links) link.classList.toggle('target-current', isCurrent(link));
+			setAriaCurrent(isCurrent);
+		};
+		// Not IntersectionObserver: a TOC link jumps past headings without any of them ever touching the line.
+		let frame = 0;
+		addEventListener(
+			'scroll',
+			() => {
+				cancelAnimationFrame(frame);
+				frame = requestAnimationFrame(update);
+			},
+			{ passive: true },
+		);
+		update();
+	}
+</script>
+<style>
+	.toc {
+		scroll-target-group: auto;
+		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+	ol {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	a {
+		display: block;
+		padding: 0.25rem 0 0.25rem 0.75rem;
+		border-left: 3px solid transparent;
+		color: var(--gray);
+	}
+	.nested a {
+		padding-left: 1.5rem;
+	}
+	a:hover {
+		color: var(--accent-dark);
+	}
+	/* :is(), since an unknown pseudo-class would drop a whole selector list where it isn't supported. */
+	a:is(:target-current, .target-current) {
+		border-left-color: var(--gold);
+		color: var(--accent);
+	}
+	/* Wrapped titles leave text right after the rule's end, and the sprig would cover it. */
+	.link-line::after {
+		display: none;
+	}
+</style>
