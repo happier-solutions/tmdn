@@ -32,7 +32,7 @@ Phần còn mở: tài liệu vừa ghi ngân sách 0đ vừa ghi "unlimited".
 | Bài viết | `/quan-sat/ten-bai/` |
 | Thẻ chủ đề | `/chu-de/`, `/chu-de/ra-quyet-dinh/` |
 | Trang tĩnh | `/gioi-thieu/`, `/lien-he/`, `/quy-tac-an-danh/` |
-| Khác | `/rss.xml`, `/sitemap-index.xml`, `/robots.txt`, `/admin/` |
+| Khác | `/rss.xml`, `/sitemap-index.xml`, `/robots.txt`, `/llms.txt`, `/admin/` |
 
 ## Thư mục
 
@@ -54,7 +54,7 @@ src/
    ├─ [category]/[slug].astro
    ├─ chu-de/index.astro
    ├─ chu-de/[tag]/[...page].astro
-   └─ rss.xml.js, robots.txt.ts
+   └─ rss.xml.js, robots.txt.ts, llms.txt.ts, 404.astro
 public/admin/config.yml    # phải khớp với src/data/taxonomy.ts
 ```
 
