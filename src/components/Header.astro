@@ -49,15 +49,12 @@ const ariaCurrent = (slug: string) => {
 		border-bottom: 1px solid var(--gold);
 		background: var(--paper);
 	}
-	/* Pinned while reading, except where it would take too much height:
-	   landscape phones and the wrapped-row fallback without popover support. */
-	@media (min-height: 34rem) {
-		@supports selector(:popover-open) {
-			.site-header {
-				position: sticky;
-				top: 0;
-				z-index: 1;
-			}
+	/* Pinned on desktop while reading, except on short windows where it would take too much height. */
+	@media (min-width: 60rem) and (min-height: 34rem) {
+		.site-header {
+			position: sticky;
+			top: 0;
+			z-index: 1;
 		}
 	}
 	.bar {

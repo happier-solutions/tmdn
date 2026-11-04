@@ -11,11 +11,17 @@
 @import './prose.css';
 
 html {
-	/* Keeps anchor and focus targets clear of the pinned header. */
-	scroll-padding-top: 5rem;
+	/* Keeps anchor and focus targets off the viewport's top edge. */
+	scroll-padding-top: 1.5rem;
 	/* Stops phones inflating text on rotation; page zoom still works. */
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
+}
+/* Also clears the pinned header. */
+@media (min-width: 60rem) and (min-height: 34rem) {
+	html {
+		scroll-padding-top: 5rem;
+	}
 }
 body {
 	font-family: var(--font-body);

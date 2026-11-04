@@ -30,12 +30,9 @@ const latest = posts.slice(0, HOME_POSTS);
 						const el = document.getElementById('today');
 						const pad = (n) => String(n).padStart(2, '0');
 						el.dateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-						el.textContent = new Intl.DateTimeFormat('vi-VN', {
-							weekday: 'long',
-							day: 'numeric',
-							month: 'long',
-							year: 'numeric',
-						}).format(now);
+						// Built by hand: Safari's vi-VN long date adds "ngày", which overflows the size set below.
+						const weekday = new Intl.DateTimeFormat('vi-VN', { weekday: 'long' }).format(now);
+						el.textContent = `${weekday}, ${now.getDate()} tháng ${now.getMonth() + 1}, ${now.getFullYear()}`;
 						el.hidden = false;
 					})();
 				</script>
@@ -135,7 +132,7 @@ const latest = posts.slice(0, HOME_POSTS);
 		font-size: 0.875rem;
 	}
 
-	/* 12em fits the longest date ("Chủ Nhật, 29 tháng 10, 2028") in Playfair Display at this tracking. */
+	/* The longest date ("Chủ Nhật, 29 tháng 10, 2028") is 11.93em in Playfair Display at this tracking, so 13em leaves a margin. */
 	.today {
 		container-type: inline-size;
 		padding-bottom: 1rem;
@@ -143,7 +140,7 @@ const latest = posts.slice(0, HOME_POSTS);
 	time {
 		color: var(--black);
 		font-family: var(--font-heading);
-		font-size: min(100cqi / 12, 5rem);
+		font-size: min(100cqi / 13, 5rem);
 		font-variant-numeric: lining-nums;
 		letter-spacing: -0.02em;
 		line-height: 1.2;

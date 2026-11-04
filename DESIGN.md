@@ -51,7 +51,7 @@ Loaded with Astro Fonts (Fontsource), subsets `vietnamese`, `latin`, `latin-ext`
 |---|---|
 | `h1` | `clamp(1.75rem, 1.25rem + 2.5vw, 2.75rem)`, with `lining-nums` |
 | List page `h1` | `2rem` |
-| Home date | `min(100cqi / 12, 5rem)`, one line, lining numerals, `-0.02em` tracking, capped from about `60rem`. 12em fits the longest date |
+| Home date | `min(100cqi / 13, 5rem)`, one line, lining numerals, `-0.02em` tracking, capped from about `67rem`. The longest date is 11.93em, so 13em leaves a margin |
 | Home statement | `clamp(1.125rem, 1rem + 0.5vw, 1.375rem)`, heading font |
 | Home description, heading row note | `0.875rem` |
 | Home section heading | `1.5rem` |
@@ -110,7 +110,7 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 
 | Component | Notes |
 |---|---|
-| `Header` | Logo and title left, nav right, `--paper` background, gold bottom rule from `60rem` (transparent below, keeping the height). Pinned to the top (`position: sticky`, `z-index: 1`) from `34rem` viewport height and with popover support. `html` has `scroll-padding-top: 5rem` to match, so grow it if the bar grows. Below `60rem`: right drawer via Popover API, `--paper` background, width `min(20rem, 85vw)`; wrapped row without popover support |
+| `Header` | Logo and title left, nav right, `--paper` background, gold bottom rule from `60rem` (transparent below, keeping the height). Pinned to the top (`position: sticky`, `z-index: 1`) from `60rem` wide and `34rem` tall; otherwise it scrolls away with the page. `html` has `scroll-padding-top: 5rem` while pinned, so grow it if the bar grows, and `1.5rem` otherwise. Below `60rem`: right drawer via Popover API, `--paper` background, width `min(20rem, 85vw)`; wrapped row without popover support |
 | Menu buttons | Icon only, named with `aria-label`: three lines to open, a cross to close, in the same spot. `24px` icon, `1.5px` round stroke, in a `2.75rem` square, no border or fill. `--black`, `--accent` on hover, `Link focus` outline. Negative margin lines the icon up with the page edge |
 | Nav links | `--gray-dark`, weight 400, `1.5rem` apart in the row. Hover draws the rule and sprig (see States) but keeps the color. `aria-current`: `--accent` only, with the rule and sprig on hover like the other links. Underlined in forced colors, where the color is lost |
 | `ThemeSwitch` | One icon button, no border or fill, `--gray-dark` icon, `--accent` on hover. The icon shows the current mode and each click moves to the next: system, the opposite of the OS, then the other pinned scheme. Icons: half-filled circle (system), sun, moon. Negative margins line the icon up with the links. Last in `.site-nav`: at the end of the row from `60rem` (`2.25rem`), under the links in the drawer (`2.75rem`). Hidden without JS |
