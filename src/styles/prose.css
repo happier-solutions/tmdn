@@ -1,0 +1,33 @@
+/* Long-form text in posts and static pages. Toc and tag lists set their own spacing. */
+.prose :is(ol, ul):not(.tags, .toc-list) {
+	margin-block: 1em;
+	padding-inline-start: 1.5rem;
+}
+.prose :is(ol, ul):not(.tags, .toc-list) > li + li {
+	margin-top: 0.5rem;
+}
+.prose h2 {
+	margin-block: 2.5rem 0.75rem;
+}
+.prose h3 {
+	margin-block: 2rem 0.5rem;
+}
+.prose blockquote {
+	margin-block: 1.5rem;
+}
+/* Keeps h2 well under the h1, which is close to 1.75em on a phone. */
+@media (width < 40rem) {
+	.prose h2 {
+		font-size: 1.5em;
+	}
+	.prose h3 {
+		font-size: 1.25em;
+	}
+	.prose blockquote {
+		padding-inline-start: 1rem;
+		font-size: 1em;
+	}
+	.prose pre {
+		padding: 1rem;
+	}
+}

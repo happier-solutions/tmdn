@@ -150,6 +150,39 @@ const isFirstPage = page.currentPage === 1;
 		margin: 0;
 	}
 
+	/* A phone has no width to spare for a frame: the bands run edge to edge, split by rules alone,
+	   and the list starts right under the header. */
+	@media (width < 40rem) {
+		:global(#main) {
+			padding-block-start: 0;
+		}
+		.ruled {
+			margin-inline: -1rem;
+			border-inline: 0;
+		}
+		.intro,
+		.posts {
+			border-width: 1px 0 0;
+			box-shadow: inset 0 -1px var(--gold);
+		}
+		.intro .cell,
+		.posts .cell {
+			margin-inline: 0;
+			border-inline: 0;
+		}
+		.posts .cell {
+			--py: 1.25rem;
+		}
+		.intro .facts {
+			--py: 0.75rem;
+			flex-wrap: nowrap;
+			justify-content: space-between;
+		}
+		.facts div {
+			display: flex;
+			gap: 0.5rem;
+		}
+	}
 	@media (min-width: 40rem) {
 		.intro {
 			grid-template-columns: minmax(0, 1fr) 14rem;

@@ -24,7 +24,7 @@ const { title, description, pubDate, category, confidence, heroImage } = post.da
 				<Image
 					src={heroImage}
 					alt=""
-					sizes={featured ? '(min-width: 72rem) 48rem, (min-width: 64rem) 67vw, (min-width: 40rem) 50vw, 100vw' : '(min-width: 72rem) 24rem, (min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 6rem'}
+					sizes={featured ? '(min-width: 72rem) 48rem, (min-width: 64rem) 67vw, (min-width: 40rem) 50vw, 100vw' : '(min-width: 72rem) 24rem, (min-width: 64rem) 33vw, (min-width: 40rem) 50vw, 5rem'}
 					widths={featured ? [480, 800, 1200, 1600] : [192, 480, 800]}
 					loading={featured ? 'eager' : 'lazy'}
 					fetchpriority={featured ? 'high' : undefined}
@@ -163,6 +163,47 @@ const { title, description, pubDate, category, confidence, heroImage } = post.da
 	}
 	.featured h2 {
 		font-size: 1.5rem;
+	}
+
+	/* One column: the text beside a small image that keeps its square, so a long description can't
+	   stretch it into a sliver. `.text` dissolves so the meta can run under both, on one line. */
+	@media (width < 40rem) {
+		article:not(.featured) .layout {
+			grid-template: 'title thumb' auto 'description thumb' 1fr 'meta meta' auto / minmax(0, 1fr) 5rem;
+			gap: 0.5rem 1rem;
+			box-sizing: border-box;
+			padding: var(--py) var(--px);
+		}
+		article:not(.featured) .text {
+			display: contents;
+		}
+		article:not(.featured) .thumb {
+			grid-area: thumb;
+			align-self: start;
+			border-radius: 8px;
+		}
+		article:not(.featured) h2 {
+			grid-area: title;
+		}
+		article:not(.featured) .description {
+			grid-area: description;
+			font-size: 0.875rem;
+		}
+		article:not(.featured) .meta {
+			grid-area: meta;
+		}
+		.featured .thumb {
+			aspect-ratio: 16 / 9;
+		}
+		.text {
+			gap: 0.5rem;
+		}
+		.meta {
+			font-size: 0.75rem;
+		}
+		.text .meta {
+			padding-top: 0.25rem;
+		}
 	}
 
 	/* The list's columns start here, so this follows the viewport, not the post's own width. */

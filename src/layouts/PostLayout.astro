@@ -38,7 +38,17 @@ const hasToc = tocHeadings.length >= 3;
 		<article class="prose">
 			{heroImage && (
 				<figure class="hero">
-					<Image class="hero-image" width={1020} height={510} src={heroImage} alt="" />
+					<Image
+						class="hero-image"
+						width={1020}
+						height={510}
+						widths={[480, 800, 1020]}
+						sizes="(min-width: 42rem) 42rem, 100vw"
+						loading="eager"
+						fetchpriority="high"
+						src={heroImage}
+						alt=""
+					/>
 					{heroCredit && <figcaption>{heroCredit}</figcaption>}
 				</figure>
 			)}
@@ -56,7 +66,7 @@ const hasToc = tocHeadings.length >= 3;
 			<slot />
 			{tags.length > 0 && (
 				<ul class="tags" aria-label="Thẻ chủ đề">
-					{tags.map((tag) => <li><a href={`/chu-de/${tag}/`}>#{labelOf(TAGS, tag)}</a></li>)}
+					{tags.map((tag) => <li><a href={`/chu-de/${tag}/`}><span class="link-line">#{labelOf(TAGS, tag)}</span></a></li>)}
 				</ul>
 			)}
 		</article>
@@ -96,21 +106,41 @@ const hasToc = tocHeadings.length >= 3;
 	.post-header {
 		margin-bottom: 2rem;
 	}
+	/* Flush to the header and the screen's edges: it takes the page's top padding and side padding. */
+	@media (width < 40rem) {
+		.hero {
+			margin: -2rem -1rem 1.5rem;
+		}
+		.hero-image {
+			border-radius: 0;
+		}
+		figcaption {
+			padding-inline: 1rem;
+		}
+		.post-header {
+			margin-bottom: 1.5rem;
+		}
+	}
 	.tags {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.25rem 1rem;
-		margin: 2.5rem 0 0;
+		gap: 0 1rem;
+		margin: 1.5rem 0 0;
 		padding: 0;
 		list-style: none;
 		font-size: 0.875rem;
+	}
+	.tags a {
+		display: flex;
+		align-items: center;
+		min-height: 2.75rem;
 	}
 	.post-rail {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.5rem;
-		margin-top: 2.5rem;
+		margin-top: 1.5rem;
 	}
 	.toc-inline {
 		margin-bottom: 2rem;
@@ -129,6 +159,9 @@ const hasToc = tocHeadings.length >= 3;
 	}
 	.toc-inline :global(.toc) {
 		padding-bottom: 0.75rem;
+	}
+	.toc-inline :global(a) {
+		padding-block: 0.5rem;
 	}
 	.toc-rail {
 		display: none;

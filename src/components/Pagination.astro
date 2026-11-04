@@ -24,7 +24,13 @@ const { page } = Astro.props;
 		margin-top: 2rem;
 		font-size: 1rem;
 	}
+	/* A thumb-sized target around the text link. */
+	a {
+		display: flex;
+		align-items: center;
+		min-height: 2.75rem;
+	}
 	a[rel='next'] {
-		text-align: right;
+		justify-content: end;
 	}
 </style>

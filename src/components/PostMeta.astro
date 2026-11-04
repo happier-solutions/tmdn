@@ -23,6 +23,16 @@ const { pubDate, updatedDate, category, confidence } = post.data;
 		margin: 0.5rem 0 0;
 		color: var(--gray);
 		font-size: 0.875rem;
+		line-height: 1.5;
+	}
+	/* A larger tap area with no effect on layout; the link's padding would lower its hover rule. */
+	.meta a {
+		position: relative;
+	}
+	.meta a::before {
+		content: '';
+		position: absolute;
+		inset: -0.75rem -0.25rem;
 	}
 	/* The hover sprig takes the separator's place, so the text after it never moves.
 	   The margin makes that place wide enough for the sprig. */
