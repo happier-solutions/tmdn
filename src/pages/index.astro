@@ -1,70 +1,70 @@
 ---
-import { getCollection } from 'astro:content';
-import BaseHead from '../components/BaseHead.astro';
-import Footer from '../components/Footer.astro';
-import FormattedDate from '../components/FormattedDate.astro';
-import Header from '../components/Header.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import PostCard from '../components/PostCard.astro';
+import { PAGE_SIZE, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { CATEGORIES } from '../data/taxonomy';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getPublishedPosts } from '../lib/posts';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-);
+const latestPosts = (await getPublishedPosts()).slice(0, PAGE_SIZE);
 ---
 
-<!doctype html>
-<html lang="vi">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-		<style>
-			ul {
-				margin: 0;
-				padding: 0;
-				list-style: none;
-			}
-			li + li {
-				margin-top: 2.5rem;
-			}
-			a {
-				display: block;
-				color: inherit;
-				text-decoration: none;
-			}
-			a:hover h2 {
-				color: var(--accent);
-			}
-			h2 {
-				margin: 0;
-				font-size: 1.5rem;
-			}
-			.date,
-			p {
-				color: rgb(var(--gray));
-			}
-			.date {
-				font-size: 0.875rem;
-			}
-			p {
-				margin: 0.25rem 0 0;
-			}
-		</style>
-	</head>
-	<body>
-		<Header />
-		<main>
-			<h1 class="sr-only">{SITE_TITLE}</h1>
-			{posts.length === 0 && <p>Chưa có bài viết.</p>}
-			<ul>
-				{posts.map((post) => (
-					<li>
-						<a href={`/blog/${post.id}/`}>
-							<div class="date"><FormattedDate date={post.data.pubDate} /></div>
-							<h2>{post.data.title}</h2>
-							<p>{post.data.description}</p>
-						</a>
-					</li>
-				))}
-			</ul>
-		</main>
-		<Footer />
-	</body>
-</html>
+<BaseLayout description={SITE_DESCRIPTION}>
+	<section class="intro">
+		<h1>{SITE_TITLE}</h1>
+		<p>
+			Nhật ký công khai của một người đang học về lãnh đạo và quản trị: quan sát môi trường điều
+			hành, đặt câu hỏi, tìm hiểu bản chất rồi rút ra bài học.
+		</p>
+		<p>
+			Viết cho chủ doanh nghiệp SME, quản lý trẻ và người sắp bước vào vị trí điều hành. Đây là ghi
+			chép của người đang học, không phải lời khuyên của chuyên gia.
+		</p>
+		<a href="/gioi-thieu/">Đọc thêm về hành trình này</a>
+	</section>
+
+	<section aria-labelledby="journey-heading">
+		<h2 id="journey-heading">Hành trình học</h2>
+		<dl class="categories">
+			{CATEGORIES.map(({ slug, label, description }) => (
+				<div>
+					<dt><a href={`/${slug}/`}>{label}</a></dt>
+					<dd>{description}</dd>
+				</div>
+			))}
+		</dl>
+	</section>
+
+	<section aria-labelledby="latest-heading">
+		<h2 id="latest-heading">Bài mới nhất</h2>
+		{latestPosts.length === 0 && <p>Chưa có bài viết.</p>}
+		<ul class="post-list">
+			{latestPosts.map((post) => <li><PostCard {post} /></li>)}
+		</ul>
+		<p class="all-posts"><a href="/bai-viet/">Xem tất cả bài viết</a></p>
+	</section>
+</BaseLayout>
+<style>
+	section + section {
+		margin-top: 3.5rem;
+	}
+	.intro p {
+		margin: 0 0 1em;
+	}
+	.categories {
+		margin: 0;
+	}
+	.categories > div + div {
+		margin-top: 0.75rem;
+	}
+	dt {
+		font-weight: 700;
+	}
+	dd {
+		margin: 0;
+		color: rgb(var(--gray));
+		font-size: 1rem;
+	}
+	.all-posts {
+		margin: 2.5rem 0 0;
+	}
+</style>

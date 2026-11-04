@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import { PAGE_SIZE } from '../../consts';
+import { CATEGORIES } from '../../data/taxonomy';
+import ListLayout from '../../layouts/ListLayout.astro';
+import { getPublishedPosts, type Post } from '../../lib/posts';
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getPublishedPosts();
+	return CATEGORIES.flatMap((category) =>
+		paginate(
+			posts.filter((post) => post.data.category === category.slug),
+			{ params: { category: category.slug }, props: { category }, pageSize: PAGE_SIZE },
+		),
+	);
+}) satisfies GetStaticPaths;
+
+type Props = { page: Page<Post>; category: (typeof CATEGORIES)[number] };
+
+const { page, category } = Astro.props;
+---
+
+<ListLayout title={category.label} description={category.description} {page} />

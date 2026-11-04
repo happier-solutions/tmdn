@@ -1,0 +1,32 @@
+---
+import { type Post, postUrl } from '../lib/posts';
+
+interface Props {
+	posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 && (
+	<section aria-labelledby="related-heading">
+		<h2 id="related-heading">Bài liên quan</h2>
+		<ul>
+			{posts.map((post) => <li><a href={postUrl(post)}>{post.data.title}</a></li>)}
+		</ul>
+	</section>
+)}
+<style>
+	section {
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--gold);
+	}
+	h2 {
+		font-size: 1.25rem;
+	}
+	ul {
+		margin: 0;
+		padding-left: 1.25rem;
+	}
+</style>

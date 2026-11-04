@@ -13,7 +13,7 @@ Trang quản trị: `/admin/index.html`. Cấu hình CMS nằm ở `public/admin
 
 ## Bài viết
 
-Mỗi bài là một thư mục `src/content/blog/<slug>/` gồm `index.md` và ảnh của bài.
+Mỗi bài là một thư mục `src/content/posts/<slug>/` gồm `index.md` và ảnh của bài. Chuyên mục, thẻ và mức độ chắc chắn khai báo ở `src/data/taxonomy.ts`, và phải khớp với `public/admin/config.yml`. Kế hoạch dự án nằm ở `docs/plan.md`.
 
 ## Deploy
 

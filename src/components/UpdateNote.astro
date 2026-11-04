@@ -1,0 +1,30 @@
+---
+import type { Post } from '../lib/posts';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	post: Post;
+}
+
+const { changedMindNote, updatedDate } = Astro.props.post.data;
+---
+
+{changedMindNote && (
+	<aside>
+		<strong>Tôi đã đổi quan điểm</strong>
+		{updatedDate && <> (<FormattedDate date={updatedDate} />)</>}
+		<p>{changedMindNote}</p>
+	</aside>
+)}
+<style>
+	aside {
+		margin-bottom: 2rem;
+		padding: 0.75rem 1rem;
+		border-left: 3px solid var(--gold);
+		background: rgb(var(--gray-light));
+		font-size: 1rem;
+	}
+	p {
+		margin: 0.25rem 0 0;
+	}
+</style>

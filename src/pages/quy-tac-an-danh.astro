@@ -1,0 +1,12 @@
+---
+import { getEntry, render } from 'astro:content';
+import PageLayout from '../layouts/PageLayout.astro';
+
+const entry = await getEntry('pages', 'quy-tac-an-danh');
+if (!entry) throw new Error('Missing page content: quy-tac-an-danh');
+const { Content } = await render(entry);
+---
+
+<PageLayout {...entry.data}>
+	<Content />
+</PageLayout>

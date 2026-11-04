@@ -1,0 +1,28 @@
+---
+import { CATEGORIES, CONFIDENCE_LEVELS, labelOf } from '../data/taxonomy';
+import { getReadingMinutes, type Post } from '../lib/posts';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	post: Post;
+}
+
+const { post } = Astro.props;
+const { pubDate, updatedDate, category, confidence } = post.data;
+---
+
+<div class="meta">
+	<FormattedDate date={pubDate} />
+	{updatedDate && <>{' · Cập nhật '}<FormattedDate date={updatedDate} /></>}
+	{' · '}<a href={`/${category}/`}>{labelOf(CATEGORIES, category)}</a>
+	{' · '}{getReadingMinutes(post)} phút đọc
+</div>
+<p class="confidence">Mức độ chắc chắn: <strong>{labelOf(CONFIDENCE_LEVELS, confidence)}</strong></p>
+<style>
+	.meta,
+	.confidence {
+		margin: 0.5rem 0 0;
+		color: rgb(var(--gray));
+		font-size: 0.875rem;
+	}
+</style>

@@ -1,0 +1,15 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import { PAGE_SIZE } from '../../consts';
+import ListLayout from '../../layouts/ListLayout.astro';
+import { getPublishedPosts, type Post } from '../../lib/posts';
+
+export const getStaticPaths = (async ({ paginate }) =>
+	paginate(await getPublishedPosts(), { pageSize: PAGE_SIZE })) satisfies GetStaticPaths;
+
+type Props = { page: Page<Post> };
+
+const { page } = Astro.props;
+---
+
+<ListLayout title="Tất cả bài viết" description="Mọi ghi chép trên hành trình học, mới nhất trước." {page} />

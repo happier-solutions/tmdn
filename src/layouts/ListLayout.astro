@@ -1,0 +1,37 @@
+---
+import type { Page } from 'astro';
+import Pagination from '../components/Pagination.astro';
+import PostCard from '../components/PostCard.astro';
+import type { Post } from '../lib/posts';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	title: string;
+	description: string;
+	page: Page<Post>;
+}
+
+const { title, description, page } = Astro.props;
+const pageTitle = page.currentPage > 1 ? `${title} (trang ${page.currentPage})` : title;
+---
+
+<BaseLayout title={pageTitle} {description}>
+	<header class="list-header">
+		<h1>{title}</h1>
+		<p>{description}</p>
+	</header>
+	{page.data.length === 0 && <p>Chưa có bài viết.</p>}
+	<ul class="post-list">
+		{page.data.map((post) => <li><PostCard {post} /></li>)}
+	</ul>
+	<Pagination {page} />
+</BaseLayout>
+<style>
+	.list-header {
+		margin-bottom: 2.5rem;
+	}
+	.list-header p {
+		margin: 0;
+		color: rgb(var(--gray));
+	}
+</style>

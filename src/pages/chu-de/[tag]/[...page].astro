@@ -1,0 +1,23 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import { PAGE_SIZE } from '../../../consts';
+import { TAGS } from '../../../data/taxonomy';
+import ListLayout from '../../../layouts/ListLayout.astro';
+import { getPublishedPosts, type Post } from '../../../lib/posts';
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getPublishedPosts();
+	return TAGS.flatMap((tag) =>
+		paginate(
+			posts.filter((post) => (post.data.tags as string[]).includes(tag.slug)),
+			{ params: { tag: tag.slug }, props: { tag }, pageSize: PAGE_SIZE },
+		),
+	);
+}) satisfies GetStaticPaths;
+
+type Props = { page: Page<Post>; tag: (typeof TAGS)[number] };
+
+const { page, tag } = Astro.props;
+---
+
+<ListLayout title={tag.label} description={`Các bài viết về chủ đề ${tag.label.toLowerCase()}.`} {page} />

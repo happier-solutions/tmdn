@@ -1,0 +1,18 @@
+---
+import { TAGS } from '../../data/taxonomy';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedPosts } from '../../lib/posts';
+
+const posts = await getPublishedPosts();
+const countOf = (tag: string) =>
+	posts.filter((post) => (post.data.tags as string[]).includes(tag)).length;
+---
+
+<BaseLayout title="Chủ đề" description="Các chủ đề được nhắc đến trên blog.">
+	<h1>Chủ đề</h1>
+	<ul>
+		{TAGS.map(({ slug, label }) => (
+			<li><a href={`/chu-de/${slug}/`}>{label}</a> ({countOf(slug)})</li>
+		))}
+	</ul>
+</BaseLayout>

@@ -3,3 +3,5 @@
 
 export const SITE_TITLE = 'Tư Mã Đại Nhân';
 export const SITE_DESCRIPTION = 'Hành trình ký: quan sát, suy ngẫm, trưởng thành.';
+
+export const PAGE_SIZE = 5;

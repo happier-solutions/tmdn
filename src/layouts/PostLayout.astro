@@ -1,0 +1,62 @@
+---
+import { getImage, Image } from 'astro:assets';
+import PostMeta from '../components/PostMeta.astro';
+import PrevNext from '../components/PrevNext.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import UpdateNote from '../components/UpdateNote.astro';
+import { labelOf, TAGS } from '../data/taxonomy';
+import type { Post } from '../lib/posts';
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+	post: Post;
+	related: Post[];
+	newer?: Post;
+	older?: Post;
+}
+
+const { post, related, newer, older } = Astro.props;
+const { title, description, heroImage, tags } = post.data;
+
+const shareImage = heroImage
+	? (await getImage({ src: heroImage, width: 1200, format: 'jpeg' })).src
+	: undefined;
+---
+
+<BaseLayout {title} {description} image={shareImage} type="article">
+	<article class="prose">
+		{heroImage && <Image class="hero-image" width={1020} height={510} src={heroImage} alt="" />}
+		<header class="post-header">
+			<h1>{title}</h1>
+			<PostMeta {post} />
+		</header>
+		<UpdateNote {post} />
+		<slot />
+		{tags.length > 0 && (
+			<ul class="tags" aria-label="Thẻ chủ đề">
+				{tags.map((tag) => <li><a href={`/chu-de/${tag}/`}>#{labelOf(TAGS, tag)}</a></li>)}
+			</ul>
+		)}
+	</article>
+	<RelatedPosts posts={related} />
+	<PrevNext {newer} {older} />
+</BaseLayout>
+<style>
+	.hero-image {
+		display: block;
+		width: 100%;
+		margin-bottom: 2rem;
+	}
+	.post-header {
+		margin-bottom: 2rem;
+	}
+	.tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1rem;
+		margin: 2.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		font-size: 0.875rem;
+	}
+</style>

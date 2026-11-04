@@ -2,10 +2,24 @@
 import { SITE_TITLE } from '../consts';
 
 const today = new Date();
+const links = [
+	{ href: '/bai-viet/', label: 'Tất cả bài viết' },
+	{ href: '/chu-de/', label: 'Chủ đề' },
+	{ href: '/lien-he/', label: 'Liên hệ' },
+	{ href: '/quy-tac-an-danh/', label: 'Quy tắc ẩn danh' },
+	{ href: '/rss.xml', label: 'RSS' },
+];
 ---
 
 <footer>
-	<div class="wrap">&copy; {today.getFullYear()} {SITE_TITLE}</div>
+	<div class="wrap wrap-wide">
+		<nav aria-label="Liên kết cuối trang">
+			<ul>
+				{links.map(({ href, label }) => <li><a {href}>{label}</a></li>)}
+			</ul>
+		</nav>
+		<p>&copy; {today.getFullYear()} {SITE_TITLE}</p>
+	</div>
 </footer>
 <style>
 	footer {
@@ -13,5 +27,22 @@ const today = new Date();
 		background: var(--ink);
 		color: var(--paper);
 		font-size: 0.875rem;
+	}
+	ul {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1.25rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	a {
+		color: var(--gold-light);
+	}
+	a:hover {
+		color: var(--paper);
+	}
+	p {
+		margin: 0.75rem 0 0;
 	}
 </style>

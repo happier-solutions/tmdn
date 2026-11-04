@@ -1,0 +1,48 @@
+---
+import { type Post, postUrl } from '../lib/posts';
+
+interface Props {
+	newer?: Post;
+	older?: Post;
+}
+
+const { newer, older } = Astro.props;
+---
+
+{(newer || older) && (
+	<nav aria-label="Bài trước và bài sau">
+		{older && (
+			<a class="older" href={postUrl(older)} rel="prev">
+				<span>Bài trước</span>
+				{older.data.title}
+			</a>
+		)}
+		{newer && (
+			<a class="newer" href={postUrl(newer)} rel="next">
+				<span>Bài sau</span>
+				{newer.data.title}
+			</a>
+		)}
+	</nav>
+)}
+<style>
+	nav {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+		gap: 1rem 2rem;
+		margin-top: 3rem;
+	}
+	a {
+		font-size: 1rem;
+		line-height: 1.4;
+	}
+	.newer {
+		grid-column: -2 / -1;
+		text-align: right;
+	}
+	span {
+		display: block;
+		color: rgb(var(--gray));
+		font-size: 0.875rem;
+	}
+</style>

@@ -17,18 +17,62 @@ output:
   omit_empty_optional_fields: true
 
 collections:
-  - name: blog
+  - name: posts
     label: Bài viết
     label_singular: Bài viết
-    folder: src/content/blog
+    folder: src/content/posts
     path: '{{slug}}/index'
     media_folder: ''
     public_folder: ''
     create: true
+    sortable_fields: [pubDate, title]
     fields:
       - { name: title, label: Tiêu đề, widget: string }
-      - { name: description, label: Mô tả, widget: string }
+      - { name: description, label: Mô tả ngắn, widget: string, hint: '1-2 dòng, hiện ở danh sách bài và khi chia sẻ.' }
+      - { name: draft, label: Bản nháp, widget: boolean, default: true, hint: 'Tắt để xuất bản. Nhớ ẩn danh tên người, tên công ty trước khi đăng.' }
       - { name: pubDate, label: Ngày đăng, widget: datetime }
+      # Options below must match src/data/taxonomy.ts.
+      - name: category
+        label: Chuyên mục
+        widget: select
+        options:
+          - { label: Quan sát, value: quan-sat }
+          - { label: Câu hỏi, value: cau-hoi }
+          - { label: Nghiên cứu, value: nghien-cuu }
+          - { label: Bài học, value: bai-hoc }
+          - { label: Nhật ký học tập, value: nhat-ky-hoc-tap }
+      - name: confidence
+        label: Mức độ chắc chắn
+        widget: select
+        default: quan-sat-ban-dau
+        options:
+          - { label: Quan sát ban đầu, value: quan-sat-ban-dau }
+          - { label: Đã tìm hiểu thêm, value: da-tim-hieu-them }
+          - { label: Đã kiểm chứng, value: da-kiem-chung }
+      - name: tags
+        label: Thẻ chủ đề
+        widget: select
+        multiple: true
+        required: false
+        options:
+          - { label: Ra quyết định, value: ra-quyet-dinh }
+          - { label: Xây đội ngũ, value: xay-doi-ngu }
+          - { label: Giao tiếp, value: giao-tiep }
+          - { label: Văn hóa, value: van-hoa }
+          - { label: Tài chính, value: tai-chinh }
+          - { label: Vận hành, value: van-hanh }
       - { name: updatedDate, label: Ngày cập nhật, widget: datetime, required: false }
+      - { name: changedMindNote, label: Ghi chú "Tôi đã đổi quan điểm", widget: text, required: false }
       - { name: heroImage, label: Ảnh đại diện, widget: image, required: false }
+      - { name: body, label: Nội dung, widget: markdown }
+
+  - name: pages
+    label: Trang
+    label_singular: Trang
+    folder: src/content/pages
+    create: false
+    delete: false
+    fields:
+      - { name: title, label: Tiêu đề, widget: string }
+      - { name: description, label: Mô tả ngắn, widget: string }
       - { name: body, label: Nội dung, widget: markdown }

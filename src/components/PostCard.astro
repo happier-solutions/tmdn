@@ -1,0 +1,43 @@
+---
+import { CATEGORIES, labelOf } from '../data/taxonomy';
+import { type Post, postUrl } from '../lib/posts';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	post: Post;
+}
+
+const { post } = Astro.props;
+const { title, description, pubDate, category } = post.data;
+---
+
+<article>
+	<div class="meta">
+		<FormattedDate date={pubDate} />{' · '}<a href={`/${category}/`}>{labelOf(CATEGORIES, category)}</a>
+	</div>
+	<h2><a href={postUrl(post)}>{title}</a></h2>
+	<p>{description}</p>
+</article>
+<style>
+	.meta,
+	p {
+		color: rgb(var(--gray));
+	}
+	.meta {
+		font-size: 0.875rem;
+	}
+	h2 {
+		margin: 0;
+		font-size: 1.5rem;
+	}
+	h2 a {
+		color: inherit;
+		text-decoration: none;
+	}
+	h2 a:hover {
+		color: var(--accent);
+	}
+	p {
+		margin: 0.25rem 0 0;
+	}
+</style>
