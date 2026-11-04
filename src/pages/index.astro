@@ -1,70 +1,237 @@
 ---
+import CategoryIcon from '../components/CategoryIcon.astro';
+import HomeStats from '../components/HomeStats.astro';
 import PostCard from '../components/PostCard.astro';
-import { PAGE_SIZE, SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 import { CATEGORIES } from '../data/taxonomy';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { getPublishedPosts } from '../lib/posts';
 
-const latestPosts = (await getPublishedPosts()).slice(0, PAGE_SIZE);
+// Seven posts and the "all posts" cell make full rows at one, two and four columns.
+const HOME_POSTS = 7;
+
+const posts = await getPublishedPosts();
+const latest = posts.slice(0, HOME_POSTS);
+
+const countOf = (slug: string) => posts.filter((post) => post.data.category === slug).length;
 ---
 
-<BaseLayout description={SITE_DESCRIPTION}>
-	<section class="intro">
-		<h1>{SITE_TITLE}</h1>
-		<p>
-			Nhật ký công khai của một người đang học về lãnh đạo và quản trị: quan sát môi trường điều
-			hành, đặt câu hỏi, tìm hiểu bản chất rồi rút ra bài học.
-		</p>
-		<p>
-			Viết cho chủ doanh nghiệp SME, quản lý trẻ và người sắp bước vào vị trí điều hành. Đây là ghi
-			chép của người đang học, không phải lời khuyên của chuyên gia.
-		</p>
-		<a href="/gioi-thieu/">Đọc thêm về hành trình này</a>
-	</section>
+<BaseLayout description={SITE_DESCRIPTION} wide>
+	<div class="home">
+		<section class="ruled about" aria-labelledby="site-name">
+			<div class="cell name">
+				<h1 id="site-name">{SITE_TITLE}</h1>
+			</div>
+			<div class="cell">
+				<p class="statement">
+					Nhật ký công khai của một người đang học về lãnh đạo và quản trị: quan sát môi trường điều
+					hành, đặt câu hỏi, tìm hiểu bản chất rồi rút ra bài học.
+				</p>
+			</div>
+			<div class="cell text">
+				<p>
+					Viết cho chủ doanh nghiệp SME, quản lý trẻ và người sắp bước vào vị trí điều hành. Đây là
+					ghi chép của người đang học, không phải lời khuyên của chuyên gia.
+				</p>
+				<a href="/gioi-thieu/"><span class="link-line">Đọc thêm về hành trình này</span></a>
+			</div>
+		</section>
 
-	<section aria-labelledby="journey-heading">
-		<h2 id="journey-heading">Hành trình học</h2>
-		<dl class="categories">
-			{CATEGORIES.map(({ slug, label, description }) => (
-				<div>
-					<dt><a href={`/${slug}/`}>{label}</a></dt>
-					<dd>{description}</dd>
+		<section aria-labelledby="latest-heading">
+			<div class="head">
+				<h2 id="latest-heading">Bài viết mới nhất</h2>
+			</div>
+			{latest.length ? (
+				<div class="ruled posts">
+					{latest.map((post) => (
+						<div class="cell post">
+							<PostCard {post} imageSizes="(min-width: 64rem) 18rem, (min-width: 40rem) 50vw, 100vw" />
+						</div>
+					))}
+					<div class="cell linked">
+						<p class="all"><a href="/bai-viet/">Xem tất cả bài viết</a></p>
+						<p class="count">{posts.length} bài</p>
+					</div>
 				</div>
-			))}
-		</dl>
-	</section>
+			) : (
+				<p>Chưa có bài viết.</p>
+			)}
+		</section>
 
-	<section aria-labelledby="latest-heading">
-		<h2 id="latest-heading">Bài mới nhất</h2>
-		{latestPosts.length === 0 && <p>Chưa có bài viết.</p>}
-		<ul class="post-list">
-			{latestPosts.map((post) => <li><PostCard {post} /></li>)}
-		</ul>
-		<p class="all-posts"><a href="/bai-viet/">Xem tất cả bài viết</a></p>
-	</section>
+		<section aria-labelledby="categories-heading">
+			<div class="head">
+				<h2 id="categories-heading">Danh mục</h2>
+				<p>Năm chặng, từ điều tôi thấy đến điều tôi rút ra được.</p>
+			</div>
+			<div class="ruled categories">
+				{CATEGORIES.map(({ slug, label, description }) => {
+					const count = countOf(slug);
+					return (
+						<div class="cell linked">
+							<CategoryIcon {slug} />
+							<h3><a href={`/${slug}/`}>{label}</a></h3>
+							<p>{description}</p>
+							<p class="count">{count ? `${count} bài` : 'Chưa có bài'}</p>
+						</div>
+					);
+				})}
+			</div>
+		</section>
+
+		{posts.length > 0 && (
+			<section aria-labelledby="stats-heading">
+				<div class="head">
+					<h2 id="stats-heading">Thống kê</h2>
+					<p>Tính từ các bài đã đăng, tự cập nhật mỗi khi có bài mới.</p>
+				</div>
+				<HomeStats {posts} />
+			</section>
+		)}
+	</div>
 </BaseLayout>
 <style>
-	section + section {
-		margin-top: 3.5rem;
+	.home {
+		display: flex;
+		flex-direction: column;
+		gap: 3.5rem;
 	}
-	.intro p {
-		margin: 0 0 1em;
+	h2 {
+		margin: 0;
+		font-size: 2rem;
 	}
-	.categories {
+	h3 {
+		margin: 0;
+		font-size: 1.25rem;
+	}
+	p {
 		margin: 0;
 	}
-	.categories > div + div {
-		margin-top: 0.75rem;
+
+	.head {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 2rem;
+		align-items: baseline;
+		justify-content: space-between;
+		margin-bottom: 1.25rem;
+		font-size: 1rem;
 	}
-	dt {
-		font-weight: 700;
-	}
-	dd {
-		margin: 0;
+	.head p,
+	.linked p {
 		color: var(--gray);
 		font-size: 1rem;
 	}
-	.all-posts {
-		margin: 2.5rem 0 0;
+
+	/* 6.95em is the set width of the name in Playfair Display at this tracking. */
+	.name {
+		container-type: inline-size;
+		padding-block: 1rem;
+	}
+	h1 {
+		margin: 0;
+		font-size: calc(100cqi / 6.95);
+		letter-spacing: -0.02em;
+		line-height: 1.2;
+		white-space: nowrap;
+	}
+	.statement {
+		color: var(--black);
+		font-family: var(--font-heading);
+		font-size: clamp(1.25rem, 1rem + 1vw, 1.75rem);
+		line-height: 1.35;
+		text-wrap: pretty;
+	}
+	.text {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		align-items: start;
+		font-size: 1rem;
+	}
+	.text a {
+		margin-top: auto;
+	}
+
+	/* The card's link covers the whole cell, and its image bleeds to the cell's rules. */
+	.post {
+		position: relative;
+		display: flex;
+	}
+	.post :global(article) {
+		position: static;
+		flex: 1;
+		min-width: 0;
+	}
+	.post :global(.thumb) {
+		margin: calc(-1 * var(--py)) calc(-1 * var(--px)) 1rem;
+	}
+	.post :global(p) {
+		font-size: 1rem;
+	}
+
+	/* Cards wrap by themselves: five in a row at full width, and the last row stretches, so no cell is empty. */
+	.categories {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	.categories .cell {
+		--px: 1.5rem;
+		flex: 1 1 10rem;
+	}
+	.linked {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	/* The whole cell is the link, and it keeps the link's hover rule and sprig. */
+	.linked a::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+	.linked:has(a:hover) {
+		background: var(--gray-light);
+	}
+	.linked:has(a:focus-visible) a {
+		outline: none;
+	}
+	.linked:has(a:focus-visible) {
+		outline: 2px solid var(--accent);
+		outline-offset: -3px;
+	}
+	.linked .all {
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+	}
+	.linked .count {
+		margin-top: auto;
+		padding-top: 1rem;
+		font-size: 0.875rem;
+	}
+
+	@media (min-width: 40rem) {
+		.name {
+			padding-block: 1.5rem;
+			grid-column: 1 / -1;
+		}
+		.about {
+			grid-template-columns: 3fr 2fr;
+		}
+		.posts {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+	@media (min-width: 64rem) {
+		.posts {
+			grid-template-columns: repeat(4, 1fr);
+		}
+		.posts .cell {
+			--py: 1.5rem;
+			--px: 1.5rem;
+		}
+		.post :global(h2) {
+			font-size: 1.25rem;
+		}
 	}
 </style>

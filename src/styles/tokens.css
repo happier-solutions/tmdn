@@ -15,7 +15,6 @@
 	--gold-deep: #a57f45;
 
 	--paper: light-dark(#f4efe6, #191713);
-	--ivory: light-dark(#fbf8f2, #23201a);
 	--gold: light-dark(#b8935a, #9a7b4c);
 
 	/* Gold is only 2.5:1 on light paper, so it stays decorative. Text and links use these (AA). */
@@ -32,7 +31,6 @@
 	:root {
 		color-scheme: light;
 		--paper: #f4efe6;
-		--ivory: #fbf8f2;
 		--gold: #b8935a;
 		--accent: #7a5a2b;
 		--accent-dark: #5c4320;

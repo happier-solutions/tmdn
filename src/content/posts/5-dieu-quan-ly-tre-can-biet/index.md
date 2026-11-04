@@ -2,6 +2,8 @@
 title: 5 điều quản lý trẻ cần biết khi lần đầu dẫn dắt đội
 description: Năm điều tôi tổng hợp được từ quan sát và trò chuyện, viết lại cho người mới nhận vai trò quản lý.
 pubDate: 2026-10-26T08:00:00+07:00
+heroImage: hero.jpg
+heroCredit: Chim chích trên cành mai, Utagawa Hiroshige, khoảng 1835
 category: bai-hoc
 tags: [xay-doi-ngu, giao-tiep]
 confidence: da-kiem-chung

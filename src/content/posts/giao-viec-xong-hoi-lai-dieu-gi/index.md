@@ -2,6 +2,8 @@
 title: Giao việc xong, người quản lý hỏi lại điều gì
 description: Một thói quen nhỏ khi giao việc mà tôi mới để ý gần đây.
 pubDate: 2026-10-12T08:00:00+07:00
+heroImage: hero.jpg
+heroCredit: Lan và đá, tranh khắc Tô Châu, thế kỷ 18
 category: quan-sat
 tags: [giao-tiep, xay-doi-ngu]
 confidence: quan-sat-ban-dau

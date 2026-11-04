@@ -3,6 +3,7 @@ title: Chào mừng đến với blog
 description: Bài viết mẫu để kiểm tra Astro và Sveltia CMS.
 pubDate: 2026-11-04T08:00:00+07:00
 heroImage: hero.jpg
+heroCredit: Hoa lê, Qian Xuan
 category: nhat-ky-hoc-tap
 tags: []
 confidence: quan-sat-ban-dau

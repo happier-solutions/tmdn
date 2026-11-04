@@ -13,9 +13,10 @@ export async function getPublishedPosts(): Promise<Post[]> {
 
 export const postUrl = (post: Post) => `/${post.data.category}/${post.id}/`;
 
+export const getSyllables = (post: Post) => post.body?.trim().split(/\s+/).length ?? 0;
+
 export function getReadingMinutes(post: Post) {
-	const syllables = post.body?.trim().split(/\s+/).length ?? 0;
-	return Math.max(1, Math.round(syllables / SYLLABLES_PER_MINUTE));
+	return Math.max(1, Math.round(getSyllables(post) / SYLLABLES_PER_MINUTE));
 }
 
 /** Other posts ranked by shared tags, with same-category posts ranked just above no overlap. */

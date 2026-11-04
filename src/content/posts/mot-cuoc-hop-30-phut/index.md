@@ -2,6 +2,8 @@
 title: Một cuộc họp 30 phút và cách người điều hành chốt vấn đề
 description: Điều tôi để ý nhất không phải là quyết định, mà là câu hỏi cuối cùng trước khi tan họp.
 pubDate: 2026-10-05T08:00:00+07:00
+heroImage: hero.jpg
+heroCredit: Lan, Zheng Sixiao, 1306
 category: quan-sat
 tags: [ra-quyet-dinh, giao-tiep]
 confidence: quan-sat-ban-dau

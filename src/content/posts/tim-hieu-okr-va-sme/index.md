@@ -2,6 +2,8 @@
 title: Tìm hiểu mô hình OKR và vì sao SME hay làm sai
 description: Ghi chép ban đầu về OKR và vài giả thuyết của tôi về chỗ doanh nghiệp nhỏ dễ vấp.
 pubDate: 2026-10-22T08:00:00+07:00
+heroImage: hero.jpg
+heroCredit: Cành mai, Yi Yuwon, 1888
 category: nghien-cuu
 tags: [van-hanh]
 confidence: da-tim-hieu-them

@@ -2,6 +2,8 @@
 title: Tháng này tôi đã sai ở đâu
 description: Nhìn lại một tháng quan sát, và một nhận định tôi đã phải sửa.
 pubDate: 2026-10-30T08:00:00+07:00
+heroImage: hero.jpg
+heroCredit: Cành mai nở, Soga Shōhaku, khoảng 1770
 updatedDate: 2026-11-03T08:00:00+07:00
 category: nhat-ky-hoc-tap
 tags: [tai-chinh, van-hoa]

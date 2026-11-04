@@ -1,29 +1,45 @@
 ---
+import { Image } from 'astro:assets';
 import { CATEGORIES, labelOf } from '../data/taxonomy';
 import { type Post, postUrl } from '../lib/posts';
 import FormattedDate from './FormattedDate.astro';
 
 interface Props {
 	post: Post;
+	/** `sizes` for the hero image. Without it the card is text only. */
+	imageSizes?: string;
 }
 
-const { post } = Astro.props;
-const { title, description, pubDate, category } = post.data;
+const { post, imageSizes } = Astro.props;
+const { title, description, pubDate, category, heroImage } = post.data;
+const image = imageSizes ? heroImage : undefined;
 ---
 
-<article>
+<article class:list={{ 'has-image': image }}>
+	{image && (
+		<div class="thumb">
+			<Image src={image} sizes={imageSizes} widths={[480, 800, 1200]} alt="" loading="lazy" />
+		</div>
+	)}
+	<h2><a href={postUrl(post)}>{title}</a></h2>
+	<p>{description}</p>
 	<div class="meta">
 		<FormattedDate date={pubDate} />{' · '}<a href={`/${category}/`}>{labelOf(CATEGORIES, category)}</a>
 	</div>
-	<h2><a href={postUrl(post)}>{title}</a></h2>
-	<p>{description}</p>
 </article>
 <style>
+	article {
+		display: flex;
+		flex-direction: column;
+	}
 	.meta,
 	p {
 		color: var(--gray);
 	}
+	/* Sits at the card's foot, so dates line up across cards of one grid row. */
 	.meta {
+		margin-top: auto;
+		padding-top: 0.75rem;
 		font-size: 0.875rem;
 	}
 	h2 {
@@ -38,5 +54,42 @@ const { title, description, pubDate, category } = post.data;
 	}
 	p {
 		margin: 0.25rem 0 0;
+	}
+	/* `min-height: 0` holds the frame at 3:2 in the card's column, whatever the image's own ratio. */
+	.thumb {
+		min-height: 0;
+		aspect-ratio: 3 / 2;
+		margin-bottom: 1rem;
+		overflow: clip;
+	}
+	.thumb img {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		border-radius: 0;
+	}
+	/* The title's link covers the card, so the image opens the post. The category stays its own link. */
+	.has-image {
+		position: relative;
+	}
+	.has-image h2 a::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+	}
+	.has-image .meta a {
+		position: relative;
+		z-index: 1;
+	}
+	/* The painting drifts closer inside its frame, slower than the link's own hover. */
+	@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+		.thumb img {
+			scale: 1;
+			transition: scale 500ms ease-out;
+		}
+		.has-image:has(h2 a:hover) img {
+			scale: 1.04;
+		}
 	}
 </style>

@@ -64,6 +64,7 @@ collections:
       - { name: updatedDate, label: Ngày cập nhật, widget: datetime, required: false }
       - { name: changedMindNote, label: Ghi chú "Tôi đã đổi quan điểm", widget: text, required: false }
       - { name: heroImage, label: Ảnh đại diện, widget: image, required: false }
+      - { name: heroCredit, label: Chú thích ảnh đại diện, widget: string, required: false }
       - { name: body, label: Nội dung, widget: markdown }
 
   - name: pages

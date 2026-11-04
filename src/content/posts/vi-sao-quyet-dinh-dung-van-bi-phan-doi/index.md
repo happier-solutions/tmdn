@@ -2,6 +2,8 @@
 title: Vì sao quyết định đúng vẫn bị đội ngũ phản đối?
 description: Điều tôi chưa hiểu về khoảng cách giữa một quyết định đúng và một quyết định được ủng hộ.
 pubDate: 2026-10-19T08:00:00+07:00
+heroImage: hero.jpg
+heroCredit: Trúc trong gió, Jin Nong, 1763
 category: cau-hoi
 tags: [ra-quyet-dinh, van-hoa]
 confidence: quan-sat-ban-dau

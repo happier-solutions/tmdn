@@ -12,6 +12,7 @@ const posts = defineCollection({
 			pubDate: z.coerce.date(),
 			updatedDate: z.coerce.date().optional(),
 			heroImage: z.optional(image()),
+			heroCredit: z.string().optional(),
 			category: z.enum(slugsOf(CATEGORIES)),
 			tags: z.array(z.enum(slugsOf(TAGS))).default([]),
 			confidence: z.enum(slugsOf(CONFIDENCE_LEVELS)),

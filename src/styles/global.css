@@ -7,6 +7,7 @@
 @import './tokens.css';
 @import './transitions.css';
 @import './links.css';
+@import './ruled.css';
 
 html {
 	/* Keeps anchor and focus targets clear of the pinned header. */
@@ -27,11 +28,11 @@ body {
 	line-height: 1.7;
 }
 /* On short pages the signup band ends the first screen and the footer links sit below it.
-   4.0625rem is the header's height. svh keeps it from jumping as a phone's URL bar collapses. */
+   3.3125rem is the header's height. svh keeps it from jumping as a phone's URL bar collapses. */
 .first-screen {
 	display: flex;
 	flex-direction: column;
-	min-height: calc(100svh - 4.0625rem);
+	min-height: calc(100svh - 3.3125rem);
 }
 main,
 .wrap {

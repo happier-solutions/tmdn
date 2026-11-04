@@ -1,0 +1,19 @@
+/* A frame of cells split by gold rules. Cells overlap by 1px, so neighbours share a rule at any column count.
+   Zero specificity on cells, so a component's scoped rule always wins. */
+.ruled {
+	display: grid;
+	overflow: clip;
+	border: 1px solid var(--gold);
+}
+:where(.ruled > .cell) {
+	--py: 1.5rem;
+	--px: 1rem;
+	margin: -1px 0 0 -1px;
+	padding: var(--py) var(--px);
+	border-block-start: 1px solid var(--gold);
+	border-inline-start: 1px solid var(--gold);
+	@media (min-width: 40rem) {
+		--py: 2rem;
+		--px: 2rem;
+	}
+}
