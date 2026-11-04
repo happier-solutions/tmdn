@@ -12,6 +12,8 @@ import BaseLayout from './BaseLayout.astro';
 interface Props {
 	title: string;
 	description: string;
+	/** Search snippet, longer than the visible `description`. */
+	metaDescription: string;
 	page: Page<Post>;
 	/** Date of the newest post in the whole list, not just this page. */
 	newest?: Date;
@@ -19,13 +21,17 @@ interface Props {
 	category?: CategorySlug;
 }
 
-const { title, description, page, newest, category } = Astro.props;
+const { title, description, metaDescription, page, newest, category } = Astro.props;
 const pageTitle = page.currentPage > 1 ? `${title} (trang ${page.currentPage})` : title;
 const stage = CATEGORIES.findIndex(({ slug }) => slug === category) + 1;
 const isFirstPage = page.currentPage === 1;
 ---
 
-<BaseLayout title={pageTitle} {description} wide>
+<BaseLayout
+	title={pageTitle}
+	description={isFirstPage ? metaDescription : `Trang ${page.currentPage}: ${metaDescription}`}
+	wide
+>
 	<div class="ruled intro">
 		<header class="cell">
 			{category && <CategoryIcon slug={category} size={48} />}

@@ -22,4 +22,11 @@ type Props = { page: Page<Post>; category: (typeof CATEGORIES)[number]; newest?:
 const { page, category, newest } = Astro.props;
 ---
 
-<ListLayout title={category.label} description={category.description} category={category.slug} {newest} {page} />
+<ListLayout
+	title={category.label}
+	description={category.description}
+	metaDescription={category.metaDescription}
+	category={category.slug}
+	{newest}
+	{page}
+/>

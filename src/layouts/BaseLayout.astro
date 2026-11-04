@@ -4,7 +4,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import ScrollTop from '../components/ScrollTop.astro';
 import Signup from '../components/Signup.astro';
-import { SITE_TITLE } from '../consts';
+import { SITE_SEO_TITLE, SITE_TITLE } from '../consts';
 
 interface Props {
 	title?: string;
@@ -16,7 +16,10 @@ interface Props {
 }
 
 const { title, description, image, type, wide } = Astro.props;
-const fullTitle = title ? `${title} · ${SITE_TITLE}` : SITE_TITLE;
+// Search results cut titles at about 60 characters, so a long one drops the site name.
+const TITLE_MAX = 60;
+const withSite = `${title} · ${SITE_TITLE}`;
+const fullTitle = !title ? SITE_SEO_TITLE : withSite.length <= TITLE_MAX ? withSite : title;
 ---
 
 <!doctype html>

@@ -1,6 +1,6 @@
 ---
 title: Quy tắc ẩn danh
-description: Cách blog này xử lý thông tin về doanh nghiệp và con người có thật.
+description: "Cách blog này xử lý thông tin về doanh nghiệp và con người có thật: ẩn tên người, tên công ty, số liệu nhạy cảm và chi tiết dễ nhận ra."
 ---
 
 Nhiều bài viết ở đây dựa trên quan sát thực tế tại doanh nghiệp. Vì vậy, trước khi đăng, tôi luôn:

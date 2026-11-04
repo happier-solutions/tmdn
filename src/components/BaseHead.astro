@@ -89,7 +89,9 @@ const fontPreload = [
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
-<meta property="og:url" content={Astro.url} />
+<meta property="og:url" content={canonicalURL} />
+<meta property="og:site_name" content={SITE_TITLE} />
+<meta property="og:locale" content="vi_VN" />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:image" content={new URL(image, Astro.url)} />

@@ -2,7 +2,13 @@
 // You can import this data from anywhere in your site by using the `import` keyword.
 
 export const SITE_TITLE = 'Tư Mã Đại Nhân';
-export const SITE_DESCRIPTION = 'Hành trình ký: quan sát, suy ngẫm, trưởng thành.';
+/** Home page <title>. Other pages use `<page> · SITE_TITLE`. */
+export const SITE_SEO_TITLE = 'Tư Mã Đại Nhân: nhật ký học lãnh đạo và quản trị';
+/** Search snippet for the home page, also the RSS description. Aim for 120-155 characters. */
+export const SITE_DESCRIPTION =
+	'Nhật ký công khai của một người đang học lãnh đạo và quản trị: quan sát, đặt câu hỏi, rút ra bài học cho chủ doanh nghiệp SME và quản lý trẻ.';
+/** Short line in the footer. */
+export const SITE_TAGLINE = 'Hành trình ký: quan sát, suy ngẫm, trưởng thành.';
 
 /** Shown under each post. The blog has one author, who writes under SITE_TITLE. */
 export const AUTHOR_BIO =

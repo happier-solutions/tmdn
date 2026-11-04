@@ -3,6 +3,7 @@ import { CONTACT_EMAIL } from '../consts';
 import Branch from './Branch.astro';
 
 const subject = encodeURIComponent('Đăng ký nhận bài mới');
+const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 ---
 
 <section class="cta-band" aria-labelledby="signup-title">
@@ -12,8 +13,11 @@ const subject = encodeURIComponent('Đăng ký nhận bài mới');
 			<p class="eyebrow">Nhận bài mới</p>
 			<h2 id="signup-title">Mỗi khi tôi học được điều gì mới, bạn sẽ biết ngay.</h2>
 		</div>
-		<!-- Without JS the browser still opens the mail app, with the bare field as the body. -->
-		<form class="signup" method="post" enctype="text/plain" action={`mailto:${CONTACT_EMAIL}?subject=${subject}`}>
+		<!-- `data-mailto`, not `action`: Chrome reports a `mailto:` action as mixed content. Needs JS, so without it only the address shows. -->
+		<noscript>
+			<p>Để nhận bài mới, gửi thư đến <a href={mailto}>{CONTACT_EMAIL}</a> hoặc theo dõi qua <a href="/rss.xml">RSS</a>.</p>
+		</noscript>
+		<form class="signup" data-mailto={mailto}>
 			<label for="signup-email">Email của bạn</label>
 			<input
 				id="signup-email"
@@ -62,7 +66,7 @@ const subject = encodeURIComponent('Đăng ký nhận bài mới');
 		form.addEventListener('submit', (event) => {
 			event.preventDefault();
 			const body = `Xin chào,\r\n\r\nTôi muốn nhận bài mới qua email: ${email.value}\r\n\r\nCảm ơn bạn.`;
-			location.href = `${form.action}&body=${encodeURIComponent(body)}`;
+			location.href = `${form.dataset.mailto}&body=${encodeURIComponent(body)}`;
 			// A missing mail app fails silently, so always show the address to write to.
 			form.querySelector<HTMLElement>('.sent')?.removeAttribute('hidden');
 		});
@@ -114,6 +118,11 @@ const subject = encodeURIComponent('Đăng ký nhận bài mới');
 		display: grid;
 		grid-template-columns: minmax(0, 1fr) auto;
 		gap: 0.5rem;
+	}
+	@media (scripting: none) {
+		.signup {
+			display: none;
+		}
 	}
 	label,
 	.signup p {

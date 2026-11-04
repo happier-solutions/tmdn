@@ -8,7 +8,7 @@ const countOf = (tag: string) =>
 	posts.filter((post) => (post.data.tags as string[]).includes(tag)).length;
 ---
 
-<BaseLayout title="Chủ đề" description="Các chủ đề được nhắc đến trên blog.">
+<BaseLayout title="Chủ đề" description="Các chủ đề của blog về lãnh đạo và quản trị: ra quyết định, xây đội ngũ, giao tiếp, văn hóa, tài chính và vận hành doanh nghiệp.">
 	<h1>Chủ đề</h1>
 	<ul>
 		{TAGS.map(({ slug, label }) => (

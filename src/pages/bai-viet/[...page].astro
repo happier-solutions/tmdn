@@ -14,4 +14,10 @@ type Props = { page: Page<Post>; newest?: Date };
 const { page, newest } = Astro.props;
 ---
 
-<ListLayout title="Tất cả bài viết" description="Mọi ghi chép trên hành trình học, mới nhất trước." {newest} {page} />
+<ListLayout
+	title="Tất cả bài viết"
+	description="Mọi ghi chép trên hành trình học, mới nhất trước."
+	metaDescription="Tất cả bài viết về lãnh đạo và quản trị doanh nghiệp, từ quan sát, câu hỏi, nghiên cứu đến bài học, cho chủ doanh nghiệp SME và quản lý trẻ."
+	{newest}
+	{page}
+/>

@@ -22,4 +22,10 @@ type Props = { page: Page<Post>; tag: (typeof TAGS)[number]; newest?: Date };
 const { page, tag, newest } = Astro.props;
 ---
 
-<ListLayout title={tag.label} description={`Các bài viết về chủ đề ${tag.label.toLowerCase()}.`} {newest} {page} />
+<ListLayout
+	title={tag.label}
+	description={`Các bài viết về chủ đề ${tag.label.toLowerCase()}.`}
+	metaDescription={`Các bài viết về ${tag.label.toLowerCase()} trong lãnh đạo và quản trị: quan sát, câu hỏi, nghiên cứu và bài học cho chủ doanh nghiệp SME, quản lý trẻ.`}
+	{newest}
+	{page}
+/>

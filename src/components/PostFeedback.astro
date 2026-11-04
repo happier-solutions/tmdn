@@ -9,16 +9,14 @@ interface Props {
 const { title } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const subject = encodeURIComponent(`Đánh giá bài viết: ${title}`);
+const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 ---
 
-<!-- Without JS the browser still opens the mail app, with the post's title as the subject. -->
-<form
-	class="post-feedback"
-	method="post"
-	enctype="text/plain"
-	action={`mailto:${CONTACT_EMAIL}?subject=${subject}`}
-	data-url={url}
->
+<!-- `data-mailto`, not `action`: Chrome reports a `mailto:` action as mixed content. Needs JS, so without it only the address shows. -->
+<noscript>
+	<p class="no-js">Bạn muốn góp ý cho bài viết này? Gửi thư đến <a href={mailto}>{CONTACT_EMAIL}</a>.</p>
+</noscript>
+<form class="post-feedback" data-mailto={mailto} data-url={url}>
 	<fieldset>
 		<legend>Bạn thấy bài viết này thế nào?</legend>
 		<StarRating small />
@@ -60,16 +58,22 @@ const subject = encodeURIComponent(`Đánh giá bài viết: ${title}`);
 		const message = String(data.get('message')).trim().replace(/\n/g, '\r\n');
 		const lines = ['Xin chào,', '', `Bài viết: ${form.dataset.url}`, `Đánh giá: ${data.get('rating')}/5 sao`];
 		if (message) lines.push('', 'Góp ý:', message);
-		location.href = `${form.action}&body=${encodeURIComponent(lines.join('\r\n'))}`;
+		location.href = `${form.dataset.mailto}&body=${encodeURIComponent(lines.join('\r\n'))}`;
 		// A missing mail app fails silently, so always show the address to write to.
 		form.querySelector<HTMLElement>('.message')?.removeAttribute('hidden');
 	});
 </script>
 
 <style>
-	form {
+	form,
+	.no-js {
 		margin-top: 3rem;
 		font-size: 0.875rem;
+	}
+	@media (scripting: none) {
+		form {
+			display: none;
+		}
 	}
 	p {
 		margin: 0;
@@ -194,7 +198,8 @@ const subject = encodeURIComponent(`Đánh giá bài viết: ${title}`);
 		color: var(--gray-dark);
 	}
 	@media print {
-		form {
+		form,
+		.no-js {
 			display: none;
 		}
 	}

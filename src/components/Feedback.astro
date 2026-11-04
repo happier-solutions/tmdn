@@ -3,10 +3,14 @@ import { CONTACT_EMAIL } from '../consts';
 import StarRating from './StarRating.astro';
 
 const subject = encodeURIComponent('Đánh giá và góp ý');
+const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 ---
 
-<!-- Without JS the browser still opens the mail app, with the bare fields as the body. -->
-<form class="ruled feedback" method="post" enctype="text/plain" action={`mailto:${CONTACT_EMAIL}?subject=${subject}`}>
+<!-- `data-mailto`, not `action`: Chrome reports a `mailto:` action as mixed content. Needs JS, so without it only the address shows. -->
+<noscript>
+	<p>Bạn muốn đánh giá hay góp ý cho blog? Gửi thư đến <a href={mailto}>{CONTACT_EMAIL}</a>.</p>
+</noscript>
+<form class="ruled feedback" data-mailto={mailto}>
 	<div class="cell">
 		<fieldset role="radiogroup" aria-errormessage="feedback-error">
 			<legend>Bạn thấy blog này thế nào?</legend>
@@ -57,7 +61,7 @@ const subject = encodeURIComponent('Đánh giá và góp ý');
 			const message = String(data.get('message')).trim().replace(/\n/g, '\r\n');
 			const lines = ['Xin chào,', '', `Đánh giá: ${data.get('rating')}/5 sao`];
 			if (message) lines.push('', 'Góp ý:', message);
-			location.href = `${form.action}&body=${encodeURIComponent(lines.join('\r\n'))}`;
+			location.href = `${form.dataset.mailto}&body=${encodeURIComponent(lines.join('\r\n'))}`;
 			// A missing mail app fails silently, so always show the address to write to.
 			form.querySelector<HTMLElement>('.sent')?.removeAttribute('hidden');
 		});
@@ -67,6 +71,11 @@ const subject = encodeURIComponent('Đánh giá và góp ý');
 <style>
 	.feedback {
 		background: var(--gray-light);
+	}
+	@media (scripting: none) {
+		.feedback {
+			display: none;
+		}
 	}
 	p {
 		margin: 0;

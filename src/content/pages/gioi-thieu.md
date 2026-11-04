@@ -1,6 +1,6 @@
 ---
 title: Giới thiệu
-description: Blog này là nhật ký công khai của một người đang học về lãnh đạo và quản trị.
+description: "Tư Mã Đại Nhân là nhật ký công khai của một người đang học về lãnh đạo và quản trị, viết cho chủ doanh nghiệp SME và quản lý trẻ."
 ---
 
 Đây là nhật ký công khai của một người đang quan sát môi trường điều hành doanh nghiệp, đặt câu hỏi, nghiên cứu bản chất và chuyển hóa thành bài học có ích cho người khác.
