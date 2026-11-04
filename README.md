@@ -17,9 +17,9 @@ Mỗi bài là một thư mục `src/content/posts/<slug>/` gồm `index.md` và
 
 ## Deploy
 
-Cloudflare Pages kết nối trực tiếp với repo này và tự build khi có push lên `main` (build command `pnpm build`, output `dist`). Phiên bản Node lấy từ `.node-version`.
+GitHub Actions (`.github/workflows/ci.yml`) build mỗi push và PR. Push lên `main` sẽ được deploy lên Cloudflare Pages (project `tmdn`) bằng `wrangler pages deploy dist`, nên không tốn build của Cloudflare. Phiên bản Node lấy từ `.node-version`.
 
-GitHub Actions (`.github/workflows/ci.yml`) chỉ build để kiểm tra mỗi push và PR, không deploy.
+Workflow cần hai repo secret là `CLOUDFLARE_API_TOKEN` (quyền Account > Cloudflare Pages > Edit) và `CLOUDFLARE_ACCOUNT_ID`. Automatic deployments của project phải được tắt trong Cloudflare (Settings > Builds & deployments) để không build hai lần.
 
 ## Đăng nhập CMS
 
