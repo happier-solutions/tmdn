@@ -14,7 +14,7 @@ export default defineConfig({
 			provider: fontProviders.fontsource(),
 			name: 'Montserrat',
 			cssVariable: '--font-body',
-			weights: [400, 700],
+			weights: [400, 600, 700],
 			styles: ['normal'],
 			subsets: ['vietnamese', 'latin', 'latin-ext'],
 			fallbacks: ['sans-serif'],

@@ -39,7 +39,7 @@ const ariaCurrent = (slug: string) => {
 <style>
 	.site-header {
 		border-bottom: 1px solid var(--gold);
-		background: var(--paper);
+		background: var(--ivory);
 	}
 	/* Pinned while reading, except where it would take too much height:
 	   landscape phones and the wrapped-row fallback without popover support. */
@@ -87,7 +87,8 @@ const ariaCurrent = (slug: string) => {
 		display: block;
 		padding-block: 0.5rem;
 		color: rgb(var(--gray-dark));
-		font-size: 1rem;
+		font-size: 0.875rem;
+		font-weight: 600;
 	}
 	.site-nav a:hover,
 	.site-nav a[aria-current] {
@@ -106,7 +107,8 @@ const ariaCurrent = (slug: string) => {
 		background: none;
 		color: rgb(var(--black));
 		font: inherit;
-		font-size: 1rem;
+		font-size: 0.875rem;
+		font-weight: 600;
 		cursor: pointer;
 	}
 	@media (max-width: 59.99rem) {
@@ -123,7 +125,7 @@ const ariaCurrent = (slug: string) => {
 				padding: 1rem;
 				border: 0;
 				border-left: 1px solid var(--gold);
-				background: var(--paper);
+				background: var(--ivory);
 				color: inherit;
 			}
 			.site-nav::backdrop {

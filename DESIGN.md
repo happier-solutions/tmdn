@@ -19,6 +19,7 @@ A reflective notebook: minimal, calm, comfortable for long reading.
 |---|---|---|
 | `--ink` | `#111110` | Footer and skip link background, selection text |
 | `--paper` | `#f4efe6` | Page background, text on dark |
+| `--ivory` | `#fbf8f2` | Header and drawer background |
 | `--gold` | `#b8935a` | Rules, borders, left bars |
 | `--gold-light` | `#c9a56b` | Footer links, selection background |
 | `--gold-deep` | `#a57f45` | Logo only |
@@ -31,13 +32,13 @@ A reflective notebook: minimal, calm, comfortable for long reading.
 
 `--black` and `--gray*` are RGB triplets: use `rgb(var(--gray))` or `rgba(var(--black), 0.4)`.
 
-**Text rule:** gold tones are decorative on `--paper` (2.02-3.20:1). On light backgrounds use `--accent` (5.51:1), `--accent-dark` (8.05:1), or `--gray` (5.23:1). On `--ink` use `--gold-light` (8.17:1) or `--paper`.
+**Text rule:** gold tones are decorative on `--paper` (2.02-3.20:1). On `--paper` use `--accent` (5.51:1), `--accent-dark` (8.05:1), or `--gray` (5.23:1). On `--ink` use `--gold-light` (8.17:1) or `--paper`.
 
 ## Typography
 
 | Role | Font | Weights | Variable |
 |---|---|---|---|
-| Body, UI | Montserrat, `sans-serif` | 400, 700 | `--font-body` |
+| Body, UI | Montserrat, `sans-serif` | 400, 600 (nav and menu buttons only), 700 | `--font-body` |
 | Headings, brand | Playfair Display, `serif` | 400 only | `--font-heading` |
 
 Loaded with Astro Fonts (Fontsource), subsets `vietnamese`, `latin`, `latin-ext`. Only weight 400 of `latin` and `vietnamese` is preloaded.
@@ -50,8 +51,8 @@ Loaded with Astro Fonts (Fontsource), subsets `vietnamese`, `latin`, `latin-ext`
 | Brand, related posts heading | `1.25rem` |
 | Body | `1.125rem` |
 | Blockquote | `1.125em` |
-| Nav, pagination, category descriptions, notes | `1rem` |
-| Meta, tags, footer, labels | `0.875rem` |
+| Pagination, category descriptions, notes | `1rem` |
+| Nav, menu buttons, meta, tags, footer, labels | `0.875rem` |
 
 Line height: body 1.7, headings 1.25. Headings use `text-wrap: balance`; `.prose` paragraphs, list items, and blockquotes use `pretty`.
 
@@ -77,9 +78,9 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 
 | Component | Notes |
 |---|---|
-| `Header` | Logo and title left, nav right, gold bottom rule, `--paper` background. Pinned to the top (`position: sticky`, `z-index: 1`) from `34rem` viewport height and with popover support. `html` has `scroll-padding-top: 5rem` to match, so grow it if the bar grows. Below `60rem`: right drawer via Popover API, width `min(20rem, 85vw)`; wrapped row without popover support |
-| Menu buttons | Gold border, no fill, square, min height `2.75rem` |
-| Nav links | `--gray-dark`, `--accent` on hover. Same hover as every link (see States), held on for `aria-current` |
+| `Header` | Logo and title left, nav right, gold bottom rule, `--ivory` background. Pinned to the top (`position: sticky`, `z-index: 1`) from `34rem` viewport height and with popover support. `html` has `scroll-padding-top: 5rem` to match, so grow it if the bar grows. Below `60rem`: right drawer via Popover API, `--ivory` background, width `min(20rem, 85vw)`; wrapped row without popover support |
+| Menu buttons | Gold border, no fill, weight 600, square, min height `2.75rem` |
+| Nav links | `--gray-dark`, weight 600, `--accent` on hover. Same hover as every link (see States), held on for `aria-current` |
 | `Footer` | `--ink` background, `--paper` text, `--gold-light` links, `--paper` on hover |
 | `PostCard` | Meta, title, `--gray` description. No border or background |
 | `PostMeta` | Dates, category, reading time, confidence level |
@@ -100,7 +101,7 @@ Layouts: `BaseLayout` (shell), `PageLayout` (static), `ListLayout` (paginated), 
 ## Brand
 
 - Logos: `public/logo.svg`, `public/favicon.svg`. `public/sprig.svg` is the logo's branch alone, used as the link hover mask.
-- Colors are also hardcoded in those files and in `theme-color` in `BaseHead.astro`; update them with the palette.
+- Colors are also hardcoded in those files and in `theme-color` in `BaseHead.astro` (matches the header, `--ivory`); update them with the palette.
 - UI copy is Vietnamese, first person, as a learner rather than an expert (for example "Tôi đã đổi quan điểm").
 
 ## Known gaps
