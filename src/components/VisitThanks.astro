@@ -12,7 +12,7 @@
 </div>
 
 <script>
-	import { trackForegroundTime } from '../lib/foreground-time';
+	import { formatDuration, trackForegroundTime } from '../lib/foreground-time';
 
 	const COUNT_UP = 900;
 	const STORAGE_KEY = 'visit-thanked';
@@ -36,15 +36,6 @@
 		} catch {}
 	}
 
-	function format(ms: number) {
-		const total = Math.floor(ms / 1000);
-		const hours = Math.floor(total / 3600);
-		const minutes = Math.floor((total % 3600) / 60);
-		const seconds = total % 60;
-		if (hours) return `${hours} giờ ${minutes} phút`;
-		return minutes ? `${minutes} phút ${seconds} giây` : `${seconds} giây`;
-	}
-
 	if (root && content && inner && time && !alreadyThanked()) {
 		const foregroundTime = trackForegroundTime();
 
@@ -54,7 +45,7 @@
 			const tick = (now: number) => {
 				if (!root.dataset.thanks) return;
 				const progress = reduced ? 1 : Math.min((now - start) / COUNT_UP, 1);
-				const text = format(foregroundTime() * (1 - (1 - progress) ** 3));
+				const text = formatDuration(foregroundTime() * (1 - (1 - progress) ** 3));
 				if (time.textContent !== text) time.textContent = text;
 				requestAnimationFrame(tick);
 			};

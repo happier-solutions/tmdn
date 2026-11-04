@@ -18,7 +18,7 @@ const image = imageSizes ? heroImage : undefined;
 <article class:list={{ 'has-image': image }}>
 	{image && (
 		<div class="thumb">
-			<Image src={image} sizes={imageSizes} widths={[480, 800, 1200]} alt="" loading="lazy" />
+			<Image src={image} sizes={imageSizes} widths={[320, 480, 800, 1200]} alt="" loading="lazy" />
 		</div>
 	)}
 	<h2><a href={postUrl(post)}>{title}</a></h2>
@@ -81,6 +81,46 @@ const image = imageSizes ? heroImage : undefined;
 	.has-image .meta a {
 		position: relative;
 		z-index: 1;
+	}
+	/* Phones: title on top, then a small image beside a clamped description, so the list stays short.
+	   `width` and `align-self` let the description's height stretch the frame past its ratio. */
+	@media (width < 40rem) {
+		.has-image {
+			display: grid;
+			grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+			grid-template-areas:
+				'title title'
+				'thumb text'
+				'meta meta';
+			gap: 0.5rem 0.75rem;
+		}
+		.has-image h2 {
+			grid-area: title;
+		}
+		.has-image p {
+			grid-area: text;
+			display: -webkit-box;
+			margin: 0;
+			overflow: clip;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 4;
+			line-clamp: 4;
+		}
+		.has-image .meta {
+			grid-area: meta;
+			padding-top: 0;
+		}
+		.has-image .thumb {
+			position: relative;
+			grid-area: thumb;
+			align-self: stretch;
+			width: 100%;
+			margin: 0;
+		}
+		.has-image .thumb img {
+			position: absolute;
+			inset: 0;
+		}
 	}
 	/* The painting drifts closer inside its frame, slower than the link's own hover. */
 	@media (hover: hover) and (prefers-reduced-motion: no-preference) {

@@ -65,6 +65,9 @@ const subject = encodeURIComponent('Đánh giá và góp ý');
 </script>
 
 <style>
+	.feedback {
+		background: var(--gray-light);
+	}
 	p {
 		margin: 0;
 	}
@@ -86,13 +89,14 @@ const subject = encodeURIComponent('Đánh giá và góp ý');
 		font-size: 1.25rem;
 		line-height: 1.25;
 	}
+	/* --gray is only 4.48:1 on --gray-light. */
 	.title span {
-		color: var(--gray);
+		color: var(--gray-dark);
 		font-family: var(--font-body);
 		font-size: 0.875rem;
 	}
 	.note {
-		color: var(--gray);
+		color: var(--gray-dark);
 		font-size: 0.875rem;
 	}
 
@@ -108,7 +112,7 @@ const subject = encodeURIComponent('Đánh giá và góp ý');
 		padding: 0.75rem;
 		border: 1px solid var(--gray);
 		border-radius: 0;
-		background: transparent;
+		background: var(--paper);
 		color: var(--gray-dark);
 		font: inherit;
 		/* Below 1rem iOS zooms in on focus. */

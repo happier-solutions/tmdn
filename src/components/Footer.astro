@@ -32,8 +32,8 @@ const columns = [
 ---
 
 <footer>
-	<div class="wrap wrap-wide">
-		<div class="columns">
+	<div class="links">
+		<div class="wrap wrap-wide columns">
 			{columns.map(({ title, links }) => (
 				<nav aria-label={title}>
 					<h3>{title}</h3>
@@ -43,15 +43,17 @@ const columns = [
 				</nav>
 			))}
 		</div>
+	</div>
 
-		<div class="legal">
-			<img src="/favicon.svg" width="32" height="32" alt="" />
-			<p>
-				&copy; {year} {SITE_TITLE}<br />
-				{SITE_DESCRIPTION}<br />
-				Thiết kế bởi <a href="https://happier.io.vn" target="_blank" rel="noopener">Happier Solutions</a>
-			</p>
-		</div>
+	<div class="wrap wrap-wide legal">
+		<img src="/favicon.svg" width="32" height="32" alt="" />
+		<p>
+			&copy; {year} {SITE_TITLE}<br />
+			{SITE_DESCRIPTION}
+		</p>
+		<p class="credit">
+			Thiết kế bởi <a href="https://happier.io.vn" target="_blank" rel="noopener">Happier Solutions</a>
+		</p>
 	</div>
 </footer>
 
@@ -73,12 +75,15 @@ const columns = [
 		margin: 0;
 	}
 
+	/* A step of tone, not a rule, sets the links apart from Signup above and the legal row below. */
+	.links {
+		background: color-mix(in srgb, var(--on-ink) 6%, var(--ink));
+	}
 	.columns {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
 		gap: 2.5rem 2rem;
 		padding-block: 3rem;
-		border-block-start: 1px solid var(--gold);
 	}
 	h3 {
 		margin-bottom: 0.75rem;
@@ -94,16 +99,34 @@ const columns = [
 	}
 
 	.legal {
-		display: flex;
-		gap: 0.75rem;
+		display: grid;
+		grid-template-columns: auto 1fr;
+		gap: 0.5rem 0.75rem;
 		align-items: center;
 		padding-block: 1.5rem;
 		/* Keeps the text clear of ScrollTop at the end of the page. */
 		padding-inline-end: 3.5rem;
-		border-block-start: 1px solid var(--gold);
+		color: color-mix(in srgb, var(--on-ink) 75%, transparent);
 	}
 	.legal img {
 		display: block;
 		border-radius: 0;
+	}
+	.credit {
+		grid-column: 2;
+	}
+	@media (min-width: 60rem) {
+		.legal {
+			grid-template-columns: auto 1fr auto;
+		}
+		.credit {
+			grid-column: 3;
+		}
+	}
+	/* From here the column ends before ScrollTop starts. */
+	@media (min-width: 80rem) {
+		.legal {
+			padding-inline-end: 1rem;
+		}
 	}
 </style>

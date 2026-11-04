@@ -84,7 +84,7 @@ const { title, description, pubDate, category, confidence, heroImage } = post.da
 		display: flex;
 		flex-direction: column;
 		align-items: start;
-		gap: 0.5rem;
+		gap: 0.25rem;
 		min-width: 0;
 		padding: var(--py) var(--px);
 	}
@@ -108,11 +108,13 @@ const { title, description, pubDate, category, confidence, heroImage } = post.da
 		max-width: 42rem;
 		color: var(--gray);
 		font-size: 1rem;
+		line-height: 1.5;
 		text-wrap: pretty;
 	}
 	.lead,
 	.meta {
 		font-size: 0.875rem;
+		line-height: 1.5;
 	}
 	.lead {
 		color: var(--accent);
@@ -120,12 +122,13 @@ const { title, description, pubDate, category, confidence, heroImage } = post.da
 	/* At the post's foot, so the meta lines up across a row. `.text` outranks `.text p`. */
 	.text .meta {
 		margin-top: auto;
-		padding-top: 0.25rem;
+		padding-top: 0.5rem;
 		color: var(--gray);
 	}
 	.meta a {
 		position: relative;
 		z-index: 1;
+		white-space: nowrap;
 	}
 
 	article:has(h2 a:hover) {
@@ -159,7 +162,7 @@ const { title, description, pubDate, category, confidence, heroImage } = post.da
 		grid-area: 2 / 1;
 	}
 	.featured h2 {
-		font-size: clamp(1.5rem, 1.25rem + 1.5cqi, 2.25rem);
+		font-size: 1.5rem;
 	}
 
 	/* The list's columns start here, so this follows the viewport, not the post's own width. */
@@ -191,6 +194,27 @@ const { title, description, pubDate, category, confidence, heroImage } = post.da
 	@media (min-width: 64rem) {
 		.featured .layout {
 			grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+		}
+		.thumb {
+			aspect-ratio: 16 / 9;
+		}
+		.featured .thumb {
+			aspect-ratio: 2 / 1;
+		}
+		h2 {
+			font-size: 1.125rem;
+		}
+		.featured h2 {
+			font-size: 1.75rem;
+		}
+		.description {
+			font-size: 0.875rem;
+		}
+		.featured .description {
+			font-size: 1rem;
+		}
+		.meta {
+			font-size: 0.75rem;
 		}
 	}
 </style>

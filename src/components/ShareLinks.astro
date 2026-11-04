@@ -1,29 +1,27 @@
 ---
-interface Props {
-	title: string;
-}
+import { SITE_TITLE } from '../consts';
 
-const { title } = Astro.props;
 const url = new URL(Astro.url.pathname, Astro.site).href;
 const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
 ---
 
-<section class="share" aria-label="Chia sẻ bài viết" data-url={url} data-title={title}>
+<section class="share" aria-label="Chia sẻ bài viết" data-url={url}>
 	<a href={facebook} target="_blank" rel="noopener" aria-label="Chia sẻ lên Facebook" title="Chia sẻ lên Facebook">
 		<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
 			<path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
 		</svg>
 	</a>
-	<button type="button" data-action="zalo" aria-label="Chia sẻ qua Zalo" title="Chia sẻ qua Zalo">
-		<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-			<path d="M6 6h12L6 18h12" />
-		</svg>
-	</button>
 	<button type="button" data-action="copy" aria-label="Sao chép liên kết" title="Sao chép liên kết">
 		<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
 			<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
 			<path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
 		</svg>
+	</button>
+	<button type="button" data-action="thanks" aria-label="Thả tim cho bài viết" title="Thả tim cho bài viết">
+		<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+			<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+		</svg>
+		<span class="hearts" aria-hidden="true"></span>
 	</button>
 	<p class="sr-only" role="status"></p>
 	<div class="toast" popover="manual" aria-hidden="true">
@@ -32,14 +30,37 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		</svg>
 		<span></span>
 	</div>
+	<dialog class="thanks" closedby="any" aria-labelledby="thanks-title" aria-describedby="thanks-body">
+		<svg viewBox="0 0 24 24" width="32" height="32" aria-hidden="true">
+			<path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+		</svg>
+		<h2 id="thanks-title">Cảm ơn bạn đã thả tim</h2>
+		<div id="thanks-body">
+			<p class="proverb"></p>
+			<p class="wish"></p>
+			<p class="signature">{SITE_TITLE}</p>
+		</div>
+		<form method="dialog">
+			<button autofocus>Đóng</button>
+		</form>
+	</dialog>
 </section>
 <script>
+	import { readHearts, saveHearts } from '../lib/post-hearts';
+	import { pickThanksMessage, type ThanksMessage } from '../lib/thanks-messages';
+
 	const share = document.querySelector<HTMLElement>('.share');
 	const status = share?.querySelector('[role="status"]');
 	const toast = share?.querySelector<HTMLElement>('.toast');
 	const toastText = toast?.querySelector('span');
-	if (share && status && toast && toastText) {
-		const { url = '', title = '' } = share.dataset;
+	const heart = share?.querySelector<HTMLElement>('[data-action="thanks"]');
+	const heartCount = heart?.querySelector('.hearts');
+	const thanks = share?.querySelector('dialog');
+	const thanksTitle = thanks?.querySelector('h2');
+	const proverb = thanks?.querySelector('.proverb');
+	const wish = thanks?.querySelector('.wish');
+	if (share && status && toast && toastText && heart && heartCount && thanks && thanksTitle && proverb && wish) {
+		const { url = '' } = share.dataset;
 		let timer: ReturnType<typeof setTimeout>;
 		// Fades out before leaving the top layer, since Firefox and Safari can't animate that exit.
 		const hide = async () => {
@@ -60,30 +81,55 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 			clearTimeout(timer);
 			timer = setTimeout(hide, 4000);
 		};
-		const copy = async (done: string) => {
+		const copy = async () => {
 			try {
 				await navigator.clipboard.writeText(url);
-				say(done);
+				say('Đã sao chép liên kết');
 			} catch {
 				say('Không sao chép được liên kết', false);
 			}
 		};
-		// Zalo's own button needs its SDK and an Official Account, so the link goes through the phone's
-		// share sheet, which lists Zalo when it's installed, or through the clipboard on a computer.
-		const shareToZalo = async () => {
-			const toClipboard = () => copy('Đã sao chép liên kết, hãy dán vào Zalo');
-			if (!navigator.share || !matchMedia('(pointer: coarse)').matches) return toClipboard();
-			try {
-				await navigator.share({ title, url });
-			} catch (error) {
-				if ((error as Error).name !== 'AbortError') await toClipboard();
-			}
+		const path = new URL(url).pathname;
+		let hearts = readHearts(path);
+		const showHearts = () => {
+			const label = hearts ? `Thả tim cho bài viết, bạn đã thả ${hearts} lần` : 'Thả tim cho bài viết';
+			heart.ariaLabel = label;
+			heart.title = label;
+			heart.toggleAttribute('data-hearted', hearts > 0);
+			heartCount.textContent = hearts > 99 ? '99+' : hearts ? String(hearts) : '';
+		};
+		showHearts();
+		let message: ThanksMessage | undefined;
+		const showThanks = () => {
+			// Read again, as another tab may have added to it.
+			hearts = Math.max(hearts, readHearts(path)) + 1;
+			saveHearts(path, hearts);
+			showHearts();
+			thanksTitle.textContent = hearts > 1 ? `Cảm ơn bạn đã thả tim lần thứ ${hearts}` : 'Cảm ơn bạn đã thả tim';
+			message = pickThanksMessage(message);
+			proverb.textContent = message.proverb;
+			wish.textContent = message.wish;
+			thanks.showModal();
 		};
 		share.addEventListener('click', ({ target }) => {
 			const action = (target as Element).closest('button')?.dataset.action;
-			if (action === 'copy') copy('Đã sao chép liên kết');
-			if (action === 'zalo') shareToZalo();
+			if (action === 'copy') copy();
+			if (action === 'thanks') showThanks();
 		});
+		// Safari has no closedby. Press and release must both land outside, so a text selection dragged out doesn't close it.
+		if (!('closedBy' in HTMLDialogElement.prototype)) {
+			const outside = ({ clientX: x, clientY: y }: PointerEvent) => {
+				const { left, right, top, bottom } = thanks.getBoundingClientRect();
+				return x < left || x > right || y < top || y > bottom;
+			};
+			let pressedOutside = false;
+			thanks.addEventListener('pointerdown', (event) => {
+				pressedOutside = outside(event);
+			});
+			thanks.addEventListener('pointerup', (event) => {
+				if (pressedOutside && outside(event)) thanks.close();
+			});
+		}
 	}
 </script>
 <style>
@@ -93,8 +139,9 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		align-items: center;
 		gap: 0.5rem;
 	}
-	a,
-	button {
+	.share > a,
+	.share > button {
+		position: relative;
 		display: grid;
 		place-items: center;
 		box-sizing: border-box;
@@ -111,8 +158,8 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		display: none;
 	}
 	@media (hover: hover) {
-		a:hover,
-		button:hover {
+		.share > a:hover,
+		.share > button:hover {
 			border-color: var(--accent);
 			color: var(--accent);
 		}
@@ -127,6 +174,27 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 		stroke-width: 2;
 		stroke-linecap: round;
 		stroke-linejoin: round;
+	}
+	.share > button[data-hearted] svg {
+		fill: var(--gold);
+	}
+	.hearts {
+		position: absolute;
+		top: -0.25rem;
+		right: -0.25rem;
+		box-sizing: border-box;
+		min-width: 1rem;
+		padding-inline: 0.25rem;
+		border-radius: 1.25rem;
+		background: var(--accent);
+		color: var(--paper);
+		font-size: 0.75rem;
+		line-height: 1rem;
+		text-align: center;
+		pointer-events: none;
+	}
+	.hearts:empty {
+		display: none;
 	}
 	.toast {
 		--rise: 0.5rem;
@@ -170,8 +238,102 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 	.toast[data-failed] svg {
 		display: none;
 	}
+	.thanks {
+		--rise: 0.5rem;
+		box-sizing: border-box;
+		width: min(24rem, 100vw - 2rem);
+		margin: auto;
+		padding: 2rem 1.5rem;
+		border: 1px solid var(--gold);
+		background: var(--paper);
+		color: var(--gray-dark);
+		text-align: center;
+		opacity: 0;
+		transform: translateY(var(--rise));
+		overscroll-behavior: contain;
+		/* Firefox and Safari skip the exit and close at once. */
+		transition-property: opacity, transform, display, overlay;
+		transition-duration: 220ms;
+		transition-timing-function: ease-out;
+		transition-behavior: allow-discrete;
+	}
+	.thanks[open] {
+		opacity: 1;
+		transform: none;
+	}
+	.thanks::backdrop {
+		overflow: hidden;
+		overscroll-behavior: contain;
+		background: transparent;
+		transition-property: background-color, display, overlay;
+		transition-duration: 220ms;
+		transition-timing-function: ease-out;
+		transition-behavior: allow-discrete;
+	}
+	.thanks[open]::backdrop {
+		background: color-mix(in srgb, var(--ink) 60%, transparent);
+	}
+	@starting-style {
+		.thanks[open] {
+			opacity: 0;
+			transform: translateY(var(--rise));
+		}
+		.thanks[open]::backdrop {
+			background: transparent;
+		}
+	}
+	.thanks svg {
+		display: block;
+		margin: 0 auto 1rem;
+		fill: var(--gold);
+		stroke: var(--accent);
+		stroke-width: 1.5;
+	}
+	.thanks h2 {
+		margin-bottom: 1rem;
+		font-size: 1.25rem;
+	}
+	.thanks p {
+		margin: 0;
+	}
+	.thanks .proverb {
+		padding-block: 1rem;
+		border-block: 1px solid var(--gold);
+		color: var(--accent);
+		font-family: var(--font-heading);
+		font-size: 1.125rem;
+		line-height: 1.5;
+		white-space: pre-line;
+		text-wrap: balance;
+	}
+	.thanks .wish {
+		margin-top: 1rem;
+		font-size: 1rem;
+		line-height: 1.6;
+		text-wrap: pretty;
+	}
+	.thanks .signature {
+		margin-block: 0.75rem 1.5rem;
+		color: var(--gray);
+		font-size: 0.875rem;
+	}
+	.thanks button {
+		min-height: 3rem;
+		padding-inline: 1.5rem;
+		border: 0;
+		background: var(--accent);
+		color: var(--paper);
+		font: inherit;
+		font-size: 1rem;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.thanks button:hover {
+		background: var(--accent-dark);
+	}
 	@media (prefers-reduced-motion: reduce) {
-		.toast {
+		.toast,
+		.thanks {
 			--rise: 0;
 		}
 	}
@@ -182,15 +344,15 @@ const facebook = `https://www.facebook.com/sharer/sharer.php?u=${encodeURICompon
 			flex-wrap: nowrap;
 			align-items: flex-end;
 		}
-		a,
-		button {
+		.share > a,
+		.share > button {
 			width: 2.25rem;
 			height: 2.25rem;
 		}
 	}
 	/* Both buttons run on JS. The Facebook link doesn't. */
 	@media (scripting: none) {
-		button {
+		.share > button {
 			display: none;
 		}
 	}

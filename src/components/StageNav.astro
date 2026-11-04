@@ -38,22 +38,24 @@ const next = CATEGORIES[index + 1];
 </nav>
 <style>
 	nav {
-		margin-top: 3rem;
+		margin-top: 2rem;
 	}
 	.cell {
+		--py: 1.25rem;
+		background: var(--gray-light);
 		display: flex;
 		gap: 1rem;
 		align-items: center;
 	}
 	a:hover {
-		background: var(--gray-light);
+		background: var(--paper);
 	}
 	a:focus-visible {
 		outline-offset: -3px;
 	}
 	.label {
 		display: block;
-		color: var(--gray);
+		color: var(--gray-dark);
 		font-size: 0.875rem;
 	}
 	.title {
@@ -64,12 +66,15 @@ const next = CATEGORIES[index + 1];
 	.note {
 		display: none;
 		margin-bottom: 0;
-		color: var(--gray);
+		color: var(--gray-dark);
 		font-size: 1rem;
 	}
 	@media (min-width: 40rem) {
 		nav {
 			grid-template-columns: 1fr 1fr;
+		}
+		.cell {
+			--px: 1.5rem;
 		}
 		.next {
 			flex-direction: row-reverse;
@@ -81,6 +86,11 @@ const next = CATEGORIES[index + 1];
 		.note:last-child {
 			justify-content: end;
 			text-align: end;
+		}
+	}
+	@media (min-width: 64rem) {
+		.cell {
+			--px: 1.25rem;
 		}
 	}
 </style>
