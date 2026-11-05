@@ -16,10 +16,9 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const { title, description, image = '/logo.png', type = 'website' } = Astro.props;
 
-// Regular weight only. Vietnamese text needs all three subsets: `latin-ext` holds ă, đ, ĩ, ũ, ơ and ư.
+// Regular weight only. Vietnamese text needs `latin` and `vietnamese`; see the subset order in astro.config.mjs.
 const fontPreload = [
 	{ weight: 400, subset: 'latin' as const },
-	{ weight: 400, subset: 'latin-ext' as const },
 	{ weight: 400, subset: 'vietnamese' as const },
 ];
 ---

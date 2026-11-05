@@ -45,7 +45,7 @@ Tokens are full colors, switched with `light-dark()`: use `var(--gray)`. The foo
 | Headings, brand | Playfair Display, `serif` | 400 only | `--font-heading` |
 | `ShareLinks` thanks letter only | Patrick Hand, `cursive` | 400 only | `--font-hand` |
 
-Loaded with Astro Fonts (Fontsource), subsets `vietnamese`, `latin`, `latin-ext`. Only weight 400 of `latin` and `vietnamese` of Montserrat and Playfair Display is preloaded. Patrick Hand isn't, so it loads when the letter first opens.
+Loaded with Astro Fonts (Fontsource), subsets `latin-ext`, `latin`, `vietnamese`, in that order: the last declared face wins overlapping glyphs, so Vietnamese text doesn't download `latin-ext`. Only weight 400 of `latin` and `vietnamese` of Montserrat and Playfair Display is preloaded. Patrick Hand isn't, so it loads when the letter first opens.
 
 | Role | Size |
 |---|---|
