@@ -49,18 +49,13 @@
 				if (time.textContent !== text) time.textContent = text;
 				requestAnimationFrame(tick);
 			};
-			// Pinned where it is, so it doesn't move when the page scrolls. Sticky alone leaves with the section.
-			const { top, left, width } = inner.getBoundingClientRect();
-			inner.style.top = `${top}px`;
-			inner.style.left = `${left}px`;
-			inner.style.width = `${width}px`;
 			root.dataset.thanks = 'play';
 			requestAnimationFrame(tick);
 		};
 
 		const observer = new IntersectionObserver(
 			([entry]) => {
-				// Whole, or it would stay cut off once pinned. Half is enough when it can't fit.
+				// Whole, so it isn't cut off while it plays. Half is enough when it can't fit.
 				const fits = entry.boundingClientRect.height <= (entry.rootBounds?.height ?? 0);
 				if (!entry.isIntersecting || (fits && entry.intersectionRatio < 0.99)) return;
 				observer.disconnect();
@@ -104,7 +99,7 @@
 		[data-thanks] > .content {
 			animation: thanks-fade 700ms ease-out 4400ms backwards;
 		}
-		/* Above whatever scrolls under the pinned thanks. */
+		/* Above the transparent content it plays over. */
 		[data-thanks] > .thanks {
 			z-index: 1;
 			display: block;
@@ -118,7 +113,7 @@
 			animation-play-state: paused;
 		}
 
-		/* Waits in view while the reader scrolls through the content's space. The paper hides what passes under it once pinned. */
+		/* Stays in view while the reader scrolls through the content's space, and leaves with the section so it never covers the footer. */
 		.inner {
 			position: sticky;
 			top: max(6rem, 30svh);
@@ -127,9 +122,6 @@
 			border: 1px solid var(--gold);
 			background: var(--paper);
 			text-align: center;
-		}
-		[data-thanks='play'] .inner {
-			position: fixed;
 		}
 		p {
 			margin: 0;
