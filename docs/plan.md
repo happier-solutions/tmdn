@@ -14,7 +14,7 @@ Dựa trên hai tài liệu (không đưa vào git): "Cấu trúc nội dung web
 | URL cũ | Redirect 301 trong `public/_redirects` (5 chuyên mục cũ, `/chu-de/` cũ) |
 | Repo | Tạm giữ public ở `happier-solutions/tmdn`. Bản nháp lưu trong repo nên ai cũng đọc được trên GitHub, cần ẩn danh trước khi lưu |
 | Đăng nhập CMS | Tạm giữ fine-grained PAT, chưa chuyển sang OAuth |
-| Tên miền | Tạm dùng `tmdn.pages.dev` |
+| Tên miền | `tumadainhan.com` |
 
 ## Menu
 
