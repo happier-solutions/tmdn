@@ -27,8 +27,9 @@ export default defineConfig({
 			provider: fontProviders.fontsource(),
 			name: 'Newsreader',
 			cssVariable: '--font-heading',
-			weights: [400, 500],
-			styles: ['normal', 'italic'],
+			// Regular only: italics are synthesized, which saves four font files on every page.
+			weights: [400],
+			styles: ['normal'],
 			subsets: ['latin-ext', 'latin', 'vietnamese'],
 			fallbacks: ['serif'],
 		},

@@ -44,23 +44,23 @@ Tokens are full colors, switched with `light-dark()`: use `var(--text-2)`. The f
 | Role | Font | Weights | Variable |
 |---|---|---|---|
 | Body, UI, metadata | Be Vietnam Pro, `sans-serif` | 400, 600 (`strong`, labels, buttons) | `--font-body` |
-| Headings, wordmark, standfirsts, pull quotes | Newsreader, `serif` | 400, 500 (`h1`, wordmark, lead titles), italic 400 | `--font-heading` |
+| Headings, wordmark, standfirsts, pull quotes | Newsreader, `serif` | 400 only; italics are synthesized | `--font-heading` |
 | `ShareLinks` thanks letter only | Patrick Hand, `cursive` | 400 only | `--font-hand` |
 
-Loaded with Astro Fonts (Fontsource), subsets `latin-ext`, `latin`, `vietnamese`, in that order: the last declared face wins overlapping glyphs, so Vietnamese text doesn't download `latin-ext`. Only regular weight 400 of `latin` and `vietnamese` of the body and heading fonts is preloaded. Patrick Hand isn't, so it loads when the letter first opens.
+Loaded with Astro Fonts (Fontsource), subsets `latin-ext`, `latin`, `vietnamese`, in that order: the last declared face wins overlapping glyphs, so Vietnamese text doesn't download `latin-ext`. Only regular weight 400 of `latin` and `vietnamese` of the body and heading fonts is preloaded. Newsreader ships no 500 or italic files: that keeps a page to six font files (about 94 KB), so the LCP image isn't starved on slow connections. Don't add Newsreader weights or styles back without measuring LCP. Patrick Hand isn't, so it loads when the letter first opens.
 
 | Role | Size |
 |---|---|
 | Body | `1.0625rem` (17px) below `40rem`, `1.125rem` (18px) from `40rem`; line height 1.7, 1.8 in `.prose` |
 | `.prose` paragraphs | `1.1em` apart (about 19-20px) |
-| `h1` (post title) | `clamp(2rem, 1.5rem + 2vw, 2.75rem)` (32-44px), weight 500, `lining-nums`, line height 1.25 |
+| `h1` (post title) | `clamp(2rem, 1.5rem + 2vw, 2.75rem)` (32-44px), `lining-nums`, line height 1.25 |
 | `.prose h2` / `h3` | `clamp(1.5rem, …, 1.75rem)` (24-28px) / `clamp(1.25rem, …, 1.375rem)` (20-22px) |
 | Standfirst | Newsreader italic: `clamp(1.1875rem, …, 1.375rem)` on posts, `1.25rem` on list pages and in `PostLead` from `56rem` |
 | Pull quote (`.prose blockquote`) | Newsreader italic, `clamp(1.3125rem, …, 1.625rem)`, line height 1.45 |
 | Home tagline | `clamp(2.375rem, 1.5rem + 4vw, 5rem)`, line height 1.1 |
 | Pillar page `h1` | `clamp(2.5rem, 1.75rem + 3.5vw, 4.5rem)` |
 | Section titles (home, pillar) | `1.75rem` |
-| `PostLead` title | `clamp(1.75rem, 1.375rem + 1.5vw, 2.5rem)`, weight 500 |
+| `PostLead` title | `clamp(1.75rem, 1.375rem + 1.5vw, 2.5rem)` |
 | `PostRow` title / standfirst | `1.25rem` / `0.9375rem`, `1.5rem` / `1rem` from `40rem` |
 | `PostCard` title / standfirst | `1.3125rem` / `0.9375rem` |
 | `PostTile` title | `1.125rem` |
