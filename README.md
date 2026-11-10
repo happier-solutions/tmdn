@@ -1,26 +1,28 @@
 # tmdn
 
-Trúc Chí Lập Thân, trang ghi chép của Tư Mã Đại Nhân. Dùng Astro 7 và Sveltia CMS, chạy tại <https://tmdn.pages.dev>.
+Built with Astro 7 and Sveltia CMS
 
-## Phát triển
+## Development
 
 ```sh
 pnpm install
 pnpm dev
 ```
 
-Trang quản trị: `/admin/index.html`. Cấu hình CMS nằm ở `public/admin/config.yml`.
+The CMS is at `/admin/index.html`, configured in `public/admin/config.yml`.
 
-## Bài viết
+## Content
 
-Mỗi bài là một thư mục `src/content/posts/<slug>/` gồm `index.md` và ảnh của bài. Mỗi bài gắn một chủ đề con (`topic`), chuyên mục lớn suy ra từ chủ đề. Chuyên mục, chủ đề và từ khóa nằm ở `src/data/taxonomy.json`, sửa được trong CMS (mục "Phân loại"); build sẽ báo lỗi nếu bài dùng chủ đề hay từ khóa không có trong file. Kế hoạch dự án nằm ở `docs/plan.md`, hệ thống thiết kế ở `DESIGN.md`.
+Each post is a folder `src/content/posts/<slug>/` with an `index.md` and its images. A post has one `topic`, and its pillar comes from that topic. Pillars, topics and tags live in `src/data/taxonomy.json` (editable in the CMS). The build fails if a post uses an unknown topic or tag.
+
+See `docs/plan.md` for the project plan and `DESIGN.md` for the design system.
 
 ## Deploy
 
-GitHub Actions (`.github/workflows/ci.yml`) build mỗi push và PR. Push lên `main` sẽ được deploy lên Cloudflare Pages (project `tmdn`) bằng `wrangler pages deploy dist`, nên không tốn build của Cloudflare. Phiên bản Node lấy từ `.node-version`.
+GitHub Actions (`.github/workflows/ci.yml`) builds every push and PR. Pushes to `main` deploy to Cloudflare Pages (project `tmdn`) via `wrangler pages deploy dist`. The Node version comes from `.node-version`.
 
-Workflow cần hai repo secret là `CLOUDFLARE_API_TOKEN` (quyền Account > Cloudflare Pages > Edit) và `CLOUDFLARE_ACCOUNT_ID`. Automatic deployments của project phải được tắt trong Cloudflare (Settings > Builds & deployments) để không build hai lần.
+Required repo secrets: `CLOUDFLARE_API_TOKEN` (Account > Cloudflare Pages > Edit) and `CLOUDFLARE_ACCOUNT_ID`. Turn off automatic deployments in Cloudflare (Settings > Builds & deployments) to avoid double builds.
 
-## Đăng nhập CMS
+## CMS login
 
-Chọn "Sign In with Token" và dùng fine-grained PAT với Resource owner là `happier-solutions`, chỉ chọn repo `tmdn`, cấp quyền Contents và Pull requests ở mức read/write.
+Choose "Sign In with Token" and use a fine-grained PAT owned by `happier-solutions`, limited to the `tmdn` repo, with read/write access to Contents and Pull requests.
