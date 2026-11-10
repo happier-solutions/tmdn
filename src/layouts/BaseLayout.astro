@@ -4,7 +4,7 @@ import Footer from '../components/Footer.astro';
 import Header from '../components/Header.astro';
 import ScrollTop from '../components/ScrollTop.astro';
 import Signup from '../components/Signup.astro';
-import { SITE_SEO_TITLE, SITE_TITLE } from '../consts';
+import { SITE_NAME, SITE_SEO_TITLE } from '../consts';
 
 interface Props {
 	title?: string;
@@ -13,19 +13,24 @@ interface Props {
 	type?: 'website' | 'article';
 	/** Widens `main` to the header's width, for a layout with side columns. */
 	wide?: boolean;
+	/** Schema.org data, rendered as JSON-LD. */
+	jsonLd?: Record<string, unknown>;
+	/** For articles: Open Graph times. */
+	published?: Date;
+	modified?: Date;
 }
 
-const { title, description, image, type, wide } = Astro.props;
+const { title, description, image, type, wide, jsonLd, published, modified } = Astro.props;
 // Search results cut titles at about 60 characters, so a long one drops the site name.
 const TITLE_MAX = 60;
-const withSite = `${title} · ${SITE_TITLE}`;
+const withSite = `${title} · ${SITE_NAME}`;
 const fullTitle = !title ? SITE_SEO_TITLE : withSite.length <= TITLE_MAX ? withSite : title;
 ---
 
 <!doctype html>
 <html lang="vi">
 	<head>
-		<BaseHead title={fullTitle} {description} {image} {type} />
+		<BaseHead title={fullTitle} {description} {image} {type} {jsonLd} {published} {modified} />
 	</head>
 	<body>
 		<a class="skip-link" href="#main">Bỏ qua, đến nội dung chính</a>

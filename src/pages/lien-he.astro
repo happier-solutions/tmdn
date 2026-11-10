@@ -1,5 +1,7 @@
 ---
 import { getEntry, render } from 'astro:content';
+import Feedback from '../components/Feedback.astro';
+import VisitThanks from '../components/VisitThanks.astro';
 import PageLayout from '../layouts/PageLayout.astro';
 
 const entry = await getEntry('pages', 'lien-he');
@@ -9,4 +11,23 @@ const { Content } = await render(entry);
 
 <PageLayout {...entry.data}>
 	<Content />
+	<section class="feedback-section" aria-labelledby="feedback-heading">
+		<VisitThanks>
+			<h2 id="feedback-heading">Đánh giá và góp ý</h2>
+			<p class="note">Chỗ nào chưa ổn, mong bạn nói thẳng.</p>
+			<Feedback />
+		</VisitThanks>
+	</section>
 </PageLayout>
+<style>
+	.feedback-section {
+		margin-top: 3rem;
+	}
+	h2 {
+		margin: 0 0 0.25rem;
+	}
+	.note {
+		color: var(--text-2);
+		font-size: 0.9375rem;
+	}
+</style>

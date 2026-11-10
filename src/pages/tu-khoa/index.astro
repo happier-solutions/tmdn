@@ -1,24 +1,38 @@
 ---
-import { TAGS } from '../../data/taxonomy';
+import { TAGS, tagUrl } from '../../data/taxonomy';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getPublishedPosts } from '../../lib/posts';
 
 const posts = await getPublishedPosts();
-const countOf = (tag: string) =>
-	posts.filter((post) => (post.data.tags as string[]).includes(tag)).length;
+const countOf = (tag: string) => posts.filter((post) => post.data.tags.includes(tag)).length;
 ---
 
-<BaseLayout title="Chủ đề" description="Các chủ đề của blog về lãnh đạo và quản trị: ra quyết định, xây đội ngũ, giao tiếp, văn hóa, tài chính và vận hành doanh nghiệp.">
-	<h1>Chủ đề</h1>
+<BaseLayout title="Từ khóa" description="Các từ khóa bổ trợ của Trúc Chí Lập Thân, nối những bài viết cùng bàn một vấn đề qua hai chuyên mục.">
+	<p class="kicker">Tra cứu</p>
+	<h1>Từ khóa</h1>
+	<p class="lede">Từ khóa nối những bài cùng bàn một vấn đề, dù thuộc chuyên mục nào.</p>
 	<ul>
 		{TAGS.map(({ slug, label }) => (
-			<li><a href={`/chu-de/${slug}/`}>{label}</a> ({countOf(slug)})</li>
+			<li><a href={tagUrl(slug)}>#{label}</a> <span class="meta">{countOf(slug)} bài</span></li>
 		))}
 	</ul>
 </BaseLayout>
 <style>
-	/* Room for the hover sprig before the count. */
-	li a {
-		margin-right: 0.85em;
+	.lede {
+		color: var(--text-2);
+	}
+	ul {
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+		border-top: 1px solid var(--border);
+	}
+	li {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-block: 0.75rem;
+		border-bottom: 1px solid var(--border);
 	}
 </style>

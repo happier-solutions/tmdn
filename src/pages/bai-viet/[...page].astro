@@ -6,18 +6,17 @@ import { getPublishedPosts, type Post } from '../../lib/posts';
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const posts = await getPublishedPosts();
-	return paginate(posts, { pageSize: PAGE_SIZE, props: { newest: posts[0]?.data.pubDate } });
+	return paginate(posts, { pageSize: PAGE_SIZE });
 }) satisfies GetStaticPaths;
 
-type Props = { page: Page<Post>; newest?: Date };
+type Props = { page: Page<Post> };
 
-const { page, newest } = Astro.props;
+const { page } = Astro.props;
 ---
 
 <ListLayout
 	title="Tất cả bài viết"
-	description="Mọi ghi chép trên hành trình học, mới nhất trước."
-	metaDescription="Tất cả bài viết về lãnh đạo và quản trị doanh nghiệp, từ quan sát, câu hỏi, nghiên cứu đến bài học, cho chủ doanh nghiệp SME và quản lý trẻ."
-	{newest}
+	description="Mọi ghi chép của hai chuyên mục, mới nhất trước."
+	metaDescription="Tất cả bài viết của Trúc Chí Lập Thân: Tàng Thư Quán Thế về sách, sử, triết học và tu thân; Binh Pháp Công Sở về lãnh đạo và quản trị."
 	{page}
 />

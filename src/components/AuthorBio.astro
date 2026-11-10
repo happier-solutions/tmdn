@@ -1,16 +1,16 @@
 ---
-import { AUTHOR_BIO, SITE_TITLE } from '../consts';
+import { AUTHOR, AUTHOR_BIO } from '../consts';
 ---
 
 <section aria-labelledby="author-heading">
-	<img src="/logo.svg" alt="" width="64" height="64" loading="lazy" />
+	<span class="seal" aria-hidden="true"></span>
 	<div>
 		<p class="label">Tác giả</p>
-		<h2 id="author-heading">{SITE_TITLE}</h2>
+		<h2 id="author-heading">{AUTHOR}</h2>
 	</div>
 	<div class="about">
 		<p class="bio">{AUTHOR_BIO}</p>
-		<p class="more"><a href="/gioi-thieu/" rel="author">Đọc thêm về tôi</a></p>
+		<p class="more"><a href="/gioi-thieu/" rel="author">Về Tư Mã Đại Nhân</a></p>
 	</div>
 </section>
 <style>
@@ -25,15 +25,21 @@ import { AUTHOR_BIO, SITE_TITLE } from '../consts';
 	.about {
 		grid-column: 1 / -1;
 	}
-	img {
-		display: block;
+	/* The header's seal, larger. */
+	.seal {
+		width: 4rem;
+		height: 4rem;
+		background: var(--seal);
+		mask:
+			url('/sprig.svg') center / 2.75rem no-repeat exclude,
+			linear-gradient(#000 0 0);
 	}
 	p {
 		margin: 0;
 		font-size: 0.875rem;
 	}
 	.label {
-		color: var(--gray);
+		color: var(--text-2);
 	}
 	h2 {
 		margin: 0.25rem 0 0;
@@ -50,7 +56,7 @@ import { AUTHOR_BIO, SITE_TITLE } from '../consts';
 			column-gap: 1.5rem;
 			row-gap: 0.5rem;
 		}
-		img {
+		.seal {
 			grid-row: 1 / span 2;
 			align-self: start;
 		}

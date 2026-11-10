@@ -5,7 +5,7 @@ a {
 	--line: 0;
 	--leaf: 0;
 	--leaf-delay: 0ms;
-	color: var(--accent);
+	color: var(--bamboo);
 	text-decoration: none;
 }
 :where(a:not(.skip-link, :has(.link-line)), .link-line) {
@@ -39,7 +39,7 @@ a {
 	}
 }
 a:hover {
-	color: var(--accent-dark);
+	color: var(--bamboo-dark);
 }
 /* Hover only where it exists, so a tap doesn't leave the state stuck on touch screens. */
 @media (hover: hover) {
@@ -50,7 +50,7 @@ a:hover {
 	}
 }
 a:focus-visible {
-	outline: 2px solid var(--accent);
+	outline: 2px solid var(--bamboo);
 	outline-offset: 2px;
 }
 /* In running text, color alone doesn't set a link apart, so the rule is always there. */

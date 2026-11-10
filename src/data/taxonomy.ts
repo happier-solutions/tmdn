@@ -1,49 +1,66 @@
-// Single source of truth for the content taxonomy.
-// Keep the options in public/admin/config.yml in sync with these slugs.
+// The taxonomy lives in taxonomy.json, which the CMS edits ("Phân loại" in public/admin/config.yml).
+// This file only validates it, so adding, renaming or reordering a topic or tag needs no code change.
 
-export const CATEGORIES = [
-	{
-		slug: 'quan-sat',
-		label: 'Quan sát',
-		description: 'Ghi lại điều thấy ở môi trường điều hành: cách lãnh đạo họp, quyết định, giao việc.',
-		metaDescription: 'Ghi chép từ môi trường điều hành doanh nghiệp: cách lãnh đạo họp, ra quyết định và giao việc, nhìn bằng con mắt của một người đang học quản trị.',
-	},
-	{
-		slug: 'cau-hoi',
-		label: 'Câu hỏi',
-		description: 'Những điều chưa hiểu, đang thắc mắc.',
-		metaDescription: 'Những câu hỏi chưa có lời giải về lãnh đạo và quản trị doanh nghiệp: điều người viết chưa hiểu, đang thắc mắc và còn phải tìm hiểu thêm.',
-	},
-	{
-		slug: 'nghien-cuu',
-		label: 'Nghiên cứu',
-		description: 'Đào sâu bản chất, đối chiếu sách, mô hình, nghiên cứu.',
-		metaDescription: 'Đào sâu bản chất các vấn đề quản trị: đối chiếu sách, mô hình và nghiên cứu về lãnh đạo, ra quyết định, tài chính và vận hành doanh nghiệp.',
-	},
-	{
-		slug: 'bai-hoc',
-		label: 'Bài học',
-		description: 'Hệ thống hóa thành bài có cấu trúc, dành cho SME và quản lý trẻ.',
-		metaDescription: 'Bài học có cấu trúc về lãnh đạo và quản trị, hệ thống hóa từ quan sát và nghiên cứu, dành cho chủ doanh nghiệp SME và quản lý trẻ.',
-	},
-	{
-		slug: 'nhat-ky-hoc-tap',
-		label: 'Nhật ký học tập',
-		description: 'Ghi chú ngắn, nhìn lại quá trình, điều đã thay đổi trong suy nghĩ.',
-		metaDescription: 'Ghi chú ngắn trên hành trình học lãnh đạo và quản trị: nhìn lại quá trình, những nhận định đã sửa và điều đã thay đổi trong suy nghĩ.',
-	},
-] as const;
+import { z } from 'astro/zod';
+import data from './taxonomy.json';
 
-export type CategorySlug = (typeof CATEGORIES)[number]['slug'];
+const slug = z.string().regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'slug: chữ thường không dấu, số và gạch nối');
 
-export const TAGS = [
-	{ slug: 'ra-quyet-dinh', label: 'Ra quyết định' },
-	{ slug: 'xay-doi-ngu', label: 'Xây đội ngũ' },
-	{ slug: 'giao-tiep', label: 'Giao tiếp' },
-	{ slug: 'van-hoa', label: 'Văn hóa' },
-	{ slug: 'tai-chinh', label: 'Tài chính' },
-	{ slug: 'van-hanh', label: 'Vận hành' },
-] as const;
+const schema = z
+	.object({
+		pillars: z
+			.array(
+				z.object({
+					slug,
+					label: z.string(),
+					description: z.string(),
+					intro: z.string(),
+					metaDescription: z.string(),
+					imageCaption: z.string().optional(),
+				}),
+			)
+			.min(1),
+		topics: z
+			.array(
+				z.object({
+					slug,
+					label: z.string(),
+					pillar: z.string(),
+					description: z.string(),
+					points: z.array(z.string()).default([]),
+				}),
+			)
+			.min(1),
+		tags: z.array(z.object({ slug, label: z.string() })).default([]),
+	})
+	.superRefine(({ pillars, topics, tags }, ctx) => {
+		const pillarSlugs = new Set(pillars.map((pillar) => pillar.slug));
+		for (const [list, items] of Object.entries({ pillars, topics, tags })) {
+			const seen = new Set<string>();
+			for (const { slug } of items) {
+				if (seen.has(slug)) ctx.addIssue({ code: 'custom', message: `${list}: slug "${slug}" bị trùng` });
+				seen.add(slug);
+			}
+		}
+		for (const topic of topics) {
+			if (!pillarSlugs.has(topic.pillar)) {
+				ctx.addIssue({ code: 'custom', message: `topics: "${topic.slug}" thuộc chuyên mục không tồn tại "${topic.pillar}"` });
+			}
+		}
+	});
+
+const taxonomy = schema.parse(data);
+
+export type Pillar = (typeof taxonomy.pillars)[number];
+export type Topic = (typeof taxonomy.topics)[number];
+export type Tag = (typeof taxonomy.tags)[number];
+
+/** The two editorial pillars, in CMS order. Each is a URL root: `/<pillar>/`. */
+export const PILLARS: readonly Pillar[] = taxonomy.pillars;
+/** Topics (chủ đề con), in CMS order. Each belongs to one pillar. */
+export const TOPICS: readonly Topic[] = taxonomy.topics;
+/** Tags (từ khóa), in CMS order. */
+export const TAGS: readonly Tag[] = taxonomy.tags;
 
 export const CONFIDENCE_LEVELS = [
 	{ slug: 'quan-sat-ban-dau', label: 'Quan sát ban đầu' },
@@ -54,8 +71,15 @@ export const CONFIDENCE_LEVELS = [
 type Item = { readonly slug: string; readonly label: string };
 
 /** Slugs as the non-empty tuple that z.enum() expects. */
-export const slugsOf = <T extends readonly Item[]>(items: T) =>
-	items.map((item) => item.slug) as unknown as [T[number]['slug'], ...T[number]['slug'][]];
+export const slugsOf = (items: readonly Item[]) => items.map((item) => item.slug) as [string, ...string[]];
 
 export const labelOf = (items: readonly Item[], slug: string) =>
 	items.find((item) => item.slug === slug)?.label ?? slug;
+
+export const getTopic = (slug: string) => TOPICS.find((topic) => topic.slug === slug)!;
+export const getPillar = (slug: string) => PILLARS.find((pillar) => pillar.slug === slug)!;
+export const topicsOf = (pillar: string) => TOPICS.filter((topic) => topic.pillar === pillar);
+
+export const pillarUrl = (pillar: string) => `/${pillar}/`;
+export const topicUrl = (topic: Topic) => `/${topic.pillar}/chu-de/${topic.slug}/`;
+export const tagUrl = (tag: string) => `/tu-khoa/${tag}/`;

@@ -1,6 +1,6 @@
 # tmdn
 
-Blog dùng Astro 7 và Sveltia CMS, chạy tại <https://tmdn.pages.dev>.
+Trúc Chí Lập Thân, trang ghi chép của Tư Mã Đại Nhân. Dùng Astro 7 và Sveltia CMS, chạy tại <https://tmdn.pages.dev>.
 
 ## Phát triển
 
@@ -13,7 +13,7 @@ Trang quản trị: `/admin/index.html`. Cấu hình CMS nằm ở `public/admin
 
 ## Bài viết
 
-Mỗi bài là một thư mục `src/content/posts/<slug>/` gồm `index.md` và ảnh của bài. Chuyên mục, thẻ và mức độ chắc chắn khai báo ở `src/data/taxonomy.ts`, và phải khớp với `public/admin/config.yml`. Kế hoạch dự án nằm ở `docs/plan.md`.
+Mỗi bài là một thư mục `src/content/posts/<slug>/` gồm `index.md` và ảnh của bài. Mỗi bài gắn một chủ đề con (`topic`), chuyên mục lớn suy ra từ chủ đề. Chuyên mục, chủ đề và từ khóa nằm ở `src/data/taxonomy.json`, sửa được trong CMS (mục "Phân loại"); build sẽ báo lỗi nếu bài dùng chủ đề hay từ khóa không có trong file. Kế hoạch dự án nằm ở `docs/plan.md`, hệ thống thiết kế ở `DESIGN.md`.
 
 ## Deploy
 

@@ -1,50 +1,19 @@
-/* A frame of cells split by gold rules. Cells overlap by 1px, so neighbours share a rule at any column count.
+/* A frame of cells split by hairline rules (only the `Feedback` form uses it). Cells overlap by 1px, so neighbours share a rule at any column count.
    Zero specificity on cells, so a component's scoped rule always wins. */
 .ruled {
 	display: grid;
 	overflow: clip;
-	border: 1px solid var(--gold);
+	border: 1px solid var(--border);
 }
 :where(.ruled > .cell) {
 	--py: 1.5rem;
 	--px: 1rem;
 	margin: -1px 0 0 -1px;
 	padding: var(--py) var(--px);
-	border-block-start: 1px solid var(--gold);
-	border-inline-start: 1px solid var(--gold);
+	border-block-start: 1px solid var(--border);
+	border-inline-start: 1px solid var(--border);
 	@media (min-width: 40rem) {
 		--py: 2rem;
 		--px: 2rem;
 	}
-}
-/* A cell that is one link. Its link keeps the hover rule and sprig. */
-.linked {
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	gap: 0.5rem;
-}
-.linked p {
-	color: var(--gray);
-	font-size: 1rem;
-}
-.linked .count {
-	margin-top: auto;
-	padding-top: 1rem;
-	font-size: 0.875rem;
-}
-.linked a::before {
-	content: '';
-	position: absolute;
-	inset: 0;
-}
-.linked:has(a:hover) {
-	background: var(--gray-light);
-}
-.linked:has(a:focus-visible) a {
-	outline: none;
-}
-.linked:has(a:focus-visible) {
-	outline: 2px solid var(--accent);
-	outline-offset: -3px;
 }

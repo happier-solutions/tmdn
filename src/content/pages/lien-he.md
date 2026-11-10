@@ -1,8 +1,8 @@
 ---
 title: Liên hệ
-description: "Gửi góp ý, câu hỏi hoặc phản biện cho người viết blog Tư Mã Đại Nhân về các bài viết chủ đề lãnh đạo và quản trị doanh nghiệp."
+description: "Gửi góp ý, câu hỏi hoặc phản biện cho Tư Mã Đại Nhân về các bài viết trên Trúc Chí Lập Thân, từ sách, sử, triết học đến lãnh đạo và quản trị."
 ---
 
-Tôi đang học nên rất cần góp ý và phản biện. Bạn có thể viết cho tôi qua email:
+Mỗi góp ý và phản biện đều giúp những ghi chép ở đây sâu hơn. Bạn có thể viết cho tôi qua email:
 
-**[Chủ blog bổ sung email liên hệ]**
+**[Người viết bổ sung email liên hệ]**

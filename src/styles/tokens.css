@@ -8,35 +8,43 @@
 		color-scheme: dark;
 	}
 
-	/* Same in both schemes: the footer stays dark, and gold on ink keeps its contrast. */
-	--ink: #111110;
-	--on-ink: #f4efe6;
-	--gold-light: #c9a56b;
-	--gold-deep: #a57f45;
+	/* Same in both schemes: the footer and signup band stay dark. */
+	--ink: #1e201b;
+	--on-ink: #f5f2ea;
+	--gold-light: #c7b99f;
+	--leaf: #a9b99b;
+	--leaf-deep: #7d8c6f;
 
-	--paper: light-dark(#f4efe6, #191713);
-	--gold: light-dark(#b8935a, #9a7b4c);
+	--bg: light-dark(#f5f2ea, #171814);
+	--surface: light-dark(#faf9f5, #1f201b);
+	/* A step darker than the page, for notes, placeholders and hover. */
+	--wash: light-dark(#ede9df, #25261f);
+	--border: light-dark(#dcd8ce, #36372f);
+	/* Muted gold: decorative only (left bars, marks), 1.7:1 on the page. */
+	--gold: light-dark(#c7b99f, #8a7e66);
 
-	/* Gold is only 2.5:1 on light paper, so it stays decorative. Text and links use these (AA). */
-	--accent: light-dark(#7a5a2b, #d4b27a);
-	--accent-dark: light-dark(#5c4320, #ecd5a8);
-
-	--black: light-dark(#111110, #f4efe6);
-	--gray-dark: light-dark(#2a2621, #e3dccf);
-	--gray: light-dark(#6b6256, #a89e8e);
-	--gray-light: light-dark(#e5ded1, #2e2a23);
+	--text: light-dark(#242720, #e6e3da);
+	/* The brief's #77766f is 4.08:1 on the page, so text uses this darker step (4.85:1). */
+	--text-2: light-dark(#6b6a63, #a6a49b);
+	/* Bamboo green for links and pillar labels. The brief's #65745b is 4.47:1, so text uses #5a6851 (5.31:1). */
+	--bamboo: light-dark(#5a6851, #a9b99b);
+	--bamboo-dark: light-dark(#3f4a38, #cbd6bf);
+	/* Seal red: small accents only. */
+	--seal: light-dark(#8c302b, #d98a80);
 }
 /* Without light-dark() (Safari below 17.5) the site stays light; ThemeSwitch hides itself. */
 @supports not (color: light-dark(#000, #fff)) {
 	:root {
 		color-scheme: light;
-		--paper: #f4efe6;
-		--gold: #b8935a;
-		--accent: #7a5a2b;
-		--accent-dark: #5c4320;
-		--black: #111110;
-		--gray-dark: #2a2621;
-		--gray: #6b6256;
-		--gray-light: #e5ded1;
+		--bg: #f5f2ea;
+		--surface: #faf9f5;
+		--wash: #ede9df;
+		--border: #dcd8ce;
+		--gold: #c7b99f;
+		--text: #242720;
+		--text-2: #6b6a63;
+		--bamboo: #5a6851;
+		--bamboo-dark: #3f4a38;
+		--seal: #8c302b;
 	}
 }

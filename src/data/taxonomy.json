@@ -1,0 +1,258 @@
+{
+	"pillars": [
+		{
+			"slug": "tang-thu-quan-the",
+			"label": "Tàng Thư Quán Thế",
+			"description": "Đọc sách để hiểu người, học sử để hiểu đời, tu dưỡng bản thân để hiểu thế giới.",
+			"intro": "Đây là không gian của người học giả ẩn cư: đọc sách, nghiên cứu, chiêm nghiệm, tu thân và quan sát nhân tình thế thái. Trọng tâm là tích lũy tri thức, xây dựng nội lực và hình thành thế giới quan sâu sắc.",
+			"metaDescription": "Tàng Thư Quán Thế: đọc sách, học sử, triết học và tu thân, những ghi chép để bồi dưỡng nội lực và hiểu con người, thế giới.",
+			"imageCaption": "Trúc và đá dưới trời quang, Ike Taiga, giữa thế kỷ 18"
+		},
+		{
+			"slug": "binh-phap-cong-so",
+			"label": "Binh Pháp Công Sở",
+			"description": "Quan sát thế giới doanh nghiệp từ phía sau những quyết định, tìm hiểu cách tổ chức vận hành và cách những nhà lãnh đạo kiến tạo doanh nghiệp.",
+			"intro": "Đây là không gian nghiên cứu và phân tích về lãnh đạo, quản trị, chiến lược, tổ chức, kinh doanh và vận hành doanh nghiệp. Nội dung kết hợp giữa trải nghiệm thực tế, nghiên cứu chuyên môn, mô hình quản trị và những góc nhìn cá nhân.",
+			"metaDescription": "Binh Pháp Công Sở: lãnh đạo, quản trị tổ chức, chiến lược và vận hành doanh nghiệp, nhìn từ trải nghiệm thực tế và nghiên cứu.",
+			"imageCaption": "Phố Suruga-chō, Utagawa Hiroshige, 1856"
+		}
+	],
+	"topics": [
+		{
+			"slug": "tu-than-duong-chi",
+			"label": "Tu thân dưỡng chí",
+			"pillar": "tang-thu-quan-the",
+			"description": "Tu dưỡng nhân cách, kỷ luật và nội lực để đứng vững trước nghịch cảnh.",
+			"points": [
+				"Tu dưỡng nhân cách và phẩm chất cá nhân.",
+				"Kỷ luật, kiên nhẫn, nghị lực và khả năng tự chủ.",
+				"Quản trị cảm xúc, cái tôi và tham vọng.",
+				"Khiêm nhường, chính trực, bản lĩnh và lòng can đảm.",
+				"Xây dựng nội lực và khả năng vượt qua nghịch cảnh."
+			]
+		},
+		{
+			"slug": "nhan-tinh-the-thai",
+			"label": "Nhân tình thế thái",
+			"pillar": "tang-thu-quan-the",
+			"description": "Bản chất con người, tâm lý đám đông và nghệ thuật thấu hiểu người khác.",
+			"points": [
+				"Bản chất con người và tâm lý hành vi.",
+				"Tâm lý xã hội, đám đông và các mối quan hệ.",
+				"Lòng tham, lợi ích, quyền lực, danh vọng và địa vị.",
+				"Cạnh tranh, đố kỵ, niềm tin và sự ảnh hưởng.",
+				"Nghệ thuật giao tiếp, ứng xử và thấu hiểu con người."
+			]
+		},
+		{
+			"slug": "tu-duy-va-tri-tue",
+			"label": "Tư duy và trí tuệ",
+			"pillar": "tang-thu-quan-the",
+			"description": "Các mô hình tư duy, cách phân tích vấn đề và phương pháp phát triển trí tuệ.",
+			"points": [
+				"Tư duy hệ thống và tư duy chiến lược.",
+				"Tư duy phản biện và tư duy nguyên lý đầu tiên.",
+				"Tư duy xác suất, tư duy nghịch đảo và mô hình tư duy.",
+				"Năng lực phân tích, giải quyết vấn đề và ra quyết định.",
+				"Phương pháp học tập, nghiên cứu và phát triển trí tuệ."
+			]
+		},
+		{
+			"slug": "doc-sach-va-hoc-tap",
+			"label": "Đọc sách và học tập",
+			"pillar": "tang-thu-quan-the",
+			"description": "Sách hay, tư tưởng kinh điển và cách đọc, ghi chép để tích lũy tri thức.",
+			"points": [
+				"Giới thiệu và phân tích sách hay.",
+				"Triết học, tư tưởng và các học thuyết kinh điển.",
+				"Phương pháp đọc sách, ghi chép và hệ thống hóa tri thức.",
+				"Những bài học và tư tưởng đáng suy ngẫm từ các tác giả.",
+				"Hành trình học tập và tích lũy tri thức."
+			]
+		},
+		{
+			"slug": "lich-su-va-the-cuoc",
+			"label": "Lịch sử và thế cuộc",
+			"pillar": "tang-thu-quan-the",
+			"description": "Quy luật hưng suy của các nền văn minh và bài học lịch sử cho hôm nay.",
+			"points": [
+				"Lịch sử các nền văn minh, quốc gia và đế chế.",
+				"Những nhân vật có ảnh hưởng trong lịch sử.",
+				"Lịch sử chính trị, kinh tế, quân sự và xã hội.",
+				"Quy luật hưng thịnh, suy vong và biến chuyển của thời đại.",
+				"Những bài học lịch sử có giá trị đối với hiện tại."
+			]
+		},
+		{
+			"slug": "triet-hoc-va-nhan-sinh",
+			"label": "Triết học và nhân sinh",
+			"pillar": "tang-thu-quan-the",
+			"description": "Triết học Đông Tây và những câu hỏi về ý nghĩa sống, đạo đức, tự do.",
+			"points": [
+				"Triết học phương Đông và phương Tây.",
+				"Đạo làm người, nhân sinh quan và thế giới quan.",
+				"Những câu hỏi về ý nghĩa cuộc sống, thành công và hạnh phúc.",
+				"Quan niệm về đạo đức, tự do, trách nhiệm và giá trị sống.",
+				"Chiêm nghiệm về con người và xã hội."
+			]
+		},
+		{
+			"slug": "danh-nhan-va-nguoi-thanh-cong",
+			"label": "Danh nhân và người thành công",
+			"pillar": "tang-thu-quan-the",
+			"description": "Tư tưởng, cách làm việc và phẩm chất của những con người xuất chúng.",
+			"points": [
+				"Tư tưởng và triết lý của các nhà tư tưởng.",
+				"Câu chuyện về những nhà lãnh đạo, doanh nhân và người kiến tạo.",
+				"Phương pháp học tập, làm việc và ra quyết định.",
+				"Những bài học từ thành công, thất bại và nghịch cảnh.",
+				"Phân tích phẩm chất và năng lực tạo nên những con người xuất chúng."
+			]
+		},
+		{
+			"slug": "nhat-ky-chiem-nghiem",
+			"label": "Nhật ký chiêm nghiệm",
+			"pillar": "tang-thu-quan-the",
+			"description": "Suy nghĩ, trải nghiệm cá nhân và những câu hỏi còn bỏ ngỏ.",
+			"points": [
+				"Những suy nghĩ và trải nghiệm cá nhân.",
+				"Bài học từ công việc và cuộc sống.",
+				"Những quan điểm được hình thành hoặc thay đổi theo thời gian.",
+				"Các thử nghiệm về kỷ luật, thói quen và phương pháp sống.",
+				"Những câu hỏi còn bỏ ngỏ và hành trình tự khám phá."
+			]
+		},
+		{
+			"slug": "nghe-thuat-tham-muu",
+			"label": "Nghệ thuật tham mưu",
+			"pillar": "binh-phap-cong-so",
+			"description": "Vai trò của trợ lý, cố vấn và cách chuẩn bị thông tin cho lãnh đạo quyết định.",
+			"points": [
+				"Vai trò và năng lực của trợ lý, cố vấn và người tham mưu lãnh đạo.",
+				"Chuẩn bị thông tin và báo cáo phục vụ quyết định.",
+				"Tổng hợp, phân tích và trình bày vấn đề.",
+				"Quản trị lịch trình, ưu tiên và công việc của lãnh đạo.",
+				"Theo dõi chỉ đạo, điều phối và phối hợp các bên liên quan.",
+				"Nghệ thuật giao tiếp và xây dựng niềm tin với lãnh đạo."
+			]
+		},
+		{
+			"slug": "lanh-dao-va-con-nguoi",
+			"label": "Lãnh đạo và con người",
+			"pillar": "binh-phap-cong-so",
+			"description": "Phong cách lãnh đạo, giao việc, trao quyền và phát triển đội ngũ.",
+			"points": [
+				"Phong cách và tư duy lãnh đạo.",
+				"Nghệ thuật giao việc, ủy quyền và trao quyền.",
+				"Phát triển nhân tài và xây dựng đội ngũ kế thừa.",
+				"Quản trị xung đột và tạo ảnh hưởng.",
+				"Năng lực lãnh đạo các cấp.",
+				"Xây dựng đội ngũ quản lý và lãnh đạo hiệu quả."
+			]
+		},
+		{
+			"slug": "quan-tri-to-chuc",
+			"label": "Quản trị tổ chức",
+			"pillar": "binh-phap-cong-so",
+			"description": "Cơ cấu, phân quyền, hiệu suất, quy trình và văn hóa doanh nghiệp.",
+			"points": [
+				"Thiết kế cơ cấu tổ chức và phân quyền.",
+				"Xây dựng chức năng, nhiệm vụ và trách nhiệm.",
+				"Quản trị mục tiêu, KPI và hiệu suất.",
+				"Xây dựng hệ thống quy trình và kiểm soát.",
+				"Quản trị năng lực và phát triển nguồn nhân lực.",
+				"Văn hóa doanh nghiệp và quản trị sự thay đổi."
+			]
+		},
+		{
+			"slug": "chien-luoc-va-kinh-doanh",
+			"label": "Chiến lược và kinh doanh",
+			"pillar": "binh-phap-cong-so",
+			"description": "Hoạch định, lợi thế cạnh tranh, mô hình kinh doanh và tăng trưởng.",
+			"points": [
+				"Tư duy chiến lược và hoạch định kinh doanh.",
+				"Phân tích thị trường và lợi thế cạnh tranh.",
+				"Mô hình kinh doanh và chiến lược sản phẩm.",
+				"Phát triển thị trường và khách hàng.",
+				"Chiến lược tăng trưởng và mở rộng doanh nghiệp.",
+				"Đầu tư, M&A và phân bổ nguồn lực."
+			]
+		},
+		{
+			"slug": "nghe-thuat-ra-quyet-dinh",
+			"label": "Nghệ thuật ra quyết định",
+			"pillar": "binh-phap-cong-so",
+			"description": "Quy trình ra quyết định, quản trị rủi ro và những lựa chọn khó.",
+			"points": [
+				"Tư duy và quy trình ra quyết định của lãnh đạo.",
+				"Phân tích dữ liệu và đánh giá phương án.",
+				"Quản trị rủi ro và bất định.",
+				"Đánh đổi giữa lợi ích ngắn hạn và dài hạn.",
+				"Xử lý khủng hoảng và những quyết định khó khăn.",
+				"Phân tích các quyết định thành công và thất bại trong kinh doanh."
+			]
+		},
+		{
+			"slug": "van-hanh-va-he-thong-quan-tri",
+			"label": "Vận hành và hệ thống quản trị",
+			"pillar": "binh-phap-cong-so",
+			"description": "Hệ thống vận hành, dự án, tài chính và kiểm soát nội bộ.",
+			"points": [
+				"Xây dựng hệ thống vận hành doanh nghiệp.",
+				"Quản trị dự án và chương trình.",
+				"Quản trị chuỗi cung ứng và hoạt động sản xuất.",
+				"Quản trị tài chính và phân bổ ngân sách.",
+				"Xây dựng hệ thống quản lý và kiểm soát nội bộ.",
+				"Các mô hình, phương pháp và công cụ quản trị thực tiễn."
+			]
+		},
+		{
+			"slug": "cong-nghe-va-tuong-lai-doanh-nghiep",
+			"label": "Công nghệ và tương lai doanh nghiệp",
+			"pillar": "binh-phap-cong-so",
+			"description": "AI, chuyển đổi số, đổi mới sáng tạo và tương lai việc làm.",
+			"points": [
+				"AI và chuyển đổi số trong doanh nghiệp.",
+				"Tác động của công nghệ đến mô hình kinh doanh.",
+				"Tương lai việc làm và năng lực nhân sự.",
+				"Đổi mới sáng tạo và phát triển sản phẩm.",
+				"Công nghệ mới và lợi thế cạnh tranh.",
+				"Ứng dụng công nghệ trong lãnh đạo và quản trị."
+			]
+		},
+		{
+			"slug": "kinh-te-va-dia-chinh-tri",
+			"label": "Kinh tế và địa chính trị",
+			"pillar": "binh-phap-cong-so",
+			"description": "Chu kỳ kinh tế, trật tự thế giới và tác động đến doanh nghiệp Việt Nam.",
+			"points": [
+				"Kinh tế vĩ mô và các chu kỳ kinh tế.",
+				"Địa chính trị và trật tự kinh tế thế giới.",
+				"Thương mại quốc tế và chuỗi giá trị toàn cầu.",
+				"Xu hướng dịch chuyển đầu tư và sản xuất.",
+				"Chính sách kinh tế và môi trường kinh doanh Việt Nam.",
+				"Những biến động quốc tế tác động đến doanh nghiệp."
+			]
+		},
+		{
+			"slug": "ho-so-doanh-nghiep-va-dien-cuu",
+			"label": "Hồ sơ doanh nghiệp và điển cứu",
+			"pillar": "binh-phap-cong-so",
+			"description": "Chiến lược, thương vụ và bài học từ doanh nghiệp Việt Nam và quốc tế.",
+			"points": [
+				"Phân tích mô hình của các tập đoàn lớn.",
+				"Nghiên cứu chiến lược của các doanh nghiệp thành công.",
+				"Những câu chuyện tăng trưởng và thất bại.",
+				"Phân tích các thương vụ đầu tư và M&A.",
+				"Những bài học quản trị từ các CEO và nhà sáng lập.",
+				"Điển cứu doanh nghiệp Việt Nam và quốc tế."
+			]
+		}
+	],
+	"tags": [
+		{ "slug": "xay-dung-to-chuc", "label": "Xây dựng tổ chức" },
+		{ "slug": "bo-nhiem-nhan-su", "label": "Bổ nhiệm nhân sự" },
+		{ "slug": "ceo-lan-dau", "label": "CEO lần đầu" },
+		{ "slug": "doanh-nghiep-cong-nghe", "label": "Doanh nghiệp công nghệ" }
+	]
+}

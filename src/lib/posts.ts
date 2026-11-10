@@ -1,4 +1,5 @@
 import { type CollectionEntry, getCollection } from 'astro:content';
+import { getPillar, getTopic } from '../data/taxonomy';
 
 export type Post = CollectionEntry<'posts'>;
 
@@ -11,7 +12,11 @@ export async function getPublishedPosts(): Promise<Post[]> {
 	return posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 }
 
-export const postUrl = (post: Post) => `/${post.data.category}/${post.id}/`;
+export const topicOf = (post: Post) => getTopic(post.data.topic);
+export const pillarOf = (post: Post) => getPillar(topicOf(post).pillar);
+
+/** `/<pillar>/<slug>/`. Moving a post to a topic of the other pillar changes it, so add a redirect then. */
+export const postUrl = (post: Post) => `/${topicOf(post).pillar}/${post.id}/`;
 
 export const getSyllables = (post: Post) => post.body?.trim().split(/\s+/).length ?? 0;
 
@@ -19,11 +24,17 @@ export function getReadingMinutes(post: Post) {
 	return Math.max(1, Math.round(getSyllables(post) / SYLLABLES_PER_MINUTE));
 }
 
-/** Other posts ranked by shared tags, with same-category posts ranked just above no overlap. */
+/** Featured posts first, newest first within each group. */
+export const byFeatured = (posts: Post[]) =>
+	[...posts].sort((a, b) => Number(b.data.featured) - Number(a.data.featured));
+
+/** Other posts ranked by shared tags and topic, with same-pillar posts ranked just above no overlap. */
 export function getRelatedPosts(post: Post, posts: Post[], limit = 3) {
+	const pillar = topicOf(post).pillar;
 	const score = (other: Post) =>
 		other.data.tags.filter((tag) => post.data.tags.includes(tag)).length * 2 +
-		(other.data.category === post.data.category ? 1 : 0);
+		(other.data.topic === post.data.topic ? 2 : 0) +
+		(topicOf(other).pillar === pillar ? 1 : 0);
 
 	return posts
 		.filter((other) => other.id !== post.id && score(other) > 0)

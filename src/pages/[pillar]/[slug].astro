@@ -1,0 +1,29 @@
+---
+import { render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import PostLayout from '../../layouts/PostLayout.astro';
+import { getPublishedPosts, getRelatedPosts, type Post, topicOf } from '../../lib/posts';
+
+export const getStaticPaths = (async () => {
+	const posts = await getPublishedPosts();
+	return posts.map((post, index) => {
+		const newer = posts[index - 1];
+		const older = posts[index + 1];
+		// These two already show in `PrevNext`, so related posts don't repeat them.
+		const candidates = posts.filter((other) => other !== newer && other !== older);
+		return {
+			params: { pillar: topicOf(post).pillar, slug: post.id },
+			props: { post, related: getRelatedPosts(post, candidates), newer, older },
+		};
+	});
+}) satisfies GetStaticPaths;
+
+type Props = { post: Post; related: Post[]; newer?: Post; older?: Post };
+
+const { post, related, newer, older } = Astro.props;
+const { Content, headings } = await render(post);
+---
+
+<PostLayout {post} {headings} {related} {newer} {older}>
+	<Content />
+</PostLayout>

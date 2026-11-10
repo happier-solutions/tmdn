@@ -1,265 +1,380 @@
 ---
-import Feedback from '../components/Feedback.astro';
-import HomeCategories from '../components/HomeCategories.astro';
-import HomeStats from '../components/HomeStats.astro';
+import type { ImageMetadata } from 'astro';
+import { Picture } from 'astro:assets';
 import PostCard from '../components/PostCard.astro';
-import VisitThanks from '../components/VisitThanks.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import PostLead from '../components/PostLead.astro';
+import PostRow from '../components/PostRow.astro';
+import { AUTHOR, AUTHOR_BIO, SITE_DESCRIPTION, SITE_MOTTO, SITE_NAME } from '../consts';
+import { PILLARS, topicsOf, topicUrl } from '../data/taxonomy';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { getPublishedPosts } from '../lib/posts';
+import { getPublishedPosts, topicOf } from '../lib/posts';
 
-// Seven posts and the "all posts" cell make full rows at one, two and four columns.
-const HOME_POSTS = 7;
-// The first row at four columns, which also covers what a phone shows first.
-const EAGER_POSTS = 4;
+const LATEST = 5;
+const SELECTED = 3;
+
+const images = import.meta.glob<{ default: ImageMetadata }>('../assets/pillars/*.jpg', { eager: true });
+const imageOf = (slug: string) => images[`../assets/pillars/${slug}.jpg`]?.default;
 
 const posts = await getPublishedPosts();
-const latest = posts.slice(0, HOME_POSTS);
+// The newest featured post leads; without one, the newest post does.
+const lead = posts.find((post) => post.data.featured) ?? posts[0];
+const latest = posts.filter((post) => post !== lead).slice(0, LATEST);
+const selected = posts
+	.filter((post) => post.data.featured && post !== lead && !latest.includes(post))
+	.slice(0, SELECTED);
+const countIn = (pillar: string) => posts.filter((post) => topicOf(post).pillar === pillar).length;
+
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'WebSite',
+	name: SITE_NAME,
+	alternateName: AUTHOR,
+	description: SITE_DESCRIPTION,
+	inLanguage: 'vi',
+	url: Astro.site?.href,
+};
 ---
 
-<BaseLayout description={SITE_DESCRIPTION} wide>
-	<div class="home">
-		<section aria-labelledby="site-name">
-			<h1 id="site-name" class="sr-only">{SITE_TITLE}</h1>
-			<div class="today">
-				<time id="today" hidden></time>
-				{/* Static pages can't know today's date, so the visitor's clock sets it before first paint. */}
-				<script is:inline>
-					(() => {
-						const now = new Date();
-						const el = document.getElementById('today');
-						const pad = (n) => String(n).padStart(2, '0');
-						el.dateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-						// Built by hand: Safari's vi-VN long date adds "ngày", which overflows the size set below.
-						const weekday = new Intl.DateTimeFormat('vi-VN', { weekday: 'long' }).format(now);
-						el.textContent = `${weekday}, ${now.getDate()} tháng ${now.getMonth() + 1}, ${now.getFullYear()}`;
-						el.hidden = false;
-					})();
-				</script>
+<BaseLayout description={SITE_DESCRIPTION} wide {jsonLd}>
+	<section class="statement" aria-labelledby="site-name">
+		<p class="dateline">
+			<time id="today" hidden></time>
+			{/* Static pages can't know today's date, so the visitor's clock sets it before first paint. */}
+			<script is:inline>
+				(() => {
+					const now = new Date();
+					const el = document.getElementById('today');
+					const pad = (n) => String(n).padStart(2, '0');
+					el.dateTime = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+					const weekday = new Intl.DateTimeFormat('vi-VN', { weekday: 'long' }).format(now);
+					el.textContent = `${weekday}, ${now.getDate()} tháng ${now.getMonth() + 1}, ${now.getFullYear()}`;
+					el.hidden = false;
+				})();
+			</script>
+			<span>Ghi chép · Nghiên cứu · Chiêm nghiệm</span>
+		</p>
+		<h1 id="site-name">
+			<span class="kicker">{SITE_NAME}</span>
+			<span class="tagline">Tu thân – Dưỡng chí – Lập nghiệp.</span>
+		</h1>
+		<div class="statement-body">
+			<p class="motto">{SITE_MOTTO}</p>
+			<div class="about">
+				<p>
+					Không gian ghi chép, nghiên cứu và chia sẻ những suy ngẫm về con người, tri thức, tư duy, lịch
+					sử, xã hội, lãnh đạo và quản trị doanh nghiệp. Để bồi dưỡng nội lực, mở rộng nhận thức và phát
+					triển năng lực lập nghiệp.
+				</p>
+				<a href="/gioi-thieu/"><span class="link-line">Về Trúc Chí Lập Thân</span></a>
 			</div>
-			<div class="ruled about">
-				<div class="cell">
-					<p class="statement">
-						Nhật ký công khai của một người đang học về lãnh đạo và quản trị: quan sát môi trường điều
-						hành, đặt câu hỏi, tìm hiểu bản chất rồi rút ra bài học.
-					</p>
-				</div>
-				<div class="cell text">
-					<p>
-						Viết cho chủ doanh nghiệp SME, quản lý trẻ và người sắp bước vào vị trí điều hành. Đây là
-						ghi chép của người đang học, không phải lời khuyên của chuyên gia.
-					</p>
-					<a href="/gioi-thieu/"><span class="link-line">Đọc thêm về hành trình này</span></a>
-				</div>
+		</div>
+	</section>
+
+	{lead && (
+		<section class="block" aria-label="Bài nổi bật">
+			<PostLead post={lead} eyebrow={lead.data.featured ? 'Bài nổi bật' : 'Bài mới nhất'} eager />
+		</section>
+	)}
+
+	{latest.length > 0 && (
+		<section class="block split" aria-labelledby="latest-heading">
+			<div class="side">
+				<h2 id="latest-heading" class="section-title">Bài viết mới</h2>
+				<p class="side-note">Những ghi chép gần đây nhất, từ cả hai chuyên mục.</p>
+				<a href="/bai-viet/"><span class="link-line">Tất cả bài viết</span></a>
 			</div>
+			<ul class="rows">
+				{latest.map((post) => <li><PostRow {post} level={3} /></li>)}
+			</ul>
 		</section>
+	)}
 
-		<section aria-labelledby="latest-heading">
-			<div class="head">
-				<h2 id="latest-heading">Bài viết mới nhất</h2>
-			</div>
-			{latest.length ? (
-				<div class="ruled posts">
-					{latest.map((post, i) => (
-						<div class="cell post">
-							<PostCard {post} eager={i < EAGER_POSTS} imageSizes="(min-width: 64rem) 18rem, (min-width: 40rem) 50vw, 40vw" />
-						</div>
-					))}
-					<div class="cell linked">
-						<p class="all"><a href="/bai-viet/">Xem tất cả bài viết</a></p>
-						<p class="count">{posts.length} bài</p>
-					</div>
-				</div>
-			) : (
-				<p>Chưa có bài viết.</p>
-			)}
+	<section class="block" aria-labelledby="pillars-heading">
+		<h2 id="pillars-heading" class="section-title">Hai chuyên mục</h2>
+		<div class="pillars">
+			{PILLARS.map((pillar, index) => {
+				const topics = topicsOf(pillar.slug);
+				const image = imageOf(pillar.slug);
+				const count = countIn(pillar.slug);
+				return (
+					<article class="pillar">
+						{image && <Picture src={image} formats={['avif', 'webp']} widths={[400, 640, 960]} sizes="(min-width: 56rem) 34rem, 100vw" alt="" />}
+						<p class="kicker">Chuyên mục {String(index + 1).padStart(2, '0')}</p>
+						<h3><a href={`/${pillar.slug}/`}>{pillar.label}</a></h3>
+						<p class="pillar-motto">{pillar.description}</p>
+						<ul class="topic-list" aria-label={`Chủ đề của ${pillar.label}`}>
+							{topics.map((topic) => <li><a href={topicUrl(topic)}>{topic.label}</a></li>)}
+						</ul>
+						<p class="meta">{topics.length} chủ đề · {count ? `${count} bài viết` : 'sắp có bài'}</p>
+					</article>
+				);
+			})}
+		</div>
+	</section>
+
+	{selected.length > 0 && (
+		<section class="block" aria-labelledby="selected-heading">
+			<h2 id="selected-heading" class="section-title">Bài chọn lọc</h2>
+			<ul class="cards">
+				{selected.map((post, i) => <li><PostCard {post} number={i + 1} /></li>)}
+			</ul>
 		</section>
+	)}
 
-		<section aria-labelledby="categories-heading">
-			<div class="head">
-				<h2 id="categories-heading">Danh mục</h2>
-				<p>Năm chặng, từ điều tôi thấy đến điều tôi rút ra được.</p>
-			</div>
-			<HomeCategories {posts} />
-		</section>
-
-		{posts.length > 0 && (
-			<section aria-labelledby="stats-heading">
-				<div class="head">
-					<h2 id="stats-heading">Thống kê</h2>
-					<p>Tính từ các bài đã đăng, tự cập nhật mỗi khi có bài mới.</p>
-				</div>
-				<HomeStats {posts} />
-			</section>
-		)}
-
-		<section aria-labelledby="feedback-heading">
-			<VisitThanks>
-				<div class="head">
-					<h2 id="feedback-heading">Đánh giá và góp ý</h2>
-					<p>Chỗ nào chưa ổn, mong bạn nói thẳng.</p>
-				</div>
-				<Feedback />
-			</VisitThanks>
-		</section>
-	</div>
+	<section class="block author" aria-labelledby="author-heading">
+		<span class="seal" aria-hidden="true"></span>
+		<div class="author-text">
+			<p class="kicker">Lời người viết</p>
+			<h2 id="author-heading">{AUTHOR}</h2>
+			<p>{AUTHOR_BIO}</p>
+			<a href="/gioi-thieu/" rel="author"><span class="link-line">Đọc lời tự răn</span></a>
+		</div>
+		<blockquote class="maxim">
+			<p>Cứ bền bỉ mà học, điềm đạm mà làm.<br />Rễ sâu thì trúc tự vươn cao.</p>
+		</blockquote>
+	</section>
 </BaseLayout>
 <style>
-	.home {
-		display: flex;
-		flex-direction: column;
-		gap: 2.5rem;
+	.statement {
+		padding-bottom: 2.5rem;
+		border-bottom: 1px solid var(--text);
 	}
-	h2 {
-		margin: 0;
-		font-size: 1.5rem;
-	}
-	p {
-		margin: 0;
-	}
-
-	.head {
+	.dateline {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.25rem 2rem;
-		align-items: baseline;
+		gap: 0.25rem 1.5rem;
 		justify-content: space-between;
-		margin-bottom: 1rem;
-		font-size: 1rem;
+		margin: 0 0 2rem;
+		padding-block: 0.5rem;
+		border-block: 1px solid var(--border);
+		color: var(--text-2);
+		font-size: 0.8125rem;
+		line-height: 1.5;
 	}
-	.head p {
-		color: var(--gray);
-		font-size: 0.875rem;
+	.dateline time:first-letter {
+		text-transform: uppercase;
 	}
-
-	/* The longest date ("Chủ Nhật, 29 tháng 10, 2028") is 11.93em in Playfair Display at this tracking, so 13em leaves a margin. */
-	.today {
-		container-type: inline-size;
-		padding-bottom: 1rem;
-	}
-	time {
-		color: var(--black);
-		font-family: var(--font-heading);
-		font-size: min(100cqi / 13, 5rem);
-		font-variant-numeric: lining-nums;
-		letter-spacing: -0.02em;
-		line-height: 1.2;
-		white-space: nowrap;
-	}
-	.about > .cell {
-		background: var(--gray-light);
-	}
-	.statement {
-		color: var(--black);
-		font-family: var(--font-heading);
-		font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
-		line-height: 1.4;
-		text-wrap: pretty;
-	}
-	.text {
-		display: flex;
-		flex-direction: column;
+	h1 {
+		display: grid;
 		gap: 0.75rem;
-		align-items: start;
-		font-size: 0.875rem;
-		line-height: 1.6;
+		margin: 0;
 	}
-	.text a {
-		margin-top: auto;
+	.tagline {
+		display: block;
+		font-size: clamp(2.375rem, 1.5rem + 4vw, 5rem);
+		font-weight: 400;
+		line-height: 1.1;
+		letter-spacing: -0.02em;
+	}
+	.statement-body {
+		display: grid;
+		gap: 1.5rem;
+		margin-top: 2rem;
+	}
+	.motto {
+		margin: 0;
+		color: var(--text);
+		font-family: var(--font-heading);
+		font-size: clamp(1.25rem, 1.0625rem + 0.75vw, 1.625rem);
+		font-style: italic;
+		line-height: 1.45;
+		text-wrap: balance;
+	}
+	.about p {
+		margin: 0 0 0.75rem;
+		color: var(--text-2);
+		font-size: 1rem;
+		line-height: 1.75;
+	}
+	@media (min-width: 56rem) {
+		.statement-body {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+			gap: 4rem;
+		}
 	}
 
-	/* The card's link covers the whole cell. */
-	.post {
+	.block {
+		margin-top: 3rem;
+	}
+	/* Each block after the lead opens on a full-strength rule, like a magazine's section break. */
+	.block + .block {
+		padding-top: 2.5rem;
+		border-top: 1px solid var(--text);
+	}
+	.section-title {
+		margin: 0 0 1.5rem;
+		font-size: 1.75rem;
+	}
+
+	/* Asymmetric: a narrow column names the block, the wide one holds the list. */
+	.split {
+		display: grid;
+		gap: 1rem;
+	}
+	.side-note {
+		margin: 0 0 0.75rem;
+		color: var(--text-2);
+		font-size: 0.9375rem;
+	}
+	.side .section-title {
+		margin-bottom: 0.5rem;
+	}
+	.rows {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.rows li {
+		padding-block: 1.5rem;
+		border-bottom: 1px solid var(--border);
+	}
+	.rows li:first-child {
+		padding-top: 0;
+	}
+	@media (min-width: 56rem) {
+		.split {
+			grid-template-columns: minmax(0, 1fr) minmax(0, 3fr);
+			gap: 4rem;
+		}
+		.side {
+			position: sticky;
+			top: 6rem;
+			align-self: start;
+		}
+	}
+
+	.pillars {
+		display: grid;
+		gap: 3rem;
+	}
+	.pillar {
 		position: relative;
-		display: flex;
+		display: grid;
+		gap: 0.75rem;
+		align-content: start;
 	}
-	.post :global(article) {
-		position: static;
-		flex: 1;
-		min-width: 0;
+	.pillar :global(img) {
+		display: block;
+		width: 100%;
+		aspect-ratio: 3 / 2;
+		object-fit: cover;
+		margin-bottom: 0.5rem;
 	}
-	.post :global(h2) {
-		font-size: 1.25rem;
+	.pillar h3 {
+		margin: 0;
+		font-size: clamp(1.75rem, 1.5rem + 1vw, 2.25rem);
+		font-weight: 500;
 	}
-	.post :global(p) {
-		font-size: 1rem;
+	.pillar h3 a {
+		color: inherit;
+	}
+	.pillar-motto {
+		margin: 0;
+		font-family: var(--font-heading);
+		font-size: 1.1875rem;
+		font-style: italic;
 		line-height: 1.5;
 		text-wrap: pretty;
 	}
-
-	.linked .all {
-		font-family: var(--font-heading);
-		font-size: 1.25rem;
+	.topic-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 0.25rem;
+		margin: 0.25rem 0 0;
+		padding: 0.75rem 0 0;
+		border-top: 1px solid var(--border);
+		list-style: none;
+		font-size: 0.875rem;
+		line-height: 1.9;
+	}
+	/* A middle dot between topics; the sprig on hover stays clear of it. */
+	.topic-list li:not(:last-child)::after {
+		content: '·';
+		margin-left: 0.75rem;
+		margin-right: 0.25rem;
+		color: var(--gold);
+	}
+	.pillar .meta {
+		margin: 0;
+	}
+	@media (min-width: 56rem) {
+		.pillars {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 4rem;
+		}
+		/* The second pillar sits lower: two columns, not a matched pair of cards. */
+		.pillar:nth-child(2) {
+			margin-top: 4rem;
+		}
 	}
 
-	/* Phones: whitespace alone splits the posts, with no frame or rules.
-	   `.ruled.posts` and the longer selectors outrank `ruled.css` whatever the order of the two sheets. */
-	@media (width < 40rem) {
-		.ruled.posts {
-			gap: 1.5rem;
-			overflow: visible;
-			border: 0;
-		}
-		.posts .cell {
-			margin: 0;
-			padding: 0;
-			border: 0;
-		}
-		.posts .linked .count {
-			padding-top: 0;
-		}
-		.posts .linked:has(a:hover) {
-			background: none;
-		}
-		.posts .linked:has(a:focus-visible) {
-			outline-offset: 2px;
-		}
+	.cards {
+		display: grid;
+		gap: 2.5rem 2rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
-
 	@media (min-width: 40rem) {
-		.home {
-			gap: 3rem;
-		}
-		.about {
-			grid-template-columns: 3fr 2fr;
-		}
-		.posts {
-			grid-template-columns: 1fr 1fr;
-		}
-		.posts .cell {
-			--py: 1.5rem;
-			--px: 1.5rem;
-		}
-		/* From here the image sits above the text and bleeds to the cell's rules. */
-		.post :global(.thumb) {
-			margin: calc(-1 * var(--py)) calc(-1 * var(--px)) 1rem;
+		.cards {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
 		}
 	}
 	@media (min-width: 64rem) {
-		.about .cell {
-			--py: 1.5rem;
-			--px: 1.5rem;
-		}
-		.posts {
-			grid-template-columns: repeat(4, 1fr);
-		}
-		.posts .cell {
-			--py: 1.25rem;
-			--px: 1.25rem;
+		.cards {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
 		}
 	}
-	/* The small sizes suit both a phone's single column and the four narrow columns. */
-	@media (width < 40rem), (min-width: 64rem) {
-		.post :global(h2),
-		.linked .all {
-			font-size: 1.125rem;
+
+	.author {
+		display: grid;
+		grid-template-columns: 4rem minmax(0, 1fr);
+		gap: 1.5rem;
+		align-items: start;
+	}
+	.seal {
+		width: 4rem;
+		height: 4rem;
+		background: var(--seal);
+		mask:
+			url('/sprig.svg') center / 2.75rem no-repeat exclude,
+			linear-gradient(#000 0 0);
+	}
+	.author-text h2 {
+		margin: 0.25rem 0 0.75rem;
+		font-size: 1.75rem;
+	}
+	.author-text p:not(.kicker) {
+		max-width: 36rem;
+		color: var(--text-2);
+		font-size: 1rem;
+		line-height: 1.75;
+	}
+	.maxim {
+		grid-column: 1 / -1;
+		margin: 0;
+		padding: 1.25rem 0 0;
+		border: 0;
+		border-top: 1px solid var(--border);
+		font-family: var(--font-heading);
+		font-size: clamp(1.375rem, 1.125rem + 1vw, 1.875rem);
+		font-style: italic;
+		line-height: 1.4;
+	}
+	.maxim p {
+		margin: 0;
+	}
+	@media (min-width: 56rem) {
+		.author {
+			grid-template-columns: 4rem minmax(0, 6fr) minmax(0, 5fr);
+			gap: 2rem;
 		}
-		.post :global(p) {
-			font-size: 0.875rem;
-		}
-		.post :global(.meta),
-		.linked .count {
-			font-size: 0.75rem;
+		.maxim {
+			grid-column: 3;
+			align-self: center;
+			padding: 0 0 0 2rem;
+			border-top: 0;
+			border-left: 1px solid var(--border);
 		}
 	}
 </style>

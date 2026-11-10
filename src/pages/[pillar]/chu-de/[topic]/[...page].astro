@@ -1,0 +1,34 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import { PAGE_SIZE } from '../../../../consts';
+import { getPillar, type Topic, TOPICS } from '../../../../data/taxonomy';
+import ListLayout from '../../../../layouts/ListLayout.astro';
+import { getPublishedPosts, type Post } from '../../../../lib/posts';
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getPublishedPosts();
+	return TOPICS.flatMap((topic) => {
+		const inTopic = posts.filter((post) => post.data.topic === topic.slug);
+		return paginate(inTopic, {
+			params: { pillar: topic.pillar, topic: topic.slug },
+			props: { topic },
+			pageSize: PAGE_SIZE,
+		});
+	});
+}) satisfies GetStaticPaths;
+
+type Props = { page: Page<Post>; topic: Topic };
+
+const { page, topic } = Astro.props;
+const pillar = getPillar(topic.pillar);
+---
+
+<ListLayout
+	title={topic.label}
+	description={topic.description}
+	metaDescription={`${topic.label}, chủ đề thuộc ${pillar.label}: ${topic.description}`}
+	eyebrow={{ label: pillar.label, href: `/${pillar.slug}/` }}
+	points={topic.points}
+	topicOnly
+	{page}
+/>

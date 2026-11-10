@@ -8,12 +8,12 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 
 <!-- `data-mailto`, not `action`: Chrome reports a `mailto:` action as mixed content. Needs JS, so without it only the address shows. -->
 <noscript>
-	<p>Bạn muốn đánh giá hay góp ý cho blog? Gửi thư đến <a href={mailto}>{CONTACT_EMAIL}</a>.</p>
+	<p>Bạn muốn đánh giá hay góp ý cho trang? Gửi thư đến <a href={mailto}>{CONTACT_EMAIL}</a>.</p>
 </noscript>
 <form class="ruled feedback" data-mailto={mailto}>
 	<div class="cell">
 		<fieldset role="radiogroup" aria-errormessage="feedback-error">
-			<legend>Bạn thấy blog này thế nào?</legend>
+			<legend>Bạn thấy trang này thế nào?</legend>
 			<StarRating />
 			<p id="feedback-error" class="message">Bạn chọn giúp một mức từ 1 đến 5 sao.</p>
 		</fieldset>
@@ -70,7 +70,7 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 
 <style>
 	.feedback {
-		background: var(--gray-light);
+		background: var(--wash);
 	}
 	@media (scripting: none) {
 		.feedback {
@@ -93,19 +93,19 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 	.title {
 		display: block;
 		margin-bottom: 0.75rem;
-		color: var(--black);
+		color: var(--text);
 		font-family: var(--font-heading);
 		font-size: 1.25rem;
 		line-height: 1.25;
 	}
-	/* --gray is only 4.48:1 on --gray-light. */
+	/* --text-2 is only 4.48:1 on --wash. */
 	.title span {
-		color: var(--gray-dark);
+		color: var(--text);
 		font-family: var(--font-body);
 		font-size: 0.875rem;
 	}
 	.note {
-		color: var(--gray-dark);
+		color: var(--text);
 		font-size: 0.875rem;
 	}
 
@@ -119,10 +119,10 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 		max-block-size: 16lh;
 		margin-bottom: 0.5rem;
 		padding: 0.75rem;
-		border: 1px solid var(--gray);
+		border: 1px solid var(--text-2);
 		border-radius: 0;
-		background: var(--paper);
-		color: var(--gray-dark);
+		background: var(--bg);
+		color: var(--text);
 		font: inherit;
 		/* Below 1rem iOS zooms in on focus. */
 		font-size: 1rem;
@@ -144,25 +144,25 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 		padding-inline: 1.25rem;
 		border: 0;
 		border-radius: 0;
-		background: var(--accent);
-		color: var(--paper);
+		background: var(--bamboo);
+		color: var(--bg);
 		font: inherit;
 		font-size: 1rem;
 		font-weight: 600;
 		cursor: pointer;
 	}
 	button:hover {
-		background: var(--accent-dark);
+		background: var(--bamboo-dark);
 	}
 	:is(textarea, button):focus-visible {
-		outline: 2px solid var(--accent);
+		outline: 2px solid var(--bamboo);
 		outline-offset: 2px;
 	}
 
 	.message {
 		padding-inline-start: 0.5rem;
 		border-inline-start: 3px solid var(--gold);
-		color: var(--gray-dark);
+		color: var(--text);
 		font-size: 0.875rem;
 	}
 	.sent {

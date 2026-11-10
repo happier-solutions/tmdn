@@ -1,17 +1,20 @@
 ---
 import type { MarkdownHeading } from 'astro';
-import { getImage, Image } from 'astro:assets';
+import { getImage, Picture } from 'astro:assets';
 import AuthorBio from '../components/AuthorBio.astro';
 import PostFeedback from '../components/PostFeedback.astro';
+import PostLabel from '../components/PostLabel.astro';
 import PostMeta from '../components/PostMeta.astro';
 import PrevNext from '../components/PrevNext.astro';
+import ReadingProgress from '../components/ReadingProgress.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
 import ShareLinks from '../components/ShareLinks.astro';
 import TimeOnPage from '../components/TimeOnPage.astro';
 import Toc from '../components/Toc.astro';
 import UpdateNote from '../components/UpdateNote.astro';
-import { labelOf, TAGS } from '../data/taxonomy';
-import type { Post } from '../lib/posts';
+import { AUTHOR, SITE_NAME } from '../consts';
+import { labelOf, TAGS, tagUrl } from '../data/taxonomy';
+import { type Post, pillarOf, postUrl, topicOf } from '../lib/posts';
 import BaseLayout from './BaseLayout.astro';
 
 interface Props {
@@ -23,7 +26,7 @@ interface Props {
 }
 
 const { post, headings, related, newer, older } = Astro.props;
-const { title, description, heroImage, heroCredit, tags } = post.data;
+const { title, description, heroImage, heroAlt, heroCredit, tags, references, pubDate, updatedDate } = post.data;
 
 const shareImage = heroImage
 	? (await getImage({ src: heroImage, width: 1200, format: 'jpeg' })).src
@@ -31,55 +34,94 @@ const shareImage = heroImage
 
 const tocHeadings = headings.filter(({ depth }) => depth === 2 || depth === 3);
 const hasToc = tocHeadings.length >= 3;
+
+const url = new URL(postUrl(post), Astro.site);
+const jsonLd = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: title,
+	description,
+	inLanguage: 'vi',
+	url: url.href,
+	mainEntityOfPage: url.href,
+	datePublished: pubDate.toISOString(),
+	dateModified: (updatedDate ?? pubDate).toISOString(),
+	...(shareImage && { image: new URL(shareImage, Astro.site).href }),
+	articleSection: [pillarOf(post).label, topicOf(post).label],
+	...(tags.length && { keywords: tags.map((tag) => labelOf(TAGS, tag)).join(', ') }),
+	author: { '@type': 'Person', name: AUTHOR, url: new URL('/gioi-thieu/', Astro.site).href },
+	publisher: { '@type': 'Organization', name: SITE_NAME, url: Astro.site?.href },
+	...(references.length && {
+		citation: references.map((ref) => (ref.url ? { '@type': 'CreativeWork', name: ref.title, url: ref.url } : ref.title)),
+	}),
+};
 ---
 
-<BaseLayout {title} {description} image={shareImage} type="article" wide>
-	<div class="post-grid">
-		<article class="prose">
-			{heroImage && (
-				<figure class="hero">
-					<Image
-						class="hero-image"
-						width={1020}
-						height={510}
-						widths={[480, 800, 1020]}
-						sizes="(min-width: 42rem) 42rem, 100vw"
-						loading="eager"
-						fetchpriority="high"
-						src={heroImage}
-						alt=""
-					/>
-					{heroCredit && <figcaption>{heroCredit}</figcaption>}
-				</figure>
-			)}
-			<header class="post-header">
-				<h1>{title}</h1>
-				<PostMeta {post} />
-			</header>
-			<UpdateNote {post} />
-			{hasToc && (
-				<details class="toc-inline">
-					<summary>Mục lục</summary>
-					<Toc headings={tocHeadings} />
-				</details>
-			)}
-			<slot />
-			{tags.length > 0 && (
-				<ul class="tags" aria-label="Thẻ chủ đề">
-					{tags.map((tag) => <li><a href={`/chu-de/${tag}/`}><span class="link-line">#{labelOf(TAGS, tag)}</span></a></li>)}
-				</ul>
-			)}
-		</article>
-		<div class="post-rail">
-			<ShareLinks />
-			<TimeOnPage />
-		</div>
-		{hasToc && (
-			<aside class="toc-rail">
-				<p class="toc-title">Mục lục</p>
-				<Toc headings={tocHeadings} />
-			</aside>
+<BaseLayout {title} {description} image={shareImage} type="article" wide {jsonLd} published={pubDate} modified={updatedDate}>
+	<article class="post">
+		<ReadingProgress />
+		<header class="post-header">
+			<PostLabel {post} />
+			<h1>{title}</h1>
+			<p class="standfirst">{description}</p>
+			<PostMeta {post} />
+		</header>
+		{heroImage && (
+			<figure class="hero">
+				<Picture
+					class="hero-image"
+					src={heroImage}
+					formats={['avif', 'webp']}
+					width={1600}
+					height={800}
+					widths={[640, 960, 1280, 1600]}
+					sizes="(min-width: 66rem) 64rem, 100vw"
+					loading="eager"
+					fetchpriority="high"
+					alt={heroAlt ?? ''}
+				/>
+				{heroCredit && <figcaption>{heroCredit}</figcaption>}
+			</figure>
 		)}
+		<div class="post-grid">
+			<div class="prose post-body">
+				<UpdateNote {post} />
+				{hasToc && (
+					<details class="toc-inline">
+						<summary>Mục lục</summary>
+						<Toc headings={tocHeadings} />
+					</details>
+				)}
+				<slot />
+				{references.length > 0 && (
+					<section class="references" aria-labelledby="references-heading">
+						<h2 id="references-heading">Tài liệu tham khảo</h2>
+						<ol>
+							{references.map((ref) => (
+								<li>{ref.url ? <a href={ref.url} rel="noopener">{ref.title}</a> : ref.title}</li>
+							))}
+						</ol>
+					</section>
+				)}
+				{tags.length > 0 && (
+					<ul class="tags" aria-label="Từ khóa">
+						{tags.map((tag) => <li><a href={tagUrl(tag)}><span class="link-line">#{labelOf(TAGS, tag)}</span></a></li>)}
+					</ul>
+				)}
+			</div>
+			<div class="post-rail">
+				<ShareLinks />
+				<TimeOnPage />
+			</div>
+			{hasToc && (
+				<aside class="toc-rail">
+					<p class="toc-title">Mục lục</p>
+					<Toc headings={tocHeadings} />
+				</aside>
+			)}
+		</div>
+	</article>
+	<div class="post-end">
 		<PostFeedback {title} />
 		<AuthorBio />
 		<RelatedPosts posts={related} />
@@ -87,45 +129,75 @@ const hasToc = tocHeadings.length >= 3;
 	</div>
 </BaseLayout>
 <style>
-	.post-grid {
-		max-width: 42rem;
+	/* One reading column, 45rem of text, for the header, body and the blocks after the post. */
+	.post-header,
+	.post-body,
+	.post-end {
+		max-width: 45rem;
 		margin-inline: auto;
 	}
-	.hero {
-		margin: 0 0 2rem;
-	}
-	.hero-image {
-		display: block;
-		width: 100%;
-	}
-	figcaption {
-		margin-top: 0.5rem;
-		color: var(--gray);
-		font-size: 0.875rem;
-	}
 	.post-header {
+		display: grid;
+		gap: 1rem;
 		margin-bottom: 2rem;
 	}
-	/* Flush to the header and the screen's edges: it takes the page's top padding and side padding. */
+	.post-header h1 {
+		margin: 0;
+	}
+	.standfirst {
+		margin: 0;
+		color: var(--text-2);
+		font-family: var(--font-heading);
+		font-size: clamp(1.1875rem, 1.0625rem + 0.5vw, 1.375rem);
+		font-style: italic;
+		line-height: 1.5;
+		text-wrap: pretty;
+	}
+
+	/* Wider than the text, for a picture chosen to carry the piece. */
+	.hero {
+		max-width: 64rem;
+		margin: 0 auto 2.5rem;
+	}
+	.hero :global(.hero-image) {
+		display: block;
+		width: 100%;
+		aspect-ratio: 2 / 1;
+		object-fit: cover;
+	}
+	figcaption {
+		max-width: 45rem;
+		margin: 0.625rem auto 0;
+		color: var(--text-2);
+		font-size: 0.8125rem;
+		line-height: 1.5;
+	}
+	/* Edge to edge on a phone. */
 	@media (width < 40rem) {
 		.hero {
-			margin: -2rem -1rem 1.5rem;
-		}
-		.hero-image {
-			border-radius: 0;
+			margin-inline: -1rem;
 		}
 		figcaption {
 			padding-inline: 1rem;
 		}
-		.post-header {
-			margin-bottom: 1.5rem;
-		}
+	}
+
+	.references {
+		margin-top: 3rem;
+		padding-top: 1.25rem;
+		border-top: 1px solid var(--border);
+		font-size: 0.9375rem;
+		line-height: 1.6;
+	}
+	.references h2 {
+		margin: 0 0 0.75rem;
+		font-size: 1.25rem;
 	}
 	.tags {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0 1rem;
-		margin: 1.5rem 0 0;
+		margin: 2rem 0 0;
 		padding: 0;
 		list-style: none;
 		font-size: 0.875rem;
@@ -140,21 +212,22 @@ const hasToc = tocHeadings.length >= 3;
 		align-items: center;
 		justify-content: space-between;
 		gap: 0.5rem;
-		margin-top: 1.5rem;
+		max-width: 45rem;
+		margin: 1.5rem auto 0;
 	}
 	.toc-inline {
 		margin-bottom: 2rem;
-		border-block: 1px solid var(--gold);
+		border-block: 1px solid var(--border);
 	}
 	summary {
 		padding-block: 0.5rem;
-		color: var(--gray-dark);
+		color: var(--text);
 		font-size: 0.875rem;
 		line-height: 1.75rem;
 		cursor: pointer;
 	}
 	summary:focus-visible {
-		outline: 2px solid var(--accent);
+		outline: 2px solid var(--bamboo);
 		outline-offset: 2px;
 	}
 	.toc-inline :global(.toc) {
@@ -168,23 +241,26 @@ const hasToc = tocHeadings.length >= 3;
 	}
 	.toc-title {
 		margin: 0 0 0.5rem;
-		color: var(--gray);
-		font-size: 0.875rem;
+		color: var(--text-2);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
 		line-height: 1.5;
-		font-weight: 700;
+		text-transform: uppercase;
 	}
-	/* The middle column keeps the reading width of every other page. */
+	/* The middle column keeps the reading width; share buttons pin to its left, the contents to its right. */
 	@media (min-width: 64rem) {
 		.post-grid {
 			display: grid;
-			grid-template-columns: minmax(0, 1fr) minmax(0, 42rem) minmax(0, 1fr);
-			column-gap: 2rem;
+			grid-template-columns: minmax(0, 1fr) minmax(0, 45rem) minmax(0, 1fr);
+			column-gap: 2.5rem;
+		}
+		.post-body {
+			grid-area: 1 / 2;
 			max-width: none;
+			margin: 0;
 		}
-		.post-grid > :global(*) {
-			grid-column: 2;
-		}
-		.post-grid > .post-rail {
+		.post-rail {
 			position: sticky;
 			top: 6rem;
 			grid-area: 1 / 1;
@@ -196,15 +272,13 @@ const hasToc = tocHeadings.length >= 3;
 			justify-self: end;
 			margin-top: 0;
 		}
-		.post-grid > article {
-			grid-row: 1;
-		}
-		.post-grid > .toc-rail {
+		.toc-rail {
 			display: block;
 			position: sticky;
 			top: 6rem;
 			grid-area: 1 / 3;
 			align-self: start;
+			max-width: 15rem;
 			max-height: calc(100dvh - 7rem);
 			overflow-y: auto;
 		}

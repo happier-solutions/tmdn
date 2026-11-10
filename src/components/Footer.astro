@@ -1,28 +1,22 @@
 ---
-import { SITE_TAGLINE, SITE_TITLE } from '../consts';
-import { CATEGORIES, TAGS } from '../data/taxonomy';
+import { AUTHOR, SITE_MOTTO, SITE_NAME, SITE_TAGLINE } from '../consts';
+import { PILLARS, topicsOf, topicUrl } from '../data/taxonomy';
 
 const year = new Date().getFullYear();
 
 const columns = [
+	...PILLARS.map((pillar) => ({
+		title: pillar.label,
+		href: `/${pillar.slug}/`,
+		links: topicsOf(pillar.slug).map((topic) => ({ href: topicUrl(topic), label: topic.label })),
+	})),
 	{
-		title: 'Chuyên mục',
-		links: [
-			...CATEGORIES.map(({ slug, label }) => ({ href: `/${slug}/`, label })),
-			{ href: '/bai-viet/', label: 'Tất cả bài viết' },
-		],
-	},
-	{
-		title: 'Chủ đề',
-		links: [
-			...TAGS.map(({ slug, label }) => ({ href: `/chu-de/${slug}/`, label })),
-			{ href: '/chu-de/', label: 'Tất cả chủ đề' },
-		],
-	},
-	{
-		title: 'Về blog',
+		title: 'Về trang',
+		href: undefined,
 		links: [
 			{ href: '/gioi-thieu/', label: 'Giới thiệu' },
+			{ href: '/bai-viet/', label: 'Tất cả bài viết' },
+			{ href: '/tu-khoa/', label: 'Từ khóa' },
 			{ href: '/lien-he/', label: 'Liên hệ' },
 			{ href: '/quy-tac-an-danh/', label: 'Quy tắc ẩn danh' },
 			{ href: '/rss.xml', label: 'RSS' },
@@ -34,9 +28,14 @@ const columns = [
 <footer>
 	<div class="links">
 		<div class="wrap wrap-wide columns">
-			{columns.map(({ title, links }) => (
+			<div class="about">
+				<p class="name">{AUTHOR}</p>
+				<p class="site">{SITE_NAME}</p>
+				<p class="motto">{SITE_TAGLINE}<br />{SITE_MOTTO}</p>
+			</div>
+			{columns.map(({ title, href, links }) => (
 				<nav aria-label={title}>
-					<h3>{title}</h3>
+					<h3>{href ? <a {href}>{title}</a> : title}</h3>
 					<ul>
 						{links.map(({ href, label }) => <li><a {href}>{label}</a></li>)}
 					</ul>
@@ -46,11 +45,7 @@ const columns = [
 	</div>
 
 	<div class="wrap wrap-wide legal">
-		<img src="/favicon.svg" width="32" height="32" alt="" />
-		<p>
-			&copy; {year} {SITE_TITLE}<br />
-			{SITE_TAGLINE}
-		</p>
+		<p>&copy; {year} {AUTHOR} · {SITE_NAME}</p>
 		<p class="credit">
 			Thiết kế bởi <a href="https://happier.io.vn" target="_blank" rel="noopener">Happier Solutions</a>
 		</p>
@@ -81,9 +76,33 @@ const columns = [
 	}
 	.columns {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
 		gap: 2.5rem 2rem;
 		padding-block: 3rem;
+	}
+	.about p + p {
+		margin-top: 0.25rem;
+	}
+	.name {
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+		font-weight: 500;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+	}
+	.site {
+		color: var(--gold-light);
+		font-size: 0.75rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+	}
+	.about .motto {
+		margin-top: 1rem;
+		color: color-mix(in srgb, var(--on-ink) 75%, transparent);
+		line-height: 1.7;
+	}
+	h3 a {
+		color: inherit;
 	}
 	h3 {
 		margin-bottom: 0.75rem;
@@ -100,7 +119,7 @@ const columns = [
 
 	.legal {
 		display: grid;
-		grid-template-columns: auto 1fr;
+		grid-template-columns: 1fr;
 		gap: 0.5rem 0.75rem;
 		align-items: center;
 		padding-block: 1.5rem;
@@ -108,19 +127,9 @@ const columns = [
 		padding-inline-end: 3.5rem;
 		color: color-mix(in srgb, var(--on-ink) 75%, transparent);
 	}
-	.legal img {
-		display: block;
-		border-radius: 0;
-	}
-	.credit {
-		grid-column: 2;
-	}
 	@media (min-width: 60rem) {
 		.legal {
-			grid-template-columns: auto 1fr auto;
-		}
-		.credit {
-			grid-column: 3;
+			grid-template-columns: 1fr auto;
 		}
 	}
 	/* From here the column ends before ScrollTop starts. */

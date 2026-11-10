@@ -1,8 +1,7 @@
 ---
-import { Image } from 'astro:assets';
 import { type Post, postUrl } from '../lib/posts';
-import CategoryIcon from './CategoryIcon.astro';
 import FormattedDate from './FormattedDate.astro';
+import Thumb from './Thumb.astro';
 
 interface Props {
 	post: Post;
@@ -14,20 +13,14 @@ interface Props {
 }
 
 const { post, label, rel, alignDate = false } = Astro.props;
-const { title, pubDate, category, heroImage } = post.data;
+const { title, pubDate } = post.data;
 ---
 
 <article class:list={{ 'align-date': alignDate }}>
-	<div class="thumb">
-		{heroImage ? (
-			<Image src={heroImage} alt="" sizes="6rem" widths={[192, 288]} loading="lazy" />
-		) : (
-			<CategoryIcon slug={category} />
-		)}
-	</div>
+	<Thumb {post} class="tile-thumb" sizes="6rem" widths={[192, 288]} />
 	<div class="text">
 		{label && <p class="label">{label}</p>}
-		<h3><a href={postUrl(post)} {rel}>{title}</a></h3>
+		<h3 class="title"><a href={postUrl(post)} {rel}>{title}</a></h3>
 		<p class="date"><FormattedDate date={pubDate} /></p>
 	</div>
 </article>
@@ -40,25 +33,10 @@ const { title, pubDate, category, heroImage } = post.data;
 		height: 100%;
 	}
 
-	/* `width` and `align-self` let a taller text column stretch the frame past its ratio. */
-	.thumb {
-		position: relative;
-		display: grid;
-		place-items: center;
+	/* `align-self` lets a taller text column stretch the frame past its ratio. */
+	article :global(.tile-thumb) {
 		align-self: stretch;
-		width: 100%;
 		aspect-ratio: 1;
-		overflow: clip;
-		border-radius: 8px;
-		background: var(--gray-light);
-	}
-	.thumb img {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		border-radius: 0;
 	}
 
 	.text {
@@ -70,7 +48,7 @@ const { title, pubDate, category, heroImage } = post.data;
 	}
 	.text p {
 		margin: 0;
-		color: var(--gray);
+		color: var(--text-2);
 		font-size: 0.875rem;
 	}
 	h3 {
@@ -85,6 +63,7 @@ const { title, pubDate, category, heroImage } = post.data;
 		content: '';
 		position: absolute;
 		inset: 0;
+		z-index: 1;
 	}
 	.text .date {
 		padding-top: 0.25rem;
@@ -97,16 +76,7 @@ const { title, pubDate, category, heroImage } = post.data;
 		outline: none;
 	}
 	article:has(h3 a:focus-visible) {
-		outline: 2px solid var(--accent);
+		outline: 2px solid var(--bamboo);
 		outline-offset: 2px;
-	}
-	/* The painting drifts closer inside its frame, slower than the link's own hover. */
-	@media (hover: hover) and (prefers-reduced-motion: no-preference) {
-		.thumb img {
-			transition: scale 500ms ease-out;
-		}
-		article:has(h3 a:hover) img {
-			scale: 1.04;
-		}
 	}
 </style>

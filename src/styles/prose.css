@@ -1,4 +1,15 @@
 /* Long-form text in posts and static pages. Toc and tag lists set their own spacing. */
+.prose {
+	line-height: 1.8;
+}
+.prose p {
+	margin-bottom: 1.1em;
+}
+.prose p,
+.prose li,
+.prose blockquote {
+	text-wrap: pretty;
+}
 .prose :is(ol, ul):not(.tags, .toc-list) {
 	margin-block: 1em;
 	padding-inline-start: 1.5rem;
@@ -8,25 +19,64 @@
 }
 .prose h2 {
 	margin-block: 2.5rem 0.75rem;
+	font-size: clamp(1.5rem, 1.25rem + 0.75vw, 1.75rem);
 }
 .prose h3 {
 	margin-block: 2rem 0.5rem;
+	font-size: clamp(1.25rem, 1.125rem + 0.4vw, 1.375rem);
 }
+/* A Markdown quote is set as a pull quote: the line worth carrying away. */
 .prose blockquote {
-	margin-block: 1.5rem;
+	margin: 2.5rem 0;
+	padding: 1.25rem 0 0;
+	border: 0;
+	border-top: 1px solid var(--border);
+	color: var(--text);
+	font-family: var(--font-heading);
+	font-size: clamp(1.3125rem, 1.125rem + 0.75vw, 1.625rem);
+	font-style: italic;
+	line-height: 1.45;
 }
-/* Keeps h2 well under the h1, which is close to 1.75em on a phone. */
+.prose blockquote::before {
+	content: '';
+	display: block;
+	width: 2.5rem;
+	height: 3px;
+	margin: calc(-1.25rem - 2px) 0 1.25rem;
+	background: var(--seal);
+}
+.prose blockquote p:last-child {
+	margin-bottom: 0;
+}
+.prose figure {
+	margin: 2rem 0;
+}
+.prose figcaption {
+	margin-top: 0.5rem;
+	color: var(--text-2);
+	font-size: 0.875rem;
+	line-height: 1.5;
+}
+/* Tables scroll on their own rather than being clipped by `main`. */
+.prose table {
+	display: block;
+	overflow-x: auto;
+	margin-block: 1.5rem;
+	border-collapse: collapse;
+	font-size: 0.9375rem;
+	line-height: 1.5;
+}
+.prose :is(th, td) {
+	padding: 0.5rem 0.75rem;
+	border-bottom: 1px solid var(--border);
+	text-align: left;
+	vertical-align: top;
+}
+.prose th {
+	border-bottom-color: var(--text-2);
+	font-weight: 600;
+}
 @media (width < 40rem) {
-	.prose h2 {
-		font-size: 1.5em;
-	}
-	.prose h3 {
-		font-size: 1.25em;
-	}
-	.prose blockquote {
-		padding-inline-start: 1rem;
-		font-size: 1em;
-	}
 	.prose pre {
 		padding: 1rem;
 	}

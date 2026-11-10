@@ -40,26 +40,26 @@ const stars = [1, 2, 3, 4, 5];
 		cursor: pointer;
 	}
 	.star:has(input:focus-visible) {
-		outline: 2px solid var(--accent);
+		outline: 2px solid var(--bamboo);
 		outline-offset: -2px;
 	}
 	svg {
 		width: var(--star);
 		height: var(--star);
 		fill: none;
-		stroke: var(--accent);
+		stroke: var(--bamboo);
 		stroke-width: 1.5;
 		stroke-linejoin: round;
 	}
 	/* The stars up to the chosen one fill in. */
 	.star:has(input:checked) svg,
 	.star:has(~ .star input:checked) svg {
-		fill: var(--accent);
+		fill: var(--bamboo);
 	}
 	@media (hover: hover) {
 		.star:hover svg,
 		.star:has(~ .star:hover) svg {
-			fill: var(--accent);
+			fill: var(--bamboo);
 		}
 		.star:hover ~ .star svg {
 			fill: none;

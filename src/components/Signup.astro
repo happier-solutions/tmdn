@@ -11,7 +11,7 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 	<div class="wrap wrap-wide cta">
 		<div>
 			<p class="eyebrow">Nhận bài mới</p>
-			<h2 id="signup-title">Mỗi khi tôi học được điều gì mới, bạn sẽ biết ngay.</h2>
+			<h2 id="signup-title">Nhận những ghi chép mới của Trúc Chí Lập Thân qua email.</h2>
 		</div>
 		<!-- `data-mailto`, not `action`: Chrome reports a `mailto:` action as mixed content. Needs JS, so without it only the address shows. -->
 		<noscript>
@@ -142,7 +142,7 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 		background: var(--on-ink);
 		color: var(--ink);
 	}
-	/* Fixed mix, not --gray: this band is always dark but the field stays light. About 5.5:1 on --on-ink. */
+	/* Fixed mix, not --text-2: this band is always dark but the field stays light. About 5.5:1 on --on-ink. */
 	input::placeholder {
 		color: color-mix(in srgb, var(--ink) 65%, var(--on-ink));
 		opacity: 1;
@@ -158,7 +158,7 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 		background: var(--on-ink);
 	}
 	:is(input, button):focus-visible {
-		outline: 2px solid var(--accent);
+		outline: 2px solid var(--bamboo);
 		outline-offset: 2px;
 	}
 	.message {

@@ -1,5 +1,6 @@
 ---
-import { CATEGORIES, CONFIDENCE_LEVELS, labelOf } from '../data/taxonomy';
+import { AUTHOR } from '../consts';
+import { CONFIDENCE_LEVELS, labelOf } from '../data/taxonomy';
 import { getReadingMinutes, type Post } from '../lib/posts';
 import FormattedDate from './FormattedDate.astro';
 
@@ -8,45 +9,39 @@ interface Props {
 }
 
 const { post } = Astro.props;
-const { pubDate, updatedDate, category, confidence } = post.data;
+const { pubDate, updatedDate, confidence } = post.data;
 ---
 
-<div class="meta">
-	<FormattedDate date={pubDate} />
-	{updatedDate && <><span class="sep">{' · '}</span>{'Cập nhật '}<FormattedDate date={updatedDate} /></>}
-	<span class="sep">{' · '}</span><a href={`/${category}/`}>{labelOf(CATEGORIES, category)}</a><span class="sep">{' · '}</span>{getReadingMinutes(post)} phút đọc
-</div>
-<p class="confidence">Mức độ chắc chắn: <strong>{labelOf(CONFIDENCE_LEVELS, confidence)}</strong></p>
+<p class="byline">
+	<span class="author">Bài viết của <a href="/gioi-thieu/" rel="author">{AUTHOR}</a></span>
+	<span class="facts">
+		<FormattedDate date={pubDate} />
+		{updatedDate && <><span class="sep" aria-hidden="true">·</span>Cập nhật <FormattedDate date={updatedDate} /></>}
+		<span class="sep" aria-hidden="true">·</span>{getReadingMinutes(post)} phút đọc
+		{confidence && <><span class="sep" aria-hidden="true">·</span>{labelOf(CONFIDENCE_LEVELS, confidence)}</>}
+	</span>
+</p>
 <style>
-	.meta,
-	.confidence {
-		margin: 0.5rem 0 0;
-		color: var(--gray);
+	.byline {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1.5rem;
+		margin: 0;
+		padding-block: 0.875rem;
+		border-block: 1px solid var(--border);
+		color: var(--text-2);
 		font-size: 0.875rem;
 		line-height: 1.5;
 	}
-	/* A larger tap area with no effect on layout; the link's padding would lower its hover rule. */
-	.meta a {
-		position: relative;
+	.author {
+		color: var(--text);
 	}
-	.meta a::before {
-		content: '';
-		position: absolute;
-		inset: -0.75rem -0.25rem;
+	.author a {
+		color: inherit;
+		font-weight: 600;
 	}
-	/* The hover sprig takes the separator's place, so the text after it never moves.
-	   The margin makes that place wide enough for the sprig. */
 	.sep {
-		margin-inline: 0.2em;
-	}
-	@media (hover: hover) {
-		.meta a:hover + .sep {
-			opacity: 0;
-		}
-	}
-	@media (prefers-reduced-motion: no-preference) {
-		.sep {
-			transition: opacity 200ms ease-out;
-		}
+		margin-inline: 0.5em;
+		color: var(--gold);
 	}
 </style>

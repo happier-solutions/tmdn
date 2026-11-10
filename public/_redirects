@@ -1,0 +1,8 @@
+# Cloudflare Pages redirects. The old five categories folded into the two pillars (November 2026).
+/quan-sat/* /binh-phap-cong-so/ 301
+/cau-hoi/* /binh-phap-cong-so/ 301
+/nghien-cuu/* /binh-phap-cong-so/ 301
+/bai-hoc/* /binh-phap-cong-so/ 301
+/nhat-ky-hoc-tap/* /tang-thu-quan-the/chu-de/nhat-ky-chiem-nghiem/ 301
+# Tags moved from /chu-de/ to /tu-khoa/, since "chủ đề" now names a pillar's topics.
+/chu-de/* /tu-khoa/ 301

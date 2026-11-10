@@ -1,31 +1,31 @@
 ---
 import type { GetStaticPaths, Page } from 'astro';
 import { PAGE_SIZE } from '../../../consts';
-import { TAGS } from '../../../data/taxonomy';
+import { type Tag, TAGS } from '../../../data/taxonomy';
 import ListLayout from '../../../layouts/ListLayout.astro';
 import { getPublishedPosts, type Post } from '../../../lib/posts';
 
 export const getStaticPaths = (async ({ paginate }) => {
 	const posts = await getPublishedPosts();
 	return TAGS.flatMap((tag) => {
-		const tagged = posts.filter((post) => (post.data.tags as string[]).includes(tag.slug));
+		const tagged = posts.filter((post) => post.data.tags.includes(tag.slug));
 		return paginate(tagged, {
 			params: { tag: tag.slug },
-			props: { tag, newest: tagged[0]?.data.pubDate },
+			props: { tag },
 			pageSize: PAGE_SIZE,
 		});
 	});
 }) satisfies GetStaticPaths;
 
-type Props = { page: Page<Post>; tag: (typeof TAGS)[number]; newest?: Date };
+type Props = { page: Page<Post>; tag: Tag };
 
-const { page, tag, newest } = Astro.props;
+const { page, tag } = Astro.props;
 ---
 
 <ListLayout
-	title={tag.label}
-	description={`Các bài viết về chủ đề ${tag.label.toLowerCase()}.`}
-	metaDescription={`Các bài viết về ${tag.label.toLowerCase()} trong lãnh đạo và quản trị: quan sát, câu hỏi, nghiên cứu và bài học cho chủ doanh nghiệp SME, quản lý trẻ.`}
-	{newest}
+	title={`#${tag.label}`}
+	description={`Các bài viết gắn từ khóa “${tag.label}”.`}
+	metaDescription={`Các bài viết về ${tag.label.toLowerCase()} trên Trúc Chí Lập Thân, ghi chép của Tư Mã Đại Nhân về tri thức, lãnh đạo và quản trị.`}
+	eyebrow={{ label: 'Từ khóa', href: '/tu-khoa/' }}
 	{page}
 />

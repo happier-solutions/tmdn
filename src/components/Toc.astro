@@ -69,18 +69,18 @@ const { headings } = Astro.props;
 		display: block;
 		padding: 0.25rem 0 0.25rem 0.75rem;
 		border-left: 3px solid transparent;
-		color: var(--gray);
+		color: var(--text-2);
 	}
 	.nested a {
 		padding-left: 1.5rem;
 	}
 	a:hover {
-		color: var(--accent-dark);
+		color: var(--bamboo-dark);
 	}
 	/* :is(), since an unknown pseudo-class would drop a whole selector list where it isn't supported. */
 	a:is(:target-current, .target-current) {
 		border-left-color: var(--gold);
-		color: var(--accent);
+		color: var(--bamboo);
 	}
 	/* Wrapped titles leave text right after the rule's end, and the sprig would cover it. */
 	.link-line::after {

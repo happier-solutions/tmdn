@@ -1,11 +1,7 @@
 ---
 import type { Page } from 'astro';
-import CategoryIcon from '../components/CategoryIcon.astro';
-import FormattedDate from '../components/FormattedDate.astro';
 import Pagination from '../components/Pagination.astro';
 import PostRow from '../components/PostRow.astro';
-import StageNav from '../components/StageNav.astro';
-import { CATEGORIES, type CategorySlug } from '../data/taxonomy';
 import type { Post } from '../lib/posts';
 import BaseLayout from './BaseLayout.astro';
 
@@ -15,15 +11,16 @@ interface Props {
 	/** Search snippet, longer than the visible `description`. */
 	metaDescription: string;
 	page: Page<Post>;
-	/** Date of the newest post in the whole list, not just this page. */
-	newest?: Date;
-	/** Shows the page as one stage of the journey: its icon, its number and links to its neighbours. */
-	category?: CategorySlug;
+	/** A link above the title, to the section the list belongs to. */
+	eyebrow?: { label: string; href: string };
+	/** What the list covers, shown beside the title from 56rem. */
+	points?: string[];
+	/** Leaves out the pillar in each post's label, on a pillar's own pages. */
+	topicOnly?: boolean;
 }
 
-const { title, description, metaDescription, page, newest, category } = Astro.props;
+const { title, description, metaDescription, page, eyebrow, points = [], topicOnly = false } = Astro.props;
 const pageTitle = page.currentPage > 1 ? `${title} (trang ${page.currentPage})` : title;
-const stage = CATEGORIES.findIndex(({ slug }) => slug === category) + 1;
 const isFirstPage = page.currentPage === 1;
 ---
 
@@ -32,200 +29,112 @@ const isFirstPage = page.currentPage === 1;
 	description={isFirstPage ? metaDescription : `Trang ${page.currentPage}: ${metaDescription}`}
 	wide
 >
-	<div class="ruled intro">
-		<header class="cell">
-			{category && <CategoryIcon slug={category} size={48} />}
-			<div>
-				{category && <p class="stage">Chặng {stage}/{CATEGORIES.length}</p>}
-				<h1>{title}</h1>
-				<p class="description">{description}</p>
+	<header class:list={['intro', { 'has-points': points.length > 0 }]}>
+		<div class="heading">
+			{eyebrow && <p class="kicker"><a href={eyebrow.href}>{eyebrow.label}</a></p>}
+			<h1>{title}</h1>
+			<p class="description">{description}</p>
+			<p class="meta">{page.total} bài viết</p>
+		</div>
+		{points.length > 0 && (
+			<div class="points">
+				<p class="kicker">Bàn về</p>
+				<ul>
+					{points.map((point) => <li>{point}</li>)}
+				</ul>
 			</div>
-		</header>
-		<dl class="cell facts">
-			<div>
-				<dt>Số bài</dt>
-				<dd>{page.total}</dd>
-			</div>
-			{newest && (
-				<div>
-					<dt>Mới nhất</dt>
-					<dd><FormattedDate date={newest} /></dd>
-				</div>
-			)}
-		</dl>
-	</div>
+		)}
+	</header>
 	{page.data.length ? (
-		<ul class="ruled posts">
-			{page.data.map((post, index) => {
-				const featured = isFirstPage && index === 0;
-				return (
-					<li class:list={['cell', { featured }]}>
-						<PostRow {post} {featured} showCategory={!category} />
-					</li>
-				);
-			})}
+		<ul class="posts">
+			{page.data.map((post) => (
+				<li><PostRow {post} {topicOnly} /></li>
+			))}
 		</ul>
 	) : (
-		<div class="ruled">
-			<div class="cell"><p class="empty">Chưa có bài viết.</p></div>
-		</div>
+		<p class="empty">
+			Chưa có bài viết nào ở đây. Bài đầu tiên đang được viết.
+			{eyebrow && <> Trong lúc chờ, mời bạn ghé <a href={eyebrow.href}>{eyebrow.label}</a>.</>}
+		</p>
 	)}
 	<Pagination {page} />
-	{category && <StageNav slug={category} />}
 </BaseLayout>
 <style>
-	/* An id, so this outranks `main` in `global.css` whatever the order of the two sheets. */
-	:global(#main) {
-		padding-block: 2rem;
+	.intro {
+		display: grid;
+		gap: 2rem;
+		padding-bottom: 2rem;
+		border-bottom: 1px solid var(--text);
 	}
-	/* The two frames read as one, sharing the rule between them. */
-	.ruled + .ruled {
-		margin-top: -1px;
+	.heading {
+		display: grid;
+		gap: 0.75rem;
+		align-content: start;
 	}
-	/* Each cell closes its own right and bottom edges, so a short last row still reads as cells.
-	   The frame draws those two edges on the same pixels, behind the cells, to enclose the empty space. */
-	.intro,
-	.posts {
-		border-width: 1px 0 0 1px;
-		box-shadow: inset -1px -1px var(--gold);
-	}
-	.intro .cell,
-	.posts .cell {
-		border: 1px solid var(--gold);
-	}
-	.intro .cell {
-		--py: 1.25rem;
-		background: var(--gray-light);
-	}
-	.intro header {
-		display: flex;
-		gap: 1rem;
-	}
-	.stage {
-		margin: 0;
-		color: var(--accent);
-		font-size: 0.875rem;
-		line-height: 1.5;
+	.kicker a {
+		color: inherit;
 	}
 	h1 {
-		margin: 0 0 0.25rem;
-		font-size: 2rem;
+		margin: 0;
 	}
 	.description {
 		max-width: 38rem;
 		margin: 0;
-		color: var(--gray-dark);
-		font-size: 1rem;
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+		font-style: italic;
 		line-height: 1.5;
 		text-wrap: pretty;
 	}
-
-	.facts {
-		display: flex;
-		flex-wrap: wrap;
-		align-content: center;
-		gap: 0.5rem 2rem;
-		font-size: 0.875rem;
-		line-height: 1.5;
-	}
-	.facts dt {
-		color: var(--gray-dark);
-	}
-	.facts dd {
+	.heading .meta {
 		margin: 0;
-		color: var(--black);
+	}
+	.points ul {
+		display: grid;
+		gap: 0.375rem;
+		margin: 0.5rem 0 0;
+		padding: 0;
+		list-style: none;
+		color: var(--text-2);
+		font-size: 0.9375rem;
+		line-height: 1.55;
+	}
+	/* A short rule in place of a bullet, like a margin note. */
+	.points li {
+		display: grid;
+		grid-template-columns: 0.75rem minmax(0, 1fr);
+		gap: 0.5rem;
+	}
+	.points li::before {
+		content: '';
+		height: 1px;
+		margin-top: 0.8em;
+		background: var(--gold);
 	}
 
 	.posts {
-		grid-template-columns: minmax(0, 1fr);
+		max-width: 56rem;
 		margin: 0;
 		padding: 0;
 		list-style: none;
 	}
-	/* The post draws its own padding, so its image can sit flush with the rules.
-	   Positioned, so each cell's rules paint over the image of the post before it. */
-	.posts .cell {
-		--py: 1rem;
-		position: relative;
-		padding: 0;
-	}
-	.posts .featured {
-		grid-column: 1 / -1;
+	.posts li {
+		padding-block: 1.75rem;
+		border-bottom: 1px solid var(--border);
 	}
 	.empty {
-		margin: 0;
+		max-width: 38rem;
+		padding-block: 2rem;
+		color: var(--text-2);
 	}
-
-	/* A phone has no width to spare for a frame: the bands run edge to edge, split by rules alone,
-	   and the list starts right under the header. */
-	@media (width < 40rem) {
-		:global(#main) {
-			padding-block-start: 0;
+	@media (min-width: 56rem) {
+		.intro.has-points {
+			grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+			gap: 4rem;
 		}
-		.ruled {
-			margin-inline: -1rem;
-			border-inline: 0;
-		}
-		.intro,
-		.posts {
-			border-width: 1px 0 0;
-			box-shadow: inset 0 -1px var(--gold);
-		}
-		.intro .cell,
-		.posts .cell {
-			margin-inline: 0;
-			border-inline: 0;
-		}
-		.posts .cell {
-			--py: 1.25rem;
-		}
-		.intro .facts {
-			--py: 0.75rem;
-			flex-wrap: nowrap;
-			justify-content: space-between;
-		}
-		.facts div {
-			display: flex;
-			gap: 0.5rem;
-		}
-	}
-	@media (min-width: 40rem) {
-		.intro {
-			grid-template-columns: minmax(0, 1fr) 14rem;
-		}
-		.posts {
-			grid-template-columns: repeat(2, minmax(0, 1fr));
-		}
-		.intro .cell,
-		.posts .cell {
-			--px: 1.5rem;
-		}
-		.posts .cell {
-			--py: 1.25rem;
-		}
-		.intro header {
-			gap: 1.25rem;
-		}
-	}
-	/* In the narrow `14rem` cell the two facts stack, and from `64rem` the wider cell holds them in a row. */
-	@media (40rem <= width < 64rem) {
-		.facts {
-			flex-direction: column;
-			flex-wrap: nowrap;
-			justify-content: center;
-		}
-	}
-	@media (min-width: 64rem) {
-		/* The facts cell takes the last of the three post columns, so the rule runs on through the list. */
-		.intro {
-			grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-		}
-		.posts {
-			grid-template-columns: repeat(3, minmax(0, 1fr));
-		}
-		.intro .cell,
-		.posts .cell {
-			--px: 1.25rem;
+		.points {
+			padding-left: 2rem;
+			border-left: 1px solid var(--border);
 		}
 	}
 </style>

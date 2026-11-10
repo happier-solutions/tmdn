@@ -20,8 +20,8 @@ const leaves = [
 		{leaves.map(([x, y, angle, scale], i) => (
 			<g transform={`translate(${x} ${y}) rotate(${angle}) scale(${scale})`}>
 				<g class="leaf" style={`--i: ${i}`}>
-					<path fill="var(--gold-light)" d="M0 0C9-5.5 24-6.5 36 0 24 1 10 1 0 0Z" />
-					<path fill="var(--gold-deep)" d="M0 0C10 1 24 1 36 0 24 3.6 9 3.6 0 0Z" />
+					<path fill="var(--leaf)" d="M0 0C9-5.5 24-6.5 36 0 24 1 10 1 0 0Z" />
+					<path fill="var(--leaf-deep)" d="M0 0C10 1 24 1 36 0 24 3.6 9 3.6 0 0Z" />
 				</g>
 			</g>
 		))}

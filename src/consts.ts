@@ -1,21 +1,24 @@
 // Place any global data in this file.
 // You can import this data from anywhere in your site by using the `import` keyword.
 
-export const SITE_TITLE = 'Tư Mã Đại Nhân';
-/** Home page <title>. Other pages use `<page> · SITE_TITLE`. */
-export const SITE_SEO_TITLE = 'Tư Mã Đại Nhân: nhật ký học lãnh đạo và quản trị';
+/** The site's name: page titles, feed, Open Graph. */
+export const SITE_NAME = 'Trúc Chí Lập Thân';
+/** The pen name and wordmark. The site has one author. */
+export const AUTHOR = 'Tư Mã Đại Nhân';
+/** Home page <title>. Other pages use `<page> · SITE_NAME`. */
+export const SITE_SEO_TITLE = 'Trúc Chí Lập Thân · Tư Mã Đại Nhân';
 /** Search snippet for the home page, also the RSS description. Aim for 120-155 characters. */
 export const SITE_DESCRIPTION =
-	'Nhật ký công khai của một người đang học lãnh đạo và quản trị: quan sát, đặt câu hỏi, rút ra bài học cho chủ doanh nghiệp SME và quản lý trẻ.';
-/** Short line in the footer. */
-export const SITE_TAGLINE = 'Hành trình ký: quan sát, suy ngẫm, trưởng thành.';
+	'Ghi chép và suy ngẫm của Tư Mã Đại Nhân về con người, tri thức, lịch sử, lãnh đạo và quản trị doanh nghiệp.';
+export const SITE_TAGLINE = 'Tu thân – Dưỡng chí – Lập nghiệp.';
+export const SITE_MOTTO = 'Rễ sâu để vững. Thân thẳng để bền. Chí lớn để vươn xa.';
 
-/** Shown under each post. The blog has one author, who writes under SITE_TITLE. */
+/** Shown under each post and on the home page. */
 export const AUTHOR_BIO =
-	'Tôi đang quan sát môi trường điều hành doanh nghiệp, đặt câu hỏi và nghiên cứu bản chất để chuyển hóa thành bài học có ích cho người khác. Tôi viết để ghi lại quá trình đang học, không phải để chứng minh mình đã giỏi.';
+	'Tôi ghi chép, nghiên cứu và chia sẻ những suy ngẫm về con người, tri thức, lịch sử, lãnh đạo và quản trị doanh nghiệp. Viết để bồi dưỡng nội lực, không để chứng minh mình đã giỏi.';
 
-// The featured post and twelve more make full rows at one, two and three columns.
-export const PAGE_SIZE = 13;
+/** Posts per page on paginated lists. */
+export const PAGE_SIZE = 12;
 
 /** Receives signup requests and feedback, which the forms send through the reader's mail app. */
 export const CONTACT_EMAIL = 'lienhe@tumadainhan.com';

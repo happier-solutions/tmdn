@@ -28,43 +28,51 @@ collections:
     sortable_fields: [pubDate, title]
     fields:
       - { name: title, label: Tiêu đề, widget: string }
-      - { name: description, label: Mô tả ngắn, widget: string, hint: '1-2 dòng, hiện ở danh sách bài và khi chia sẻ.' }
+      - { name: description, label: Sapo, widget: text, hint: '1-2 câu dưới tiêu đề, cũng hiện ở danh sách bài và khi chia sẻ.' }
       - { name: draft, label: Bản nháp, widget: boolean, default: true, hint: 'Tắt để xuất bản. Nhớ ẩn danh tên người, tên công ty trước khi đăng.' }
       - { name: pubDate, label: Ngày đăng, widget: datetime }
-      # Options below must match src/data/taxonomy.ts.
-      - name: category
-        label: Chuyên mục
-        widget: select
-        options:
-          - { label: Quan sát, value: quan-sat }
-          - { label: Câu hỏi, value: cau-hoi }
-          - { label: Nghiên cứu, value: nghien-cuu }
-          - { label: Bài học, value: bai-hoc }
-          - { label: Nhật ký học tập, value: nhat-ky-hoc-tap }
+      # Topics and tags come from "Phân loại" (src/data/taxonomy.json). The pillar follows from the topic.
+      - name: topic
+        label: Chủ đề
+        hint: 'Chuyên mục lớn đi theo chủ đề. Đổi sang chủ đề của chuyên mục kia sẽ đổi URL bài.'
+        widget: relation
+        collection: taxonomy
+        file: taxonomy
+        value_field: 'topics.*.slug'
+        display_fields: ['topics.*.label']
+        search_fields: ['topics.*.label']
+      - name: tags
+        label: Từ khóa
+        widget: relation
+        collection: taxonomy
+        file: taxonomy
+        value_field: 'tags.*.slug'
+        display_fields: ['tags.*.label']
+        search_fields: ['tags.*.label']
+        multiple: true
+        required: false
+      - { name: featured, label: Bài nổi bật, widget: boolean, default: false, hint: 'Bài nổi bật mới nhất dẫn đầu trang chủ và trang chuyên mục.' }
+      - name: references
+        label: Tài liệu tham khảo
+        label_singular: Tài liệu
+        widget: list
+        required: false
+        fields:
+          - { name: title, label: 'Tên tài liệu (tác giả, tên, năm)', widget: string }
+          - { name: url, label: Đường dẫn, widget: string, required: false }
       - name: confidence
         label: Mức độ chắc chắn
         widget: select
-        default: quan-sat-ban-dau
+        required: false
         options:
           - { label: Quan sát ban đầu, value: quan-sat-ban-dau }
           - { label: Đã tìm hiểu thêm, value: da-tim-hieu-them }
           - { label: Đã kiểm chứng, value: da-kiem-chung }
-      - name: tags
-        label: Thẻ chủ đề
-        widget: select
-        multiple: true
-        required: false
-        options:
-          - { label: Ra quyết định, value: ra-quyet-dinh }
-          - { label: Xây đội ngũ, value: xay-doi-ngu }
-          - { label: Giao tiếp, value: giao-tiep }
-          - { label: Văn hóa, value: van-hoa }
-          - { label: Tài chính, value: tai-chinh }
-          - { label: Vận hành, value: van-hanh }
       - { name: updatedDate, label: Ngày cập nhật, widget: datetime, required: false }
       - { name: changedMindNote, label: Ghi chú "Tôi đã đổi quan điểm", widget: text, required: false }
-      - { name: heroImage, label: Ảnh đại diện, widget: image, required: false }
-      - { name: heroCredit, label: Chú thích ảnh đại diện, widget: string, required: false }
+      - { name: heroImage, label: Ảnh đại diện, widget: image, required: false, hint: 'Ngang, tỉ lệ 2:1, rộng ít nhất 1600px.' }
+      - { name: heroAlt, label: Mô tả ảnh cho người khiếm thị, widget: string, required: false }
+      - { name: heroCredit, label: Chú thích ảnh, widget: string, required: false }
       - { name: body, label: Nội dung, widget: markdown }
 
   - name: pages
@@ -77,3 +85,56 @@ collections:
       - { name: title, label: Tiêu đề, widget: string }
       - { name: description, label: Mô tả ngắn, widget: string }
       - { name: body, label: Nội dung, widget: markdown }
+
+  # One file holds the taxonomy, so topics and tags can be added, renamed, removed and reordered
+  # without touching code. src/data/taxonomy.ts validates it at build time.
+  - name: taxonomy
+    label: Phân loại
+    files:
+      - name: taxonomy
+        label: Chuyên mục, chủ đề và từ khóa
+        file: src/data/taxonomy.json
+        format: json
+        fields:
+          - name: pillars
+            label: Chuyên mục lớn
+            label_singular: Chuyên mục
+            hint: 'Mỗi chuyên mục là một đường dẫn gốc, nên không thêm hay xóa ở đây.'
+            widget: list
+            allow_add: false
+            allow_remove: false
+            summary: '{{label}}'
+            fields:
+              - { name: slug, label: 'Đường dẫn (không sửa)', widget: string, readonly: true }
+              - { name: label, label: Tên, widget: string }
+              - { name: description, label: Mô tả ngắn, widget: text }
+              - { name: intro, label: Đoạn giới thiệu, widget: text }
+              - { name: metaDescription, label: Mô tả cho máy tìm kiếm, widget: text, hint: '120-155 ký tự.' }
+              - { name: imageCaption, label: Chú thích ảnh chủ đạo, widget: string, required: false }
+          - name: topics
+            label: Chủ đề con
+            label_singular: Chủ đề
+            hint: 'Kéo để sắp xếp. Đổi đường dẫn của chủ đề đã có bài sẽ làm hỏng bài đó cho đến khi sửa lại.'
+            widget: list
+            summary: '{{label}} ({{pillar}})'
+            fields:
+              - { name: label, label: Tên, widget: string }
+              - { name: slug, label: Đường dẫn, widget: string, hint: 'Chữ thường không dấu, nối bằng gạch ngang, ví dụ quan-tri-to-chuc.', pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Chữ thường không dấu, số và gạch ngang'] }
+              # Must match the pillar slugs above, which never change.
+              - name: pillar
+                label: Thuộc chuyên mục
+                widget: select
+                options:
+                  - { label: Tàng Thư Quán Thế, value: tang-thu-quan-the }
+                  - { label: Binh Pháp Công Sở, value: binh-phap-cong-so }
+              - { name: description, label: Mô tả ngắn, widget: text }
+              - { name: points, label: Bàn về, label_singular: Ý, widget: list, required: false, field: { name: point, label: Ý, widget: string } }
+          - name: tags
+            label: Từ khóa
+            label_singular: Từ khóa
+            widget: list
+            required: false
+            summary: '{{label}}'
+            fields:
+              - { name: label, label: Tên, widget: string }
+              - { name: slug, label: Đường dẫn, widget: string, pattern: ['^[a-z0-9]+(-[a-z0-9]+)*$', 'Chữ thường không dấu, số và gạch ngang'] }

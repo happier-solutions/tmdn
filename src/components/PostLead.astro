@@ -1,0 +1,118 @@
+---
+import { getReadingMinutes, type Post, postUrl } from '../lib/posts';
+import FormattedDate from './FormattedDate.astro';
+import PostLabel from './PostLabel.astro';
+import Thumb from './Thumb.astro';
+
+interface Props {
+	post: Post;
+	/** A short line above the label, such as "Bài nổi bật". */
+	eyebrow?: string;
+	topicOnly?: boolean;
+	level?: 2 | 3;
+	/** Loads the picture first, for a lead on the first screen. */
+	eager?: boolean;
+}
+
+const { post, eyebrow, topicOnly = false, level = 2, eager = false } = Astro.props;
+const { title, description, pubDate } = post.data;
+const Heading = `h${level}` as const;
+---
+
+{/* The editor's pick: a large picture and the title set big, side by side from 56rem. */}
+<article class="lead">
+	<Thumb
+		{post}
+		class="lead-thumb"
+		sizes="(min-width: 74rem) 42rem, (min-width: 56rem) 58vw, 100vw"
+		widths={[480, 800, 1200, 1600]}
+		{eager}
+	/>
+	<div class="text">
+		{eyebrow && <p class="eyebrow">{eyebrow}</p>}
+		<PostLabel {post} {topicOnly} />
+		<Heading class="title"><a href={postUrl(post)}>{title}</a></Heading>
+		<p class="dek">{description}</p>
+		<p class="meta"><FormattedDate date={pubDate} /> · {getReadingMinutes(post)} phút đọc</p>
+	</div>
+</article>
+<style>
+	.lead {
+		position: relative;
+		display: grid;
+		gap: 1.25rem;
+	}
+	.lead :global(.lead-thumb) {
+		aspect-ratio: 3 / 2;
+	}
+	.text {
+		display: grid;
+		align-content: center;
+		gap: 0.75rem;
+	}
+	.eyebrow {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin: 0;
+		color: var(--seal);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	/* A seal-red tick before the line, the one red mark in the block. */
+	.eyebrow::before {
+		content: '';
+		width: 1.5rem;
+		height: 2px;
+		background: currentColor;
+	}
+	.title {
+		margin: 0;
+		font-size: clamp(1.75rem, 1.375rem + 1.5vw, 2.5rem);
+		font-weight: 500;
+		line-height: 1.2;
+		letter-spacing: -0.01em;
+	}
+	.title a {
+		color: inherit;
+	}
+	.title a::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: 1;
+	}
+	.title a:focus-visible {
+		outline: none;
+	}
+	.lead:has(.title a:focus-visible) {
+		outline: 2px solid var(--bamboo);
+		outline-offset: 0.5rem;
+	}
+	.dek {
+		margin: 0;
+		color: var(--text-2);
+		font-family: var(--font-heading);
+		font-size: 1.1875rem;
+		font-style: italic;
+		line-height: 1.5;
+		text-wrap: pretty;
+	}
+	.meta {
+		margin: 0;
+	}
+	@media (min-width: 56rem) {
+		.lead {
+			grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+			gap: 2.5rem;
+		}
+		.lead :global(.lead-thumb) {
+			aspect-ratio: 4 / 3;
+		}
+		.dek {
+			font-size: 1.25rem;
+		}
+	}
+</style>

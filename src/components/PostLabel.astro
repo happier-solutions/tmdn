@@ -1,0 +1,49 @@
+---
+import { topicUrl } from '../data/taxonomy';
+import { type Post, pillarOf, topicOf } from '../lib/posts';
+
+interface Props {
+	post: Post;
+	/** Leaves out the pillar, on a page that already belongs to it. */
+	topicOnly?: boolean;
+	/** Plain text instead of links, inside a card whose title link already covers it. */
+	plain?: boolean;
+}
+
+const { post, topicOnly = false, plain = false } = Astro.props;
+const topic = topicOf(post);
+const pillar = pillarOf(post);
+---
+
+<p class="kicker post-label">
+	{!topicOnly && (
+		<>
+			{plain ? <span>{pillar.label}</span> : <a href={`/${pillar.slug}/`}>{pillar.label}</a>}
+			<span class="sep" aria-hidden="true">/</span>
+		</>
+	)}
+	{plain ? <span>{topic.label}</span> : <a href={topicUrl(topic)}>{topic.label}</a>}
+</p>
+<style>
+	.post-label {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 0.5em;
+	}
+	/* Above a card's covering link, so both labels stay their own links. */
+	a {
+		position: relative;
+		z-index: 2;
+		color: inherit;
+	}
+	a:hover {
+		color: var(--bamboo-dark);
+	}
+	/* The sprig would cover the separator. */
+	a::after {
+		display: none;
+	}
+	.sep {
+		color: var(--gold);
+	}
+</style>

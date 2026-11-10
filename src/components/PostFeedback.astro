@@ -92,7 +92,7 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 	legend {
 		float: left;
 		padding: 0;
-		color: var(--gray-dark);
+		color: var(--text);
 		font-size: 1rem;
 	}
 
@@ -131,7 +131,7 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 	label[for] {
 		display: block;
 		margin-block: 0.5rem;
-		color: var(--gray-dark);
+		color: var(--text);
 	}
 	.ask-high,
 	form:has(:is(input[value='4'], input[value='5']):checked) .ask-low {
@@ -142,7 +142,7 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 	}
 	.optional,
 	.note {
-		color: var(--gray);
+		color: var(--text-2);
 	}
 	textarea {
 		display: block;
@@ -153,10 +153,10 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 		min-block-size: 4lh;
 		max-block-size: 12lh;
 		padding: 0.75rem;
-		border: 1px solid var(--gray);
+		border: 1px solid var(--text-2);
 		border-radius: 0;
 		background: transparent;
-		color: var(--gray-dark);
+		color: var(--text);
 		font: inherit;
 		/* Below 1rem iOS zooms in on focus. */
 		font-size: 1rem;
@@ -178,24 +178,24 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 		padding-inline: 1.25rem;
 		border: 0;
 		border-radius: 0;
-		background: var(--accent);
-		color: var(--paper);
+		background: var(--bamboo);
+		color: var(--bg);
 		font: inherit;
 		font-weight: 600;
 		cursor: pointer;
 	}
 	button:hover {
-		background: var(--accent-dark);
+		background: var(--bamboo-dark);
 	}
 	:is(textarea, button):focus-visible {
-		outline: 2px solid var(--accent);
+		outline: 2px solid var(--bamboo);
 		outline-offset: 2px;
 	}
 	.message {
 		margin-top: 0.75rem;
 		padding-inline-start: 0.5rem;
 		border-inline-start: 3px solid var(--gold);
-		color: var(--gray-dark);
+		color: var(--text);
 	}
 	@media print {
 		form,

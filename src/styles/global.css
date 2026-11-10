@@ -1,9 +1,3 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
-
 @import './tokens.css';
 @import './transitions.css';
 @import './links.css';
@@ -30,35 +24,38 @@ body {
 	min-height: 100dvh;
 	margin: 0;
 	padding: 0;
-	background: var(--paper);
-	word-wrap: break-word;
+	background: var(--bg);
 	overflow-wrap: break-word;
-	color: var(--gray-dark);
-	/* Montserrat runs wide, so 17px still reads large and fits more words on a phone. */
+	color: var(--text);
 	font-size: 1.0625rem;
-	line-height: 1.65;
+	line-height: 1.7;
 	@media (min-width: 40rem) {
 		font-size: 1.125rem;
-		line-height: 1.7;
 	}
 }
 /* On short pages the signup band ends the first screen and the footer links sit below it.
-   3.3125rem is the header's height. svh keeps it from jumping as a phone's URL bar collapses. */
+   The header is 3.71875rem tall. svh keeps it from jumping as a phone's URL bar collapses. */
 .first-screen {
 	display: flex;
 	flex-direction: column;
-	min-height: calc(100svh - 3.3125rem);
+	min-height: calc(100svh - 3.71875rem);
 }
 main,
 .wrap {
 	box-sizing: border-box;
 	width: 100%;
-	max-width: 44rem;
+	max-width: 48rem;
 	margin-inline: auto;
 	padding-inline: 1rem;
 }
 .wrap-wide {
-	max-width: 72rem;
+	max-width: 74rem;
+}
+@media (min-width: 40rem) {
+	main,
+	.wrap {
+		padding-inline: 1.5rem;
+	}
 }
 main {
 	flex: 1 0 auto;
@@ -71,7 +68,7 @@ h4,
 h5,
 h6 {
 	margin: 0 0 0.5rem 0;
-	color: var(--black);
+	color: var(--text);
 	font-family: var(--font-heading);
 	font-weight: 400;
 	line-height: 1.25;
@@ -79,37 +76,34 @@ h6 {
 }
 /* Extra leading keeps Vietnamese marks clear of the descenders on the line above. */
 h1 {
-	font-size: clamp(1.75rem, 1.25rem + 2.5vw, 2.75rem);
+	font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+	font-weight: 500;
 	font-variant-numeric: lining-nums;
-	line-height: 1.3;
+	line-height: 1.25;
+	letter-spacing: -0.01em;
 }
 h2 {
-	font-size: 1.75em;
+	font-size: 1.625em;
 }
 h3 {
-	font-size: 1.4em;
+	font-size: 1.3em;
 }
 h4 {
-	font-size: 1.2em;
+	font-size: 1.15em;
 }
 h5 {
-	font-size: 1.1em;
+	font-size: 1.05em;
 }
 strong,
 b {
-	font-weight: 700;
+	font-weight: 600;
 }
 ::selection {
 	background: var(--gold-light);
 	color: var(--ink);
 }
 p {
-	margin-bottom: 1em;
-}
-.prose p,
-.prose li,
-blockquote {
-	text-wrap: pretty;
+	margin: 0 0 1em;
 }
 table {
 	width: 100%;
@@ -117,34 +111,51 @@ table {
 img {
 	max-width: 100%;
 	height: auto;
-	border-radius: 8px;
 }
 code {
 	padding: 2px 5px;
-	background-color: var(--gray-light);
+	background-color: var(--wash);
 	border-radius: 2px;
+	font-size: 0.9em;
 }
 pre {
 	padding: 1.5em;
-	border-radius: 8px;
+	border-radius: 2px;
 }
 pre > code {
 	all: unset;
 }
 blockquote {
-	border-left: 3px solid var(--gold);
-	padding: 0 0 0 20px;
 	margin: 0;
-	font-size: 1.125em;
+	padding: 0 0 0 1.25rem;
+	border-left: 3px solid var(--gold);
 }
 hr {
 	border: none;
-	border-top: 1px solid var(--gold);
+	border-top: 1px solid var(--border);
 }
 @media (max-width: 720px) {
 	main {
 		padding-block: 2rem;
 	}
+}
+
+/* A small label above a title: pillar, topic, section name. */
+.kicker {
+	margin: 0;
+	color: var(--bamboo);
+	font-family: var(--font-body);
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.08em;
+	line-height: 1.5;
+	text-transform: uppercase;
+}
+/* Metadata: dates, reading time, counts. */
+.meta {
+	color: var(--text-2);
+	font-size: 0.8125rem;
+	line-height: 1.5;
 }
 
 .sr-only {
@@ -160,7 +171,7 @@ hr {
 	position: absolute;
 	top: -100%;
 	left: 1rem;
-	z-index: 2;
+	z-index: 3;
 	padding: 0.5rem 1rem;
 	background: var(--ink);
 	color: var(--on-ink);
