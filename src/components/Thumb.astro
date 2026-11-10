@@ -1,5 +1,5 @@
 ---
-import { Image } from 'astro:assets';
+import { Picture } from 'astro:assets';
 import type { Post } from '../lib/posts';
 
 interface Props {
@@ -14,11 +14,12 @@ const { post, sizes, widths, eager = false, class: className } = Astro.props;
 const { heroImage } = post.data;
 ---
 
-{/* The frame sets the crop; the image covers it. Without a hero image it shows the sprig on a wash. */}
+{/* The frame sets the crop; the image covers it. AVIF first: about half the bytes of WebP, which matters for the lead's LCP. Without a hero image it shows the sprig on a wash. */}
 <div class:list={['thumb', className, { empty: !heroImage }]}>
 	{heroImage && (
-		<Image
+		<Picture
 			src={heroImage}
+			formats={['avif', 'webp']}
 			alt=""
 			{sizes}
 			{widths}
