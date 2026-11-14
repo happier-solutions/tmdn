@@ -10,7 +10,8 @@ export default defineConfig({
 	trailingSlash: 'always',
 	// No render-blocking stylesheet request before the first paint.
 	build: { inlineStylesheets: 'always' },
-	integrations: [mdx(), sitemap()],
+	// /branding/ is the internal brand page: noindex, so it stays out of the sitemap too.
+	integrations: [mdx(), sitemap({ filter: (page) => !page.includes('/branding/') })],
 	// Subset order matters: the last declared face wins overlapping glyphs. With `vietnamese` last,
 	// ă, đ, ĩ, ũ, ơ and ư no longer pull in the much larger `latin-ext` file.
 	fonts: [

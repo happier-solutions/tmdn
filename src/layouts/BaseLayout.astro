@@ -18,9 +18,11 @@ interface Props {
 	/** For articles: Open Graph times. */
 	published?: Date;
 	modified?: Date;
+	/** Internal pages: no search indexing. Also list the path in astro.config.mjs and public/_headers. */
+	noindex?: boolean;
 }
 
-const { title, description, image, type, wide, jsonLd, published, modified } = Astro.props;
+const { title, description, image, type, wide, jsonLd, published, modified, noindex } = Astro.props;
 // Search results cut titles at about 60 characters, so a long one drops the site name.
 const TITLE_MAX = 60;
 const withSite = `${title} · ${SITE_NAME}`;
@@ -30,7 +32,7 @@ const fullTitle = !title ? SITE_SEO_TITLE : withSite.length <= TITLE_MAX ? withS
 <!doctype html>
 <html lang="vi">
 	<head>
-		<BaseHead title={fullTitle} {description} {image} {type} {jsonLd} {published} {modified} />
+		<BaseHead title={fullTitle} {description} {image} {type} {jsonLd} {published} {modified} {noindex} />
 	</head>
 	<body>
 		<a class="skip-link" href="#main">Bỏ qua, đến nội dung chính</a>

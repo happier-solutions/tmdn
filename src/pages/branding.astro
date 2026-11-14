@@ -1,0 +1,905 @@
+---
+// Internal brand guide: logo, colors and type. Not linked anywhere, noindex, out of the sitemap.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { AUTHOR, SITE_MOTTO, SITE_NAME, SITE_TAGLINE } from '../consts';
+
+type Swatch = {
+	name: string;
+	token: string;
+	light: string;
+	dark?: string;
+	use: string;
+	/** Contrast on the page background (light / dark), or on `--ink` for the fixed tones. */
+	contrast: string;
+};
+
+const palette: { title: string; note: string; swatches: Swatch[] }[] = [
+	{
+		title: 'Giấy',
+		note: 'Nền ấm như giấy dó cũ, chiếm phần lớn bề mặt. Chỉ khác nhau một bậc, đủ để tách lớp mà không cần bóng hay khung.',
+		swatches: [
+			{ name: 'Giấy', token: '--bg', light: '#f5f2ea', dark: '#171814', use: 'Nền trang, header, ngăn kéo menu', contrast: 'Nền' },
+			{ name: 'Giấy trắng', token: '--surface', light: '#faf9f5', dark: '#1f201b', use: 'Ô nhập liệu', contrast: 'Nền' },
+			{ name: 'Giấy loang', token: '--wash', light: '#ede9df', dark: '#25261f', use: 'Ô ảnh chờ, code, ghi chú, panel menu con', contrast: 'Nền' },
+			{ name: 'Đường kẻ', token: '--border', light: '#dcd8ce', dark: '#36372f', use: 'Đường kẻ mảnh 1px, viền nút tròn', contrast: '1.27 / 1.48, không dùng cho chữ' },
+		],
+	},
+	{
+		title: 'Mực',
+		note: 'Mực đen ngả lục, không dùng đen tuyền. Dải chân trang luôn tối ở cả hai chế độ.',
+		swatches: [
+			{ name: 'Mực', token: '--text', light: '#242720', dark: '#e6e3da', use: 'Tiêu đề, chữ thân bài, đường kẻ mở phần', contrast: '13.54 / 13.90' },
+			{ name: 'Mực nhạt', token: '--text-2', light: '#6b6a63', dark: '#a6a49b', use: 'Chữ phụ, ngày tháng, metadata', contrast: '4.85 / 7.14' },
+			{ name: 'Mực tàu', token: '--ink', light: '#1e201b', use: 'Nền chân trang, dải đăng ký, toast', contrast: 'Nền tối cố định' },
+			{ name: 'Giấy trên mực', token: '--on-ink', light: '#f5f2ea', use: 'Chữ trên nền --ink', contrast: '14.69 trên --ink' },
+		],
+	},
+	{
+		title: 'Trúc',
+		note: 'Màu nhận diện chính. Mọi thứ có thể bấm hay dẫn đường đều mang màu trúc.',
+		swatches: [
+			{ name: 'Trúc', token: '--bamboo', light: '#5a6851', dark: '#a9b99b', use: 'Liên kết, nhãn chuyên mục, viền focus, thanh tiến độ', contrast: '5.31 / 8.58' },
+			{ name: 'Trúc già', token: '--bamboo-dark', light: '#3f4a38', dark: '#cbd6bf', use: 'Liên kết khi rê chuột', contrast: '8.35 / 11.82' },
+			{ name: 'Lá non', token: '--leaf', light: '#a9b99b', use: 'Lá cành trúc trên nền --ink', contrast: '7.91 trên --ink' },
+			{ name: 'Lá già', token: '--leaf-deep', light: '#7d8c6f', use: 'Mặt dưới lá, trên nền --ink', contrast: '4.58 trên --ink' },
+		],
+	},
+	{
+		title: 'Điểm nhấn',
+		note: 'Dùng rất ít. Vàng chỉ để trang trí, đỏ son chỉ cho con dấu và vài dấu hiệu nhỏ.',
+		swatches: [
+			{ name: 'Vàng cũ', token: '--gold', light: '#c7b99f', dark: '#8a7e66', use: 'Vạch trái 3px, số thứ tự, dấu chấm ngăn cách', contrast: '1.73 / 4.47, không dùng cho chữ' },
+			{ name: 'Vàng sáng', token: '--gold-light', light: '#c7b99f', use: 'Liên kết chân trang, nút đăng ký, vùng chọn chữ', contrast: '8.51 trên --ink' },
+			{ name: 'Son ấn', token: '--seal', light: '#8c302b', dark: '#d98a80', use: 'Con dấu, nhãn "Bài nổi bật", dấu sáp', contrast: '7.30 / 6.71' },
+		],
+	},
+];
+
+// Rough share of a screen, for the proportion bar.
+const share = [
+	{ label: 'Giấy', color: '#f5f2ea', size: 62 },
+	{ label: 'Mực', color: '#242720', size: 24 },
+	{ label: 'Trúc', color: '#5a6851', size: 9 },
+	{ label: 'Vàng', color: '#c7b99f', size: 4 },
+	{ label: 'Son', color: '#8c302b', size: 1 },
+];
+
+const fonts = [
+	{
+		name: 'Newsreader',
+		token: '--font-heading',
+		role: 'Tiêu đề, wordmark, sapo, trích dẫn',
+		weights: 'Chỉ 400. Nghiêng là nghiêng giả lập, không tải tệp italic.',
+		why: 'Serif dành cho đọc màn hình, nét thanh mảnh, có chất tạp chí văn chương. Dấu tiếng Việt rõ ở cỡ lớn.',
+		className: 'f-heading',
+	},
+	{
+		name: 'Be Vietnam Pro',
+		token: '--font-body',
+		role: 'Thân bài, giao diện, metadata, nhãn',
+		weights: '400 cho chữ thường, 600 cho chữ đậm, nhãn và nút.',
+		why: 'Sans thiết kế cho tiếng Việt: dấu đặt đúng chỗ, không chồng lên dòng trên. Gọn và dễ đọc trên điện thoại.',
+		className: 'f-body',
+	},
+	{
+		name: 'Patrick Hand',
+		token: '--font-hand',
+		role: 'Chỉ trong lá thư cảm ơn của nút thả tim',
+		weights: 'Chỉ 400, tải khi lá thư mở lần đầu.',
+		why: 'Nét viết tay cho một khoảnh khắc riêng tư. Không dùng ở bất kỳ chỗ nào khác.',
+		className: 'f-hand',
+	},
+];
+
+const scale = [
+	{ role: 'Tên site (trang chủ)', spec: 'Newsreader 38-76px, cao dòng 1.1', className: 's-display', sample: SITE_NAME },
+	{ role: 'Tiêu đề bài (h1)', spec: 'Newsreader 32-44px, cao dòng 1.25', className: 's-h1', sample: 'Rễ sâu để vững, thân thẳng để bền' },
+	{ role: 'Tiêu đề mục (h2)', spec: 'Newsreader 24-28px', className: 's-h2', sample: 'Người xưa đọc sách thế nào' },
+	{ role: 'Sapo', spec: 'Newsreader nghiêng 19-22px, --text-2', className: 's-standfirst', sample: 'Ghi chép về một thói quen nhỏ đã đổi cách tôi làm việc.' },
+	{ role: 'Thân bài', spec: 'Be Vietnam Pro 17-18px, cao dòng 1.8', className: 's-body', sample: 'Viết để bồi dưỡng nội lực, không để chứng minh mình đã giỏi. Mỗi bài là một lần tự hỏi lại điều mình tưởng đã biết.' },
+	{ role: 'Nhãn (.kicker)', spec: 'Be Vietnam Pro 600, 12px, in hoa, giãn 0.08em, --bamboo', className: 'kicker', sample: 'Tàng Thư Quán Thế' },
+	{ role: 'Metadata (.meta)', spec: 'Be Vietnam Pro 13px, --text-2', className: 'meta', sample: '14 tháng 11, 2026 · 8 phút đọc' },
+];
+
+const files = [
+	{ file: 'logo.svg', use: 'Bản gốc con dấu, 128 × 128' },
+	{ file: 'favicon.svg', use: 'Favicon vector, cùng hình con dấu' },
+	{ file: 'logo.png', use: '512px, ảnh Open Graph mặc định' },
+	{ file: 'apple-touch-icon.png', use: '180px, biểu tượng màn hình chính iOS' },
+	{ file: 'favicon.ico', use: '16, 32, 48px cho trình duyệt cũ' },
+	{ file: 'sprig.svg', use: 'Cành trúc đơn, dùng làm mask cho con dấu CSS và hiệu ứng liên kết' },
+];
+
+const leaves = [
+	[11.2, 49.6, -6, 1],
+	[13.4, 47.1, -102, 0.95],
+	[26.9, 32.2, -10, 0.86],
+	[29.7, 29.1, -96, 0.78],
+	[41.4, 16.1, -14, 0.66],
+	[43.7, 13.6, -88, 0.6],
+	[56, 0, -48, 0.5],
+];
+const leafPath = 'M0 0C9-5.5 24-6.5 36 0 24 3.6 9 3.6 0 0Z';
+---
+
+<BaseLayout
+	title="Nhận diện thương hiệu"
+	description="Tài liệu nội bộ: logo, màu sắc và kiểu chữ của Trúc Chí Lập Thân."
+	wide
+	noindex
+>
+	<header class="intro">
+		<p class="kicker">Tài liệu nội bộ · Không lập chỉ mục</p>
+		<h1>Nhận diện thương hiệu</h1>
+		<p class="standfirst">
+			Thư phòng của một nhà nho trong hình hài tạp chí số. Trang này ghi lại logo, màu sắc và kiểu chữ của {AUTHOR}, để
+			mọi thứ mới làm ra vẫn cùng một giọng.
+		</p>
+		<nav class="toc" aria-label="Các phần">
+			<a href="#logo">01 Logo</a>
+			<a href="#mau-sac">02 Màu sắc</a>
+			<a href="#kieu-chu">03 Kiểu chữ</a>
+		</nav>
+	</header>
+
+	<!-- 01 Logo -->
+	<section id="logo" class="part" aria-labelledby="logo-title">
+		<div class="part-head">
+			<span class="num">01</span>
+			<h2 id="logo-title">Logo</h2>
+		</div>
+
+		<div class="split">
+			<div class="hero-mark">
+				<img src="/logo.svg" width="256" height="256" alt="Con dấu Tư Mã Đại Nhân: cành trúc bảy lá trên nền son" />
+			</div>
+			<div class="text">
+				<h3>Con dấu cành trúc</h3>
+				<p>
+					Logo là một con dấu vuông màu son, trong đó một cành trúc bảy lá được khắc chừa ra màu giấy. Nó gợi chiếc triện
+					nhà nho đóng dưới bài viết: người viết ký tên bằng chí hướng của mình.
+				</p>
+				<p>
+					Trúc là cái "chí" trong <em>{SITE_NAME}</em>: thẳng thân, rỗng ruột, có đốt. Thẳng là ngay thẳng, rỗng là
+					khiêm tốn, đốt là tiết tháo. Cành mọc chéo lên phải, lá nhỏ dần về ngọn, như một người đang lớn lên từng
+					bậc: <em>{SITE_TAGLINE}</em>
+				</p>
+				<p class="motto">{SITE_MOTTO}</p>
+				<div class="downloads">
+					<a class="button" href="/logo.png" download="tu-ma-dai-nhan-logo.png">Tải PNG <span>512px</span></a>
+					<a class="button ghost" href="/logo.svg" download="tu-ma-dai-nhan-logo.svg">Tải SVG <span>vector</span></a>
+				</div>
+			</div>
+		</div>
+
+		<h3>Cấu trúc</h3>
+		<div class="split">
+			<figure class="construction">
+				<svg viewBox="-20 -14 168 156" role="img" aria-label="Lưới dựng logo: lề, khung cành và trục thân">
+					<defs><path id="leaf" d={leafPath} /></defs>
+					<rect width="128" height="128" fill="#8c302b" />
+					<g fill="#f5f2ea" transform="translate(20 14.7) scale(1.1733) translate(6 15)">
+						{leaves.map(([x, y, a, s]) => <use href="#leaf" transform={`translate(${x} ${y}) rotate(${a}) scale(${s})`} />)}
+						<path d="M-5 67.5 56 0" fill="none" stroke="#f5f2ea" stroke-width="3.5" stroke-linecap="round" />
+					</g>
+					<g class="guide">
+						<rect x="20" y="14.7" width="88" height="98.6" />
+						<path d="M12 120.3 102 21.4" />
+						<path d="M0 -6h20M108 -6h20M-6 0v14.7" />
+					</g>
+					<g class="guide-label">
+						<text x="10" y="-8">20</text>
+						<text x="118" y="-8">20</text>
+						<text x="-8" y="10" text-anchor="end">15</text>
+					</g>
+				</svg>
+				<figcaption class="meta">Lưới 128 đơn vị. Đường đứt: khung của cành và trục thân.</figcaption>
+			</figure>
+			<div class="text">
+				<dl class="specs">
+					<dt>Khung</dt>
+					<dd>Hình vuông 128 × 128, góc vuông, không bo.</dd>
+					<dt>Cành</dt>
+					<dd>Rộng 88 (69%), cao 99 (77%). Lề trái phải 20, trên dưới 15. Cành lệch nhẹ để ngọn có chỗ thở.</dd>
+					<dt>Thân</dt>
+					<dd>Một nét thẳng nghiêng khoảng 48°, đầu tròn, dày 3.5 đơn vị gốc.</dd>
+					<dt>Lá</dt>
+					<dd>
+						Một hình lá duy nhất, lặp bảy lần: ba cặp lá mọc đôi (một lá xuôi, một lá đứng), nhỏ dần từ 100% xuống 60%,
+						và một lá ngọn 50% chạy theo hướng thân.
+					</dd>
+					<dt>Khoảng trống</dt>
+					<dd>Quanh con dấu chừa ít nhất 1/4 cạnh của nó. Trong header là 0.75rem cho dấu 2rem.</dd>
+					<dt>Cỡ nhỏ nhất</dt>
+					<dd>16px (favicon). Trên trang, con dấu không nhỏ hơn 2rem (32px).</dd>
+				</dl>
+			</div>
+		</div>
+
+		<h3>Các dạng dùng</h3>
+		<ul class="variants">
+			<li>
+				<div class="tile paper"><span class="seal-css" style="--s: 4rem"></span></div>
+				<p><strong>Con dấu</strong> Dạng chính. Son trên giấy, ở header, tiểu sử tác giả, favicon.</p>
+			</li>
+			<li>
+				<div class="tile paper">
+					<span class="lockup">
+						<span class="seal-css" style="--s: 2rem"></span>
+						<span class="wordmark">
+							<span class="name">{AUTHOR}</span>
+							<span class="site">{SITE_NAME}</span>
+						</span>
+					</span>
+				</div>
+				<p><strong>Dấu và chữ</strong> Header: dấu 2rem cách wordmark 0.75rem. Bút danh trên, tên site dưới.</p>
+			</li>
+			<li>
+				<div class="tile ink"><span class="seal-css" style="--s: 4rem"></span></div>
+				<p><strong>Trên nền tối</strong> Giữ nguyên son và giấy, không đảo màu.</p>
+			</li>
+			<li>
+				<div class="tile paper"><span class="sprig" style="--c: #5a6851"></span></div>
+				<p><strong>Cành trúc</strong> Không khung, màu trúc. Hiện ở hiệu ứng rê chuột liên kết và ô ảnh chờ (màu vàng).</p>
+			</li>
+			<li>
+				<div class="tile ink">
+					<svg class="leafy" viewBox="-6 -15 75 84" aria-hidden="true">
+						{leaves.map(([x, y, a, s]) => (
+							<g transform={`translate(${x} ${y}) rotate(${a}) scale(${s})`}>
+								<path fill="#a9b99b" d="M0 0C9-5.5 24-6.5 36 0 24 1 10 1 0 0Z" />
+								<path fill="#7d8c6f" d="M0 0C10 1 24 1 36 0 24 3.6 9 3.6 0 0Z" />
+							</g>
+						))}
+						<path d="M-5 67.5 56 0" fill="none" stroke="#c7b99f" stroke-width="2" stroke-linecap="round" />
+					</svg>
+				</div>
+				<p><strong>Lá hai màu</strong> Chỉ trên --ink: lá non và lá già, như cành mọc ở đầu dải đăng ký.</p>
+			</li>
+			<li>
+				<div class="tile paper"><span class="wordmark solo"><span class="name">{AUTHOR}</span></span></div>
+				<p><strong>Chữ</strong> Newsreader in hoa, giãn 0.1em. Khi không có chỗ cho dấu.</p>
+			</li>
+		</ul>
+
+		<h3>Không nên</h3>
+		<ul class="donts">
+			<li>
+				<div class="tile paper"><span class="seal-css" style="--s: 3.5rem; rotate: 20deg"></span></div>
+				<p>Xoay hoặc lật con dấu.</p>
+			</li>
+			<li>
+				<div class="tile paper"><span class="seal-css" style="--s: 3.5rem; background: #2f6fb3"></span></div>
+				<p>Đổi màu ngoài bảng màu.</p>
+			</li>
+			<li>
+				<div class="tile paper"><span class="seal-css" style="--s: 3.5rem; border-radius: 0.75rem; box-shadow: 0 0.5rem 1rem #0005"></span></div>
+				<p>Bo góc, đổ bóng, gradient.</p>
+			</li>
+			<li>
+				<div class="tile paper"><span class="seal-css" style="--s: 3.5rem; width: 5.5rem"></span></div>
+				<p>Kéo giãn sai tỉ lệ.</p>
+			</li>
+			<li>
+				<div class="tile" style="background: #a5443b"><span class="seal-css" style="--s: 3.5rem"></span></div>
+				<p>Đặt dấu son trên nền đỏ hoặc ảnh rối.</p>
+			</li>
+		</ul>
+
+		<h3>Tệp nguồn</h3>
+		<table class="files">
+			<thead><tr><th scope="col">Tệp</th><th scope="col">Dùng cho</th></tr></thead>
+			<tbody>
+				{files.map(({ file, use }) => (
+					<tr>
+						<td><a href={`/${file}`} download><code>/{file}</code></a></td>
+						<td>{use}</td>
+					</tr>
+				))}
+			</tbody>
+		</table>
+		<p class="meta files-note">
+			Sửa <code>logo.svg</code> và <code>favicon.svg</code>, rồi xuất lại PNG và ICO bằng <code>rsvg-convert</code> và
+			<code>magick</code>. Con dấu trên trang là CSS: <code>--seal</code> phủ mask <code>sprig.svg</code> kiểu
+			<code>exclude</code>.
+		</p>
+	</section>
+
+	<!-- 02 Colors -->
+	<section id="mau-sac" class="part" aria-labelledby="color-title">
+		<div class="part-head">
+			<span class="num">02</span>
+			<h2 id="color-title">Màu sắc</h2>
+		</div>
+		<p class="lede">
+			Giấy ấm, mực ngả lục, trúc cho liên kết, son cho vài dấu nhỏ. Thứ bậc đến từ chữ, khoảng trắng và đường kẻ mảnh, không
+			từ màu. Mỗi ô dưới đây chia đôi: trái là chế độ sáng, phải là chế độ tối.
+		</p>
+
+		<figure class="share">
+			<div class="share-bar">
+				{share.map(({ label, color, size }) => (
+					<span style={`background: ${color}; flex-grow: ${size}`} title={`${label} ${size}%`}></span>
+				))}
+			</div>
+			<figcaption class="share-legend meta">
+				{share.map(({ label, color, size }) => (
+					<span><i style={`background: ${color}`}></i>{label} ~{size}%</span>
+				))}
+			</figcaption>
+		</figure>
+
+		{palette.map(({ title, note, swatches }) => (
+			<div class="group">
+				<div class="group-head">
+					<h3>{title}</h3>
+					<p>{note}</p>
+				</div>
+				<ul class="swatches">
+					{swatches.map(({ name, token, light, dark, use, contrast }) => (
+						<li>
+							<div class="chip">
+								<span style={`background: ${light}`}></span>
+								{dark && <span style={`background: ${dark}`}></span>}
+							</div>
+							<p class="sw-name">{name}</p>
+							<p class="sw-token"><code>{token}</code></p>
+							<p class="sw-hex">{dark ? `${light} · ${dark}` : `${light} · cả hai chế độ`}</p>
+							<p class="sw-use">{use}</p>
+							<p class="sw-contrast">Tương phản: {contrast}</p>
+						</li>
+					))}
+				</ul>
+			</div>
+		))}
+
+		<h3>Quy tắc</h3>
+		<ul class="rules">
+			<li>Chữ luôn đạt WCAG AA (4.5:1) trên nền. Vì thế <code>--text-2</code> và <code>--bamboo</code> đậm hơn màu trong brief gốc.</li>
+			<li><code>--gold</code> và <code>--border</code> không bao giờ là màu chữ.</li>
+			<li>Đỏ son chỉ xuất hiện vài chỗ trên một màn hình. Không dùng cho nút, nền lớn hay cảnh báo.</li>
+			<li>Không bóng đổ, không gradient, không thẻ có khung. Dùng một bậc giấy (<code>--wash</code>) để tách lớp.</li>
+			<li>Trong code luôn dùng token (<code>var(--text-2)</code>), không dùng mã hex. Token tự chuyển sáng tối bằng <code>light-dark()</code>.</li>
+			<li>Đổi bảng màu thì cập nhật cả <code>theme-color</code> trong <code>BaseHead.astro</code> và các tệp logo.</li>
+		</ul>
+	</section>
+
+	<!-- 03 Type -->
+	<section id="kieu-chu" class="part" aria-labelledby="type-title">
+		<div class="part-head">
+			<span class="num">03</span>
+			<h2 id="type-title">Kiểu chữ</h2>
+		</div>
+		<p class="lede">
+			Hai họ chữ, mỗi họ gần như một độ đậm. Serif cho giọng nói, sans cho việc đọc và thao tác. Cả ba tải từ Fontsource
+			qua Astro Fonts, chỉ các tập <code>latin</code>, <code>latin-ext</code> và <code>vietnamese</code>.
+		</p>
+
+		<ul class="fonts">
+			{fonts.map(({ name, token, role, weights, why, className }) => (
+				<li class={className}>
+					<p class="specimen" aria-hidden="true">Aa</p>
+					<div>
+						<h3>{name}</h3>
+						<p class="meta"><code>{token}</code> · {role}</p>
+						<p class="glyphs">Ăă Ââ Đđ Êê Ôô Ơơ Ưư · ả ã ạ ấ ầ ẩ ẫ ậ ế ề ể ễ ệ · 0123456789</p>
+						<p class="pangram">Trúc dẫu cháy, đốt ngay vẫn thẳng.</p>
+						{className === 'f-body' && <p class="pangram bold">Chữ đậm 600 cho nhãn và nút.</p>}
+						<p>{why}</p>
+						<p class="meta">{weights}</p>
+					</div>
+				</li>
+			))}
+		</ul>
+
+		<h3>Thang chữ</h3>
+		<ul class="scale">
+			{scale.map(({ role, spec, className, sample }) => (
+				<li>
+					<div class="scale-label">
+						<p class="role">{role}</p>
+						<p class="meta">{spec}</p>
+					</div>
+					<p class={`sample ${className}`}>{sample}</p>
+				</li>
+			))}
+		</ul>
+
+		<h3>Quy tắc</h3>
+		<ul class="rules">
+			<li>Tiêu đề luôn là Newsreader 400. Không in đậm tiêu đề; thứ bậc đến từ cỡ chữ.</li>
+			<li>Không thêm độ đậm hay tệp italic của Newsreader khi chưa đo LCP: hiện mỗi trang chỉ tải sáu tệp chữ, khoảng 94 KB.</li>
+			<li>Chữ in hoa chỉ cho wordmark và nhãn, luôn kèm giãn chữ.</li>
+			<li>Tiêu đề dùng <code>text-wrap: balance</code>, đoạn văn dùng <code>pretty</code>.</li>
+			<li>Cao dòng rộng (1.7 đến 1.8) để dấu tiếng Việt không chạm dòng trên.</li>
+			<li>Một cột đọc tối đa 45rem (khoảng 720px), chừng 70 ký tự mỗi dòng.</li>
+		</ul>
+	</section>
+</BaseLayout>
+
+<style>
+	.intro {
+		max-width: 45rem;
+		padding-bottom: 2.5rem;
+	}
+	.standfirst {
+		margin: 0.75rem 0 0;
+		color: var(--text-2);
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+		font-style: italic;
+		line-height: 1.5;
+	}
+	.toc {
+		--rest-line: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem 1.5rem;
+		margin-top: 1.5rem;
+		font-size: 0.875rem;
+	}
+	.part {
+		padding-block: 2rem 3.5rem;
+		border-top: 1px solid var(--text);
+	}
+	.part-head {
+		display: flex;
+		align-items: baseline;
+		gap: 1rem;
+		margin-bottom: 2rem;
+	}
+	.num {
+		color: var(--gold);
+		font-family: var(--font-heading);
+		font-size: 1.75rem;
+	}
+	.part-head h2 {
+		margin: 0;
+		font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+	}
+	.part h3 {
+		margin-top: 3rem;
+		font-size: 1.375rem;
+	}
+	.part .split h3:first-child {
+		margin-top: 0;
+	}
+	.lede {
+		max-width: 45rem;
+		margin-top: 0;
+	}
+	code {
+		font-size: 0.875em;
+	}
+
+	/* Logo */
+	.split {
+		display: grid;
+		gap: 2rem;
+		@media (min-width: 56rem) {
+			grid-template-columns: 5fr 7fr;
+			gap: 3rem;
+			align-items: start;
+		}
+	}
+	.hero-mark {
+		display: grid;
+		place-items: center;
+		aspect-ratio: 1;
+		background: var(--wash);
+		img {
+			width: 50%;
+			height: auto;
+		}
+	}
+	.text {
+		max-width: 40rem;
+		p:first-of-type {
+			margin-top: 0;
+		}
+	}
+	.downloads {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.75rem;
+		margin-top: 2rem;
+	}
+	/* Square buttons as in Feedback; a link styled as a button drops the rest rule and sprig. */
+	.button {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		min-height: 3rem;
+		padding: 0 1.25rem;
+		border: 1px solid var(--bamboo);
+		background: var(--bamboo);
+		color: var(--bg);
+		font-size: 1rem;
+		font-weight: 600;
+		text-decoration: none;
+		span {
+			font-size: 0.8125rem;
+			font-weight: 400;
+			opacity: 0.8;
+		}
+	}
+	.button::after {
+		display: none;
+	}
+	.button:hover {
+		border-color: var(--bamboo-dark);
+		background: var(--bamboo-dark);
+		color: var(--bg);
+	}
+	.ghost {
+		background: none;
+		color: var(--bamboo);
+	}
+	.ghost:hover {
+		background: none;
+		color: var(--bamboo-dark);
+	}
+	.motto {
+		padding-inline-start: 0.75rem;
+		border-inline-start: 3px solid var(--gold);
+		color: var(--text-2);
+		font-family: var(--font-heading);
+		font-size: 1.125rem;
+		font-style: italic;
+	}
+	.construction {
+		margin: 0;
+		svg {
+			display: block;
+			width: 100%;
+			max-width: 24rem;
+			height: auto;
+			margin-inline: auto;
+		}
+	}
+	.guide {
+		fill: none;
+		stroke: var(--bamboo);
+		stroke-width: 0.6;
+		stroke-dasharray: 2 2;
+	}
+	.guide-label {
+		fill: var(--text-2);
+		font-family: var(--font-body);
+		font-size: 6px;
+	}
+	.specs {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		gap: 0.75rem 1.5rem;
+		margin: 0;
+		dt {
+			font-weight: 600;
+			font-size: 0.875rem;
+			padding-top: 0.125rem;
+		}
+		dd {
+			margin: 0;
+		}
+	}
+	.variants,
+	.donts {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+		gap: 2rem 1.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		p {
+			margin: 0.75rem 0 0;
+			font-size: 0.9375rem;
+			line-height: 1.5;
+		}
+		strong {
+			display: block;
+		}
+	}
+	.donts {
+		grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+		.tile {
+			position: relative;
+		}
+		/* A seal-red strike marks each tile as a mistake. */
+		.tile::after {
+			content: '';
+			position: absolute;
+			inset: 50% -0.25rem auto;
+			border-top: 2px solid var(--seal);
+			rotate: -20deg;
+		}
+		p {
+			color: var(--text-2);
+		}
+	}
+	.tile {
+		display: grid;
+		place-items: center;
+		aspect-ratio: 3 / 2;
+		overflow: hidden;
+		border: 1px solid var(--border);
+	}
+	.paper {
+		background: #f5f2ea;
+		color: #242720;
+	}
+	.ink {
+		background: #1e201b;
+		border-color: #1e201b;
+	}
+	.seal-css {
+		width: var(--s);
+		height: var(--s);
+		background: #8c302b;
+		mask:
+			url('/sprig.svg') center / 68.75% no-repeat exclude,
+			linear-gradient(#000 0 0);
+	}
+	.sprig {
+		width: 3.5rem;
+		aspect-ratio: 75 / 84;
+		background: var(--c);
+		mask: url('/sprig.svg') center / contain no-repeat;
+	}
+	.leafy {
+		width: 4.5rem;
+		height: auto;
+	}
+	.lockup {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.wordmark {
+		display: grid;
+		line-height: 1.15;
+		white-space: nowrap;
+		.name {
+			font-family: var(--font-heading);
+			font-size: 1.1875rem;
+			letter-spacing: 0.1em;
+			text-transform: uppercase;
+		}
+		.site {
+			color: #6b6a63;
+			font-size: 0.6875rem;
+			letter-spacing: 0.16em;
+			text-transform: uppercase;
+		}
+	}
+	.solo .name {
+		font-size: 1.5rem;
+	}
+	.files-note {
+		max-width: 45rem;
+		margin-top: 1rem;
+	}
+	.files {
+		width: 100%;
+		max-width: 45rem;
+		border-collapse: collapse;
+		font-size: 0.9375rem;
+		th,
+		td {
+			padding: 0.5rem 1rem 0.5rem 0;
+			border-bottom: 1px solid var(--border);
+			text-align: start;
+			vertical-align: top;
+		}
+		th {
+			font-size: 0.75rem;
+			font-weight: 600;
+			letter-spacing: 0.08em;
+			text-transform: uppercase;
+			color: var(--text-2);
+			border-bottom-color: var(--text);
+		}
+	}
+
+	/* Colors */
+	.share {
+		max-width: 45rem;
+		margin: 2rem 0 0;
+	}
+	.share-bar {
+		display: flex;
+		height: 2.5rem;
+		border: 1px solid var(--border);
+		span {
+			flex-basis: 0;
+		}
+	}
+	.share-legend {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.25rem 1.25rem;
+		margin-top: 0.5rem;
+		i {
+			display: inline-block;
+			width: 0.75rem;
+			height: 0.75rem;
+			margin-inline-end: 0.375rem;
+			border: 1px solid var(--border);
+			vertical-align: -0.0625rem;
+		}
+	}
+	.group {
+		display: grid;
+		gap: 1.5rem;
+		margin-top: 3rem;
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--border);
+		@media (min-width: 56rem) {
+			grid-template-columns: 1fr 3fr;
+			gap: 2.5rem;
+		}
+	}
+	.group-head {
+		h3 {
+			margin: 0 0 0.5rem;
+		}
+		p {
+			margin: 0;
+			color: var(--text-2);
+			font-size: 0.9375rem;
+			line-height: 1.6;
+		}
+	}
+	.swatches {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr));
+		gap: 2rem 1.5rem;
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		p {
+			margin: 0;
+			line-height: 1.5;
+		}
+	}
+	.chip {
+		display: flex;
+		height: 6rem;
+		margin-bottom: 0.75rem;
+		border: 1px solid var(--border);
+		span {
+			flex: 1;
+		}
+	}
+	.sw-name {
+		font-family: var(--font-heading);
+		font-size: 1.25rem;
+	}
+	.sw-token {
+		color: var(--bamboo);
+		font-size: 0.875rem;
+	}
+	.sw-hex {
+		font-size: 0.8125rem;
+		font-variant-numeric: tabular-nums;
+		text-transform: uppercase;
+	}
+	.sw-use {
+		margin-top: 0.5rem !important;
+		font-size: 0.875rem;
+	}
+	.sw-contrast {
+		color: var(--text-2);
+		font-size: 0.8125rem;
+	}
+	.rules {
+		max-width: 45rem;
+		padding-inline-start: 1.25rem;
+		li + li {
+			margin-top: 0.5rem;
+		}
+	}
+
+	/* Type */
+	.fonts {
+		display: grid;
+		gap: 0;
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+		li {
+			display: grid;
+			gap: 1rem 2.5rem;
+			padding-block: 2rem;
+			border-top: 1px solid var(--border);
+			@media (min-width: 48rem) {
+				grid-template-columns: 12rem 1fr;
+			}
+		}
+		h3 {
+			margin: 0 0 0.25rem;
+			font-size: 1.75rem;
+		}
+		p {
+			max-width: 45rem;
+		}
+	}
+	.specimen {
+		margin: 0;
+		font-size: 8rem;
+		line-height: 1;
+		color: var(--bamboo);
+	}
+	.glyphs {
+		margin-block: 1rem 0.5rem;
+		font-size: 1.375rem;
+		line-height: 1.6;
+		word-spacing: 0.15em;
+	}
+	.pangram {
+		margin: 0;
+		font-size: 1.75rem;
+		line-height: 1.4;
+	}
+	.bold {
+		font-weight: 600;
+	}
+	.f-heading :is(.specimen, .glyphs, .pangram) {
+		font-family: var(--font-heading);
+	}
+	.f-body :is(.specimen, .glyphs, .pangram) {
+		font-family: var(--font-body);
+	}
+	.f-hand :is(.specimen, .glyphs, .pangram) {
+		font-family: var(--font-hand);
+	}
+	.scale {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		li {
+			display: grid;
+			gap: 0.5rem 2.5rem;
+			padding-block: 1.25rem;
+			border-bottom: 1px solid var(--border);
+			@media (min-width: 48rem) {
+				grid-template-columns: 14rem 1fr;
+				align-items: baseline;
+			}
+		}
+		p {
+			margin: 0;
+		}
+	}
+	.role {
+		font-weight: 600;
+		font-size: 0.875rem;
+	}
+	.sample {
+		max-width: 45rem;
+	}
+	.s-display {
+		font-family: var(--font-heading);
+		font-size: clamp(2.375rem, 1.5rem + 4vw, 4.75rem);
+		line-height: 1.1;
+	}
+	.s-h1 {
+		font-family: var(--font-heading);
+		font-size: clamp(2rem, 1.5rem + 2vw, 2.75rem);
+		line-height: 1.25;
+	}
+	.s-h2 {
+		font-family: var(--font-heading);
+		font-size: clamp(1.5rem, 1.25rem + 1vw, 1.75rem);
+		line-height: 1.25;
+	}
+	.s-standfirst {
+		color: var(--text-2);
+		font-family: var(--font-heading);
+		font-size: clamp(1.1875rem, 1rem + 0.75vw, 1.375rem);
+		font-style: italic;
+		line-height: 1.5;
+	}
+	.s-body {
+		line-height: 1.8;
+	}
+</style>

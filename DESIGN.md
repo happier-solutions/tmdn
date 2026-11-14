@@ -149,6 +149,7 @@ Layouts: `BaseLayout` (shell, passing `jsonLd` and article times to `BaseHead`),
 - `theme-color` in `BaseHead.astro` matches `--bg` in each scheme; update it with the palette.
 - Pictures: post heroes in each post's folder (`hero.jpg`, 2:1, at least 1600px wide), pillar pictures in `src/assets/pillars/<slug>.jpg` (4:5). Sources in `docs/image-credits.md`. `heroCredit` is the caption under the hero, `heroAlt` its description.
 - UI copy is Vietnamese, first person, calm and modest.
+- Brand guide: `/branding/` (`src/pages/branding.astro`), an internal page presenting the logo (meaning, download buttons for `logo.png` and `logo.svg`, construction, variants, misuse, source files), the palette (light and dark swatches, contrast, proportions) and the type (specimens, scale, rules). Not linked anywhere, and kept out of search three ways: `noindex` on `BaseLayout` (a `robots` meta), an `X-Robots-Tag` in `public/_headers`, and the sitemap `filter` in `astro.config.mjs`. Don't block it in `robots.txt`, or crawlers can't see the `noindex`. Its swatches and tiles use hex values on purpose, so update them with the tokens.
 
 ## Known gaps
 
