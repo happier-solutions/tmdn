@@ -352,6 +352,11 @@ const jsonLd = {
 		border: solid currentColor;
 		border-width: 0 1.5px 1.5px 0;
 		rotate: 45deg;
+		/* Steps aside on hover so the link's sprig has room to grow. */
+		translate: calc(var(--leaf) * 1em) 0;
+		@media (prefers-reduced-motion: no-preference) {
+			transition: translate 200ms ease-out;
+		}
 	}
 	.creed[open] summary::after {
 		margin-top: 0.25rem;
