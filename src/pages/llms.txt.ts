@@ -19,6 +19,8 @@ export const GET: APIRoute = async ({ site }) => {
 		`> ${SITE_DESCRIPTION}`,
 		`## Trang\n\n${[
 			link('Giới thiệu', '/gioi-thieu/'),
+			link('Bài viết nổi bật', '/bai-noi-bat/'),
+			link('Cộng đồng', '/cong-dong/'),
 			link('Quy tắc ẩn danh', '/quy-tac-an-danh/'),
 			link('Liên hệ', '/lien-he/'),
 			link('RSS', '/rss.xml'),

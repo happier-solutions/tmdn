@@ -22,3 +22,7 @@ export const PAGE_SIZE = 12;
 
 /** Receives signup requests and feedback, which the forms send through the reader's mail app. */
 export const CONTACT_EMAIL = 'lienhe@tumadainhan.com';
+
+/** The readers' community (a group or forum). While empty, community links lead to /cong-dong/. */
+export const COMMUNITY_URL = '';
+export const COMMUNITY_HREF = COMMUNITY_URL || '/cong-dong/';

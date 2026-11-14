@@ -1,0 +1,48 @@
+---
+import { getEntry, render } from 'astro:content';
+import { COMMUNITY_URL } from '../consts';
+import PageLayout from '../layouts/PageLayout.astro';
+
+const entry = await getEntry('pages', 'cong-dong');
+if (!entry) throw new Error('Missing page content: cong-dong');
+const { Content } = await render(entry);
+---
+
+<PageLayout {...entry.data}>
+	<Content />
+	<p class="join-row">
+		{COMMUNITY_URL ? (
+			<a class="join" href={COMMUNITY_URL}>Tham gia cộng đồng</a>
+		) : (
+			<span class="pending">Đường dẫn vào cộng đồng sẽ sớm có ở đây.</span>
+		)}
+	</p>
+</PageLayout>
+<style>
+	.join-row {
+		margin-top: 2rem;
+	}
+	.join {
+		display: inline-flex;
+		align-items: center;
+		min-height: 3rem;
+		padding: 0 1.25rem;
+		background: var(--bamboo);
+		color: var(--bg);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.join::after {
+		display: none;
+	}
+	.join:hover {
+		background: var(--bamboo-dark);
+		color: var(--bg);
+	}
+	.pending {
+		display: block;
+		padding-inline-start: 0.75rem;
+		border-inline-start: 3px solid var(--gold);
+		color: var(--text-2);
+	}
+</style>

@@ -11,7 +11,11 @@ a {
 :where(a:not(.skip-link, :has(.link-line)), .link-line) {
 	/* Inline padding lowers the rule, clear of marks like ạ and ọ, without moving any text. */
 	padding-bottom: 0.15em;
-	background: linear-gradient(currentColor, currentColor) 0 100% / calc(var(--line) * 100%) 1px no-repeat;
+	/* A faint rule at rest marks every link; hover draws the full one over it. Menus set --rest-line: 0. */
+	--rest: color-mix(in srgb, currentColor 40%, transparent);
+	background:
+		linear-gradient(currentColor, currentColor) 0 100% / calc(var(--line) * 100%) 1px no-repeat,
+		linear-gradient(var(--rest), var(--rest)) 0 100% / calc(var(--rest-line, 1) * 100%) 1px no-repeat;
 	@media (prefers-reduced-motion: no-preference) {
 		transition:
 			color 200ms ease-out,

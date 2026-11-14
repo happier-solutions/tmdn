@@ -1,0 +1,25 @@
+---
+import type { GetStaticPaths, Page } from 'astro';
+import { PAGE_SIZE } from '../../consts';
+import ListLayout from '../../layouts/ListLayout.astro';
+import { getPublishedPosts, type Post } from '../../lib/posts';
+
+export const getStaticPaths = (async ({ paginate }) => {
+	const posts = await getPublishedPosts();
+	return paginate(
+		posts.filter((post) => post.data.featured),
+		{ pageSize: PAGE_SIZE },
+	);
+}) satisfies GetStaticPaths;
+
+type Props = { page: Page<Post> };
+
+const { page } = Astro.props;
+---
+
+<ListLayout
+	title="Bài viết nổi bật"
+	description="Những bài người viết chọn đọc trước, từ cả hai chuyên mục."
+	metaDescription="Bài viết nổi bật của Trúc Chí Lập Thân: những ghi chép được chọn lọc về sách, sử, tu thân, lãnh đạo và quản trị doanh nghiệp."
+	{page}
+/>

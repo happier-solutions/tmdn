@@ -25,7 +25,7 @@ type Props = { pillar: Pillar; index: number; posts: Post[] };
 const { pillar, index, posts } = Astro.props;
 const topics = topicsOf(pillar.slug);
 const image = imageOf(pillar.slug);
-const lead = posts.find((post) => post.data.featured);
+const [lead, ...featuredRest] = posts.filter((post) => post.data.featured);
 const countOf = (topic: string) => posts.filter((post) => post.data.topic === topic).length;
 
 // Search ignores case and Vietnamese marks, so "quan tri" finds "Quản trị".
@@ -74,8 +74,13 @@ const fold = (text: string) =>
 
 	{lead && (
 		<section class="featured" aria-labelledby="featured-heading">
-			<h2 id="featured-heading" class="section-title">Bài nổi bật</h2>
+			<h2 id="featured-heading" class="section-title">Bài viết nổi bật</h2>
 			<PostLead post={lead} topicOnly level={3} />
+			{featuredRest.length > 0 && (
+				<ul class="featured-rows">
+					{featuredRest.map((post) => <li><PostRow {post} topicOnly level={3} /></li>)}
+				</ul>
+			)}
 		</section>
 	)}
 
@@ -282,6 +287,16 @@ const fold = (text: string) =>
 	.featured {
 		padding-top: 2.5rem;
 		border-top: 1px solid var(--text);
+	}
+	.featured-rows {
+		max-width: 56rem;
+		margin: 2rem 0 0;
+		padding: 0;
+		list-style: none;
+	}
+	.featured-rows li {
+		padding-block: 1.5rem;
+		border-top: 1px solid var(--border);
 	}
 
 	.latest {

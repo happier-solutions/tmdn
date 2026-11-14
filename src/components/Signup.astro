@@ -1,9 +1,11 @@
 ---
-import { CONTACT_EMAIL } from '../consts';
+import { COMMUNITY_HREF, CONTACT_EMAIL } from '../consts';
 import Branch from './Branch.astro';
 
 const subject = encodeURIComponent('Đăng ký nhận bài mới');
 const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
+// While the community has no address yet, its link leads to /cong-dong/, which needs no link to itself.
+const showCommunity = !(COMMUNITY_HREF === '/cong-dong/' && Astro.url.pathname === '/cong-dong/');
 ---
 
 <section class="cta-band" aria-labelledby="signup-title">
@@ -41,6 +43,20 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 			<p class="note">Chỉ gửi bài mới, không quảng cáo, hủy lúc nào cũng được.</p>
 		</form>
 	</div>
+	{showCommunity && (
+		<div class="wrap wrap-wide">
+			<div class="community">
+				<div>
+					<p class="eyebrow">Cộng đồng</p>
+					<h2>Cùng đọc, cùng bàn với những người chung chí hướng.</h2>
+				</div>
+				<div class="community-action">
+					<p>Nơi người đọc trao đổi về sách, sử, lãnh đạo và quản trị, hỏi thêm và phản biện các bài viết.</p>
+					<a class="join" href={COMMUNITY_HREF}>Tham gia cộng đồng</a>
+				</div>
+			</div>
+		</div>
+	)}
 </section>
 
 <script>
@@ -173,5 +189,52 @@ const mailto = `mailto:${CONTACT_EMAIL}?subject=${subject}`;
 	}
 	.note {
 		color: color-mix(in srgb, var(--on-ink) 75%, transparent);
+	}
+
+	.cta:has(+ .wrap > .community) {
+		padding-bottom: 2.5rem;
+	}
+	/* The community invitation: a second row in the band, on the same two columns. */
+	.community {
+		display: grid;
+		gap: 1.25rem;
+		padding-block: 2rem 3.5rem;
+		border-top: 1px solid color-mix(in srgb, var(--on-ink) 18%, transparent);
+	}
+	.community h2 {
+		font-size: clamp(1.25rem, 1.125rem + 0.5vw, 1.5rem);
+	}
+	.community-action {
+		display: grid;
+		gap: 1rem;
+		justify-items: start;
+	}
+	.community-action p {
+		max-width: 32rem;
+		color: color-mix(in srgb, var(--on-ink) 75%, transparent);
+		line-height: 1.7;
+	}
+	.join {
+		display: inline-flex;
+		align-items: center;
+		min-height: 3rem;
+		padding: 0 1.25rem;
+		background: var(--gold-light);
+		color: var(--ink);
+		font-size: 1rem;
+		font-weight: 600;
+	}
+	.join::after {
+		display: none;
+	}
+	.join:hover {
+		background: var(--on-ink);
+		color: var(--ink);
+	}
+	@media (min-width: 60rem) {
+		.community {
+			grid-template-columns: 1fr 1fr;
+			gap: 3.5rem;
+		}
 	}
 </style>

@@ -1,13 +1,18 @@
 ---
 import { AUTHOR, SITE_NAME } from '../consts';
-import { PILLARS } from '../data/taxonomy';
+import { PILLARS, type Topic, topicsOf, topicUrl } from '../data/taxonomy';
 import ThemeSwitch from './ThemeSwitch.astro';
 
-// Topics stay off the bar: each pillar's page lists its own.
-const navItems = [
+type NavItem = { href: string; label: string; topics?: Topic[] };
+
+// The two pillars open their topics in a submenu.
+const navItems: NavItem[] = [
 	{ href: '/', label: 'Trang chủ' },
-	...PILLARS.map(({ slug, label }) => ({ href: `/${slug}/`, label })),
 	{ href: '/gioi-thieu/', label: 'Giới thiệu' },
+	...PILLARS.map(({ slug, label }) => ({ href: `/${slug}/`, label, topics: topicsOf(slug) })),
+	{ href: '/bai-noi-bat/', label: 'Bài viết nổi bật' },
+	{ href: '/cong-dong/', label: 'Cộng đồng' },
+	{ href: '/lien-he/', label: 'Liên hệ' },
 ];
 
 const { pathname } = Astro.url;
@@ -41,15 +46,56 @@ const ariaCurrent = (href: string) => {
 					<path d="M6 6l12 12 M18 6L6 18" />
 				</svg>
 			</button>
-			<ul>
-				{navItems.map(({ href, label }) => (
-					<li><a {href} aria-current={ariaCurrent(href)}><span class="link-line">{label}</span></a></li>
-				))}
+			<ul class="nav-list">
+				{navItems.map(({ href, label, topics }, i) =>
+					topics ? (
+						<li class="has-sub">
+							<div class="item-head">
+								<a {href} aria-current={ariaCurrent(href)}><span class="link-line">{label}</span></a>
+								<button class="sub-toggle" type="button" aria-expanded="false" aria-controls={`nav-sub-${i}`} aria-label={`Chủ đề của ${label}`}>
+									<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M2.5 4.5 6 8l3.5-3.5" /></svg>
+								</button>
+							</div>
+							<ul id={`nav-sub-${i}`} class="sub">
+								{topics.map((topic) => (
+									<li><a href={topicUrl(topic)} aria-current={ariaCurrent(topicUrl(topic))}><span class="link-line">{topic.label}</span></a></li>
+								))}
+							</ul>
+						</li>
+					) : (
+						<li><a {href} aria-current={ariaCurrent(href)}><span class="link-line">{label}</span></a></li>
+					),
+				)}
 			</ul>
 			<ThemeSwitch />
 		</nav>
 	</div>
 </header>
+<script>
+	const toggles = [...document.querySelectorAll<HTMLButtonElement>('.sub-toggle')];
+	const setOpen = (toggle: HTMLButtonElement, open: boolean) => toggle.setAttribute('aria-expanded', String(open));
+
+	for (const toggle of toggles) {
+		toggle.addEventListener('click', () => {
+			const open = toggle.getAttribute('aria-expanded') !== 'true';
+			for (const other of toggles) setOpen(other, false);
+			setOpen(toggle, open);
+		});
+	}
+	// In the row, a submenu opened by click closes with Esc or a click elsewhere, like a menu.
+	const row = matchMedia('(min-width: 72rem)');
+	document.addEventListener('click', (event) => {
+		if (!row.matches || (event.target as Element).closest('.has-sub')) return;
+		for (const toggle of toggles) setOpen(toggle, false);
+	});
+	document.addEventListener('keydown', (event) => {
+		if (event.key !== 'Escape' || !row.matches) return;
+		const open = toggles.find((toggle) => toggle.getAttribute('aria-expanded') === 'true');
+		if (!open) return;
+		setOpen(open, false);
+		open.focus();
+	});
+</script>
 <style>
 	.site-header {
 		border-bottom: 1px solid var(--border);
@@ -112,13 +158,21 @@ const ariaCurrent = (href: string) => {
 		letter-spacing: 0.16em;
 		text-transform: uppercase;
 	}
-	.site-nav ul {
+	/* A menu reads as one, so its links skip the rest rule every other link has. */
+	.site-nav {
+		--rest-line: 0;
+	}
+	.nav-list,
+	.sub {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+	.nav-list {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0 1.5rem;
-		margin: 0;
-		padding: 0 0 0.75rem;
-		list-style: none;
+		padding-bottom: 0.75rem;
 	}
 	.site-nav a {
 		display: block;
@@ -136,6 +190,58 @@ const ariaCurrent = (href: string) => {
 			text-decoration: underline;
 		}
 	}
+
+	.item-head {
+		display: flex;
+		align-items: center;
+		gap: 0.25rem;
+	}
+	.sub-toggle {
+		display: grid;
+		place-items: center;
+		width: 1.5rem;
+		height: 1.5rem;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--text-2);
+		cursor: pointer;
+	}
+	.sub-toggle svg {
+		fill: none;
+		stroke: currentColor;
+		stroke-width: 1.5;
+		stroke-linecap: round;
+		stroke-linejoin: round;
+	}
+	.sub-toggle[aria-expanded='true'] svg {
+		rotate: 180deg;
+	}
+	@media (hover: hover) {
+		.sub-toggle:hover {
+			color: var(--bamboo);
+		}
+	}
+	.sub-toggle:focus-visible {
+		outline: 2px solid var(--bamboo);
+		outline-offset: 2px;
+	}
+	.sub {
+		display: none;
+	}
+	.has-sub:has([aria-expanded='true']) .sub {
+		display: block;
+	}
+	/* Without JS the toggles can't work, so every topic stays listed. */
+	@media (scripting: none) {
+		.sub-toggle {
+			display: none;
+		}
+		.sub {
+			display: block;
+		}
+	}
+
 	/* Without popover support the links stay visible as a wrapped row. */
 	.menu-button {
 		display: none;
@@ -165,7 +271,7 @@ const ariaCurrent = (href: string) => {
 		stroke-width: 1.5;
 		stroke-linecap: round;
 	}
-	@media (max-width: 59.99rem) {
+	@media (max-width: 71.99rem) {
 		@supports selector(:popover-open) {
 			/* Transparent, not removed: the header's height stays what .first-screen expects. */
 			.site-header {
@@ -189,21 +295,42 @@ const ariaCurrent = (href: string) => {
 				border-left: 1px solid var(--border);
 				background: var(--bg);
 				color: inherit;
+				overscroll-behavior: contain;
 			}
 			.site-nav::backdrop {
 				background: color-mix(in srgb, var(--ink) 40%, transparent);
 			}
-			.site-nav ul {
+			.nav-list {
 				flex-direction: column;
 				margin-top: 1rem;
 			}
-			.site-nav a {
+			.nav-list > li > a,
+			.item-head > a {
 				padding-block: 0.75rem;
+			}
+			.item-head {
+				justify-content: space-between;
+			}
+			/* A full tap target, pulled out so the chevron lines up with the close icon. */
+			.sub-toggle {
+				width: 2.75rem;
+				height: 2.75rem;
+				margin-inline-end: -0.875rem;
+			}
+			.sub {
+				margin: 0 0 0.5rem;
+				padding: 0 0 0 1rem;
+				border-left: 1px solid var(--border);
+			}
+			.sub a {
+				padding-block: 0.5rem;
+				color: var(--text-2);
+				line-height: 1.45;
 			}
 		}
 	}
 	/* Popover is only a small-screen behaviour: on wide screens the nav is a normal row. */
-	@media (min-width: 60rem) {
+	@media (min-width: 72rem) {
 		.site-nav {
 			display: flex;
 			align-items: center;
@@ -219,8 +346,51 @@ const ariaCurrent = (href: string) => {
 			background: none;
 			color: inherit;
 		}
-		.site-nav ul {
+		.nav-list {
+			gap: 0 1.25rem;
 			padding-bottom: 0;
+		}
+		.has-sub {
+			position: relative;
+		}
+		.item-head {
+			gap: 0.125rem;
+		}
+		/* A panel hanging from the header's bottom rule, opened by hover or the chevron. */
+		.sub {
+			position: absolute;
+			top: calc(100% + 0.6875rem);
+			left: -1.25rem;
+			z-index: 2;
+			width: max-content;
+			max-width: 22rem;
+			padding: 0.75rem 1.25rem;
+			border: 1px solid var(--border);
+			border-top-color: var(--bg);
+			background: var(--bg);
+		}
+		/* Bridges the gap to the panel, so the pointer can travel down without closing it. */
+		.sub::before {
+			content: '';
+			position: absolute;
+			inset: -0.75rem 0 100%;
+		}
+		@media (hover: hover) {
+			.has-sub:hover .sub {
+				display: block;
+			}
+		}
+		@media (scripting: none) {
+			.sub {
+				display: none;
+			}
+			.has-sub:is(:hover, :focus-within) .sub {
+				display: block;
+			}
+		}
+		.sub a {
+			padding-block: 0.375rem;
+			line-height: 1.45;
 		}
 	}
 </style>
