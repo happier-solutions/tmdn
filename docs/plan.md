@@ -84,7 +84,7 @@ Title, meta description, canonical, Open Graph (ảnh lớn khi bài có ảnh, 
 ## Việc còn lại
 
 - [ ] Rà lại ẩn danh bài "Đứng gần một CEO…": bài đăng nguyên văn theo yêu cầu, còn chi tiết dễ nhận ra (công ty khoảng một năm tuổi, tập đoàn đầu tư hàng chục triệu USD, CEO mười năm ở nước ngoài, người viết là trợ lý)
-- [ ] Viết lại logo, favicon và ảnh Open Graph mặc định theo bảng màu mới
+- [x] Viết lại logo, favicon và ảnh Open Graph mặc định theo bảng màu mới
 - [ ] Điền email liên hệ thật (`/lien-he/`, `CONTACT_EMAIL`)
 - [ ] Thử CMS: tạo bài với chủ đề và từ khóa, thêm/sắp xếp chủ đề trong "Phân loại"
 - [ ] Đo Lighthouse di động và kiểm tra trên iPhone, Android, Chrome, Safari

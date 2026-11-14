@@ -145,13 +145,13 @@ Layouts: `BaseLayout` (shell, passing `jsonLd` and article times to `BaseHead`),
 
 - Brand `AUTHOR` (Tư Mã Đại Nhân), site `SITE_NAME` (Trúc Chí Lập Thân), tagline `SITE_TAGLINE`, motto `SITE_MOTTO`, the community link `COMMUNITY_URL`, all in `src/consts.ts`. While `COMMUNITY_URL` is empty, community links lead to `/cong-dong/`.
 - The seal is CSS: `--seal` masked by `public/sprig.svg` with `exclude`, in `Header`, `AuthorBio` and the home author's note. `Branch` repeats the logo's leaf paths.
+- Icons repeat the seal: a square of `--seal` (`#8c302b`) with the sprig in `--bg` (`#f5f2ea`). `public/favicon.svg` and `logo.svg` are the sources; `logo.png` (512px, the Open Graph fallback), `apple-touch-icon.png` (180px) and `favicon.ico` (16, 32, 48px) are rendered from them with `rsvg-convert` and `magick`.
 - `theme-color` in `BaseHead.astro` matches `--bg` in each scheme; update it with the palette.
 - Pictures: post heroes in each post's folder (`hero.jpg`, 2:1, at least 1600px wide), pillar pictures in `src/assets/pillars/<slug>.jpg` (4:5). Sources in `docs/image-credits.md`. `heroCredit` is the caption under the hero, `heroAlt` its description.
 - UI copy is Vietnamese, first person, calm and modest.
 
 ## Known gaps
 
-- `public/logo.svg`, `favicon.svg`, `logo.png` (the Open Graph fallback) and `apple-touch-icon.png` still use the old gold-on-black palette.
 - Footer focus outline: stays `#5a6851` without `light-dark()` (Safari below 17.5), low contrast on `--ink`.
 - `pre` stays dark in both schemes and uses Astro's default code theme.
 - The pillar page lists every post of the pillar without pagination; past a few hundred posts it needs paging or a search index (Pagefind).
