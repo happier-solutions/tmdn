@@ -11,7 +11,7 @@ Nội dung hướng đến việc bồi dưỡng nội lực cá nhân, mở r�
 
 ## Hai chuyên mục
 
-**[Tàng Thư Quán Thế](/tang-thu-quan-the/).** Đọc sách để hiểu người, học sử để hiểu đời, tu dưỡng bản thân để hiểu thế giới. Đây là không gian của người học giả ẩn cư: đọc sách, nghiên cứu, chiêm nghiệm, tu thân và quan sát nhân tình thế thái.
+**[Tàng Thư Quán Thế](/tang-thu-quan-the/).** Đọc sách để thấu nhân tình, học sử để tường thế sự, tu thân để sáng tâm trí, tỏ bản tính và ngộ lẽ nhân sinh. Đây là không gian của người học giả ẩn cư: đọc sách, nghiên cứu, chiêm nghiệm, tu thân và quan sát nhân tình thế thái.
 
 **[Binh Pháp Công Sở](/binh-phap-cong-so/).** Quan sát thế giới doanh nghiệp từ phía sau những quyết định, tìm hiểu cách tổ chức vận hành và cách những nhà lãnh đạo kiến tạo doanh nghiệp. Nội dung kết hợp trải nghiệm thực tế, nghiên cứu chuyên môn, mô hình quản trị và góc nhìn cá nhân.
 

@@ -177,14 +177,10 @@ const ariaCurrent = (href: string) => {
 	.site-nav a {
 		display: block;
 		padding-block: 0.5rem;
-		color: var(--text);
+		color: var(--bamboo);
 		font-size: 0.875rem;
 	}
-	/* The current page is set apart by color alone; the rule and sprig stay hover details. */
-	.site-nav a[aria-current] {
-		color: var(--bamboo);
-	}
-	/* Forced colors drop the link color, so the state needs another mark there. */
+	/* Forced colors flatten every link to one color, so the current page needs a mark there. */
 	@media (forced-colors: active) {
 		.site-nav a[aria-current] .link-line {
 			text-decoration: underline;
@@ -367,7 +363,6 @@ const ariaCurrent = (href: string) => {
 			}
 			.sub a {
 				padding-block: 0.5rem;
-				color: var(--text-2);
 				line-height: 1.45;
 			}
 			/* Topics fade in as they unfold under the pillar. */
