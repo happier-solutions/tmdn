@@ -180,6 +180,11 @@ const ariaCurrent = (href: string) => {
 		color: var(--text);
 		font-size: 0.875rem;
 	}
+	/* Every top-level menu item reads in the olive of the active item, so the bar is one color. */
+	.nav-list > li > a,
+	.item-head > a {
+		color: var(--bamboo);
+	}
 	/* The current page is set apart by color alone; the rule and sprig stay hover details. */
 	.site-nav a[aria-current] {
 		color: var(--bamboo);
