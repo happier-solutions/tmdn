@@ -4,7 +4,7 @@ backend:
   repo: happier-solutions/tmdn
   branch: main
 
-media_folder: public/images
+media_folder: apps/web/public/images
 public_folder: /images
 
 # Slug không dấu, ví dụ "Đường đi" thành "duong-di"
@@ -20,7 +20,7 @@ collections:
   - name: posts
     label: Bài viết
     label_singular: Bài viết
-    folder: src/content/posts
+    folder: apps/web/src/content/posts
     path: '{{slug}}/index'
     media_folder: ''
     public_folder: ''
@@ -78,7 +78,7 @@ collections:
   - name: pages
     label: Trang
     label_singular: Trang
-    folder: src/content/pages
+    folder: apps/web/src/content/pages
     create: false
     delete: false
     fields:
@@ -93,7 +93,7 @@ collections:
     files:
       - name: taxonomy
         label: Chuyên mục, chủ đề và từ khóa
-        file: src/data/taxonomy.json
+        file: apps/web/src/data/taxonomy.json
         format: json
         fields:
           - name: pillars

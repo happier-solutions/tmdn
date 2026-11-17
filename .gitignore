@@ -26,3 +26,8 @@ pnpm-debug.log*
 temp/
 
 .taste-skill
+# turbo, wrangler
+.turbo/
+.wrangler/
+.dev.vars*
+!.dev.vars.example

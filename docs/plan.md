@@ -40,6 +40,8 @@ Chủ đề nằm dưới `/chu-de/` của chuyên mục, nên tên bài không 
 
 ## Thư mục
 
+Đường dẫn tính từ `apps/web` (repo là monorepo Turborepo).
+
 ```
 src/
 ├─ content.config.ts       # collections: posts, pages

@@ -29,15 +29,15 @@ jobs:
       - uses: actions/cache@v6.1.0
         with:
           path: |
-            node_modules/.astro/assets
-            node_modules/.astro/fonts
+            apps/web/node_modules/.astro/assets
+            apps/web/node_modules/.astro/fonts
           key: astro-${{ runner.os }}-${{ github.run_id }}
           restore-keys: astro-${{ runner.os }}-
       - run: pnpm build
       # Local wrangler (devDependency) is restored from the pnpm store cache.
       - name: Deploy to Cloudflare Pages
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        run: pnpm exec wrangler pages deploy dist --project-name=tmdn --branch=main
+        run: pnpm --filter web run deploy
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

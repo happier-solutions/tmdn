@@ -1,6 +1,6 @@
 # Design system
 
-Describes the current UI. Sources: `src/styles/tokens.css`, `src/styles/global.css`, `src/styles/links.css`, `src/styles/transitions.css`, `src/styles/ruled.css`, `src/styles/prose.css`, fonts in `astro.config.mjs`. The direction comes from the "Trúc Chí Lập Thân" redesign brief (see `docs/plan.md`). If this file and the code disagree, the code wins; fix this file.
+Describes the current UI of the site (`apps/web`; paths below are relative to it). Sources: `src/styles/tokens.css`, `src/styles/global.css`, `src/styles/links.css`, `src/styles/transitions.css`, `src/styles/ruled.css`, `src/styles/prose.css`, fonts in `astro.config.mjs`. The direction comes from the "Trúc Chí Lập Thân" redesign brief (see `docs/plan.md`). If this file and the code disagree, the code wins; fix this file.
 
 ## Principles
 
