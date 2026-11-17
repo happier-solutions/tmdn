@@ -1,6 +1,7 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "peos",
+	"account_id": "a926786fdbae9a27c92ff1488b48a049",
 	"main": "@astrojs/cloudflare/entrypoints/server",
 	"compatibility_date": "2026-11-01",
 	"assets": {
@@ -8,6 +9,7 @@
 		"binding": "ASSETS"
 	},
 	"observability": { "enabled": true },
+	"routes": [{ "pattern": "peos.tumadainhan.com", "custom_domain": true }],
 	// Secrets (never in git): BETTER_AUTH_SECRET, ALLOWED_EMAILS (comma-separated sign-up allowlist).
 	// Local: .dev.vars (see .dev.vars.example). Remote: `wrangler secret put <NAME>`.
 	"vars": {
@@ -17,8 +19,7 @@
 		{
 			"binding": "DB",
 			"database_name": "peos",
-			// Placeholder until `wrangler d1 create peos` runs on the TuMaDaiNhan account.
-			"database_id": "00000000-0000-0000-0000-000000000000",
+			"database_id": "8c085404-0041-48e5-8d84-aa6a5909dbe5",
 			"migrations_dir": "migrations"
 		}
 	]

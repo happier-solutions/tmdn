@@ -23,7 +23,7 @@ pnpm check                       # wrangler types + astro check
 
 ## Deploy (account TuMaDaiNhan)
 
-1. `pnpm exec wrangler d1 create peos` and put the `database_id` in `wrangler.jsonc`.
-2. Set `BETTER_AUTH_URL` in `wrangler.jsonc` to the real URL, and add the route or custom domain.
-3. `pnpm exec wrangler secret put BETTER_AUTH_SECRET` (`openssl rand -base64 32`) and `pnpm exec wrangler secret put ALLOWED_EMAILS`.
-4. `pnpm db:migrate:remote`, then `pnpm run deploy`.
+D1 `peos`, the account and the custom domain `peos.tumadainhan.com` are set in `wrangler.jsonc`. Wrangler must be logged in with access to the TuMaDaiNhan account.
+
+1. Secrets, once: `pnpm exec wrangler secret put BETTER_AUTH_SECRET` (value from `openssl rand -base64 32`) and `pnpm exec wrangler secret put ALLOWED_EMAILS` (comma-separated emails allowed to sign up).
+2. `pnpm db:migrate:remote` when `migrations/` changes, then `pnpm run deploy`.
