@@ -1,0 +1,15 @@
+---
+import Login from '../components/Login';
+import Layout from '../layouts/Layout.astro';
+import { getAuth } from '../lib/auth';
+
+// Already signed in: go straight to the app.
+const session = await getAuth().api.getSession({ headers: Astro.request.headers });
+if (session) return Astro.redirect('/');
+---
+
+<Layout title="Đăng nhập – PEOS">
+	<main class="center">
+		<Login client:load />
+	</main>
+</Layout>

@@ -1,0 +1,59 @@
+/* Palette from the site (apps/web tokens.css), plus PEOS signal colors. Light by default, dark from the
+   system unless pinned with data-theme. */
+:root {
+	--bg: #f5f2ea;
+	--surface: #faf9f5;
+	--ink: #242720;
+	--muted: #6b6a63;
+	--line: #dcd8ce;
+	--accent: #5a6851;
+	--accent-soft: #e6e8dc;
+	--signal: #8a5f22;
+	--signal-soft: #f1ead9;
+	--ok: #3f4a38;
+	--ok-soft: #e4e8da;
+	--warn: #8c302b;
+	--warn-soft: #f3e1de;
+	--hatch: #d4d0c6;
+	--on-accent: #fff;
+	--font: var(--font-body), system-ui, sans-serif;
+	color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		--bg: #171814;
+		--surface: #1f201b;
+		--ink: #e6e3da;
+		--muted: #a6a49b;
+		--line: #36372f;
+		--accent: #a9b99b;
+		--accent-soft: #262a1f;
+		--signal: #cfa457;
+		--signal-soft: #2e2718;
+		--ok: #a9b99b;
+		--ok-soft: #23281c;
+		--warn: #d98a80;
+		--warn-soft: #332019;
+		--hatch: #3a3b32;
+		--on-accent: #171814;
+		color-scheme: dark;
+	}
+}
+:root[data-theme='dark'] {
+	--bg: #171814;
+	--surface: #1f201b;
+	--ink: #e6e3da;
+	--muted: #a6a49b;
+	--line: #36372f;
+	--accent: #a9b99b;
+	--accent-soft: #262a1f;
+	--signal: #cfa457;
+	--signal-soft: #2e2718;
+	--ok: #a9b99b;
+	--ok-soft: #23281c;
+	--warn: #d98a80;
+	--warn-soft: #332019;
+	--hatch: #3a3b32;
+	--on-accent: #171814;
+	color-scheme: dark;
+}
