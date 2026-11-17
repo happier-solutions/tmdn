@@ -10,7 +10,7 @@ const MESSAGES: Record<string, string> = {
 	FORBIDDEN: 'Email này chưa được phép đăng ký.',
 };
 
-export default function Login() {
+export default function Login({ signUp }: { signUp: boolean }) {
 	const [mode, setMode] = useState<Mode>('in');
 	const [busy, setBusy] = useState(false);
 	const [msg, setMsg] = useState('');
@@ -58,16 +58,18 @@ export default function Login() {
 				<button type="submit" className="primary" disabled={busy}>
 					{busy ? 'Đang xử lý…' : mode === 'in' ? 'Đăng nhập' : 'Tạo tài khoản'}
 				</button>
-				<button
-					type="button"
-					className="ghost"
-					onClick={() => {
-						setMode(mode === 'in' ? 'up' : 'in');
-						setMsg('');
-					}}
-				>
-					{mode === 'in' ? 'Tạo tài khoản' : 'Đã có tài khoản'}
-				</button>
+				{signUp && (
+					<button
+						type="button"
+						className="ghost"
+						onClick={() => {
+							setMode(mode === 'in' ? 'up' : 'in');
+							setMsg('');
+						}}
+					>
+						{mode === 'in' ? 'Tạo tài khoản' : 'Đã có tài khoản'}
+					</button>
+				)}
 			</div>
 		</form>
 	);

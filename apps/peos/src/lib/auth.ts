@@ -11,6 +11,16 @@ const allowed = () =>
 			.filter(Boolean),
 	);
 
+// Sign-up stays open only while an allowed email has no account yet.
+export async function signUpOpen() {
+	const emails = [...allowed()];
+	if (!emails.length) return false;
+	const row = await env.DB.prepare(`select count(*) as n from "user" where lower("email") in (${emails.map(() => '?').join(',')})`)
+		.bind(...emails)
+		.first<{ n: number }>();
+	return (row?.n ?? 0) < emails.length;
+}
+
 function create() {
 	return betterAuth({
 		database: env.DB,
