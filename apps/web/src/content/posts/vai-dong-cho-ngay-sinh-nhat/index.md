@@ -3,8 +3,8 @@ title: 'Vài dòng cho ngày sinh nhật'
 description: 'Thêm một tuổi là bớt đi một năm; nhìn lại năm qua qua ba bài học và ba câu hỏi review cho dự án cuộc đời.'
 pubDate: 2026-11-25T08:00:00+07:00
 heroImage: hero.jpg
-heroAlt: Tranh phong cách ukiyo-e: một người ngồi lặng trên hiên nhà gỗ ngắm bình minh trên mặt nước mờ sương, vài lá phong đỏ bay.
-heroCredit: Minh họa phong cách tranh khắc gỗ ukiyo-e, ảnh minh họa tạo bằng AI
+heroAlt: 'Tranh phong cách ukiyo-e: một người ngồi lặng trên hiên nhà gỗ ngắm bình minh trên mặt nước mờ sương, vài lá phong đỏ bay.'
+heroCredit: 'Minh họa phong cách tranh khắc gỗ ukiyo-e, ảnh minh họa tạo bằng AI'
 topic: nhat-ky-chiem-nghiem
 tags: []
 ---
