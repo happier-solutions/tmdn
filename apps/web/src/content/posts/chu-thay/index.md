@@ -2,6 +2,9 @@
 title: 'Chữ "Thầy"'
 description: 'Người thầy không chỉ nằm trên bục giảng: một lời gạch đỏ, một điểm mù được chỉ ra hay một thất bại đủ đau cũng có thể là thầy.'
 pubDate: 2026-11-25T08:00:00+07:00
+heroImage: hero.jpg
+heroAlt: Tranh phong cách ukiyo-e: ông thầy râu bạc trao bút viết cho học trò nhỏ dưới gốc tùng già, xa xa là dãy núi mờ sương.
+heroCredit: Minh họa phong cách tranh khắc gỗ ukiyo-e, ảnh minh họa tạo bằng AI
 topic: tu-than-duong-chi
 tags: []
 ---
