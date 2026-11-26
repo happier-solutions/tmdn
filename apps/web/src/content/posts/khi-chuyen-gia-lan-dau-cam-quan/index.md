@@ -56,7 +56,7 @@ Nhân hậu không có nghĩa là né xung đột. Với quân sĩ, một mệnh
 
 ### Xem nhẹ phép nước
 
-Đây là lần đầu ông phục vụ dưới một triều đình lớn đến vậy, nên sự "ngây thơ" về luật chơi cũng dễ hiểu. Ông tự cho mình quyền sửa lệ, đổi lệ, có lúc lách lệ. Một ví dụ em ghi nhận được: chủ soái làm trái phép mua sắm quân nhu, phần chi ra vẫn đòi hoàn ứng đủ; có lần còn thông đồng với người cai quản quân tịch chỉnh giờ ra vào của cả thành. Tóm lại một chữ: thiếu kỷ luật.
+Đây là lần đầu ông phục vụ dưới một triều đình lớn đến vậy, nên sự "ngây thơ" về luật chơi cũng dễ hiểu. Ông tự cho mình quyền sửa lệ, đổi lệ, có lúc lách lệ. Binh thư nào cũng răn một điều: thiếu kỷ luật trong quân là điều đại kỵ của người cầm binh. Chủ soái ta chẳng cần thuyết giáo, chọn cách nhắc điều đại kỵ ấy bằng chính thân mình.
 
 Không phải triều đình không biết, chỉ là chưa đến lúc truy. Mà ở một triều đình lớn, ngự sử có thể đến bất cứ lúc nào. Khi đó, người làm sai như cá nằm trên thớt.
 
