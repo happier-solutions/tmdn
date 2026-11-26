@@ -2,7 +2,7 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
-import { AUTHOR, SITE_NAME } from '../consts';
+import { AUTHOR, GA_MEASUREMENT_ID, SITE_NAME } from '../consts';
 import { Font } from 'astro:assets';
 
 interface Props {
@@ -112,3 +112,19 @@ const fontPreload = [
 <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
 
 {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+
+{
+	import.meta.env.PROD && !noindex && GA_MEASUREMENT_ID && (
+		<>
+			{/* Google tag (gtag.js) */}
+			<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`} />
+			<script
+				is:inline
+				set:html={`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', ${JSON.stringify(GA_MEASUREMENT_ID)});`}
+			/>
+		</>
+	)
+}

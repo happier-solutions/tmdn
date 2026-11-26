@@ -26,3 +26,6 @@ export const CONTACT_EMAIL = 'lienhe@tumadainhan.com';
 /** The readers' community (a group or forum). While empty, community links lead to /cong-dong/. */
 export const COMMUNITY_URL = '';
 export const COMMUNITY_HREF = COMMUNITY_URL || '/cong-dong/';
+
+/** Google Analytics 4 measurement ID. Loaded in production on public pages only. */
+export const GA_MEASUREMENT_ID = 'G-EY1XDG8X4X';
