@@ -6,7 +6,7 @@ heroImage: hero.jpg
 heroAlt: 'Tranh cuộn cổ phong: bến cảng tấp nập thuyền buôn, bến bãi chất hàng hóa, khói và lò lửa rực sáng ở các xưởng ven cảng, công nhân khuân vác.'
 heroCredit: 'Minh họa phong cách tranh cuộn cổ phong, ảnh minh họa tạo bằng AI'
 topic: kinh-te-va-dia-chinh-tri
-tags: []
+tags: [kinh-te]
 ---
 
 *Kinh tế vĩ mô* · Nhật ký quân vương · Tư Mã Đại Nhân

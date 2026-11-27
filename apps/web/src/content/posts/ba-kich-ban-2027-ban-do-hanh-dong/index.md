@@ -6,7 +6,7 @@ heroImage: hero.jpg
 heroAlt: 'Tranh cuộn cổ phong: chủ soái mặc giáp đứng chỉ vào tấm bản đồ rộng trên bàn, lính hầu cầm nến hai bên, phía xa cổng thành và đoàn quân chuẩn bị khởi hành lúc rạng đông.'
 heroCredit: 'Minh họa phong cách tranh cuộn cổ phong, ảnh minh họa tạo bằng AI'
 topic: kinh-te-va-dia-chinh-tri
-tags: []
+tags: [kinh-te]
 ---
 
 *Kinh tế vĩ mô* · Nhật ký quân vương · Tư Mã Đại Nhân

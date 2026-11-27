@@ -6,7 +6,7 @@ heroImage: hero.jpg
 heroAlt: 'Tranh phong cách ukiyo-e: hai người ngồi đối diện qua chiếc bàn thấp trong gian nhà gỗ, người đàn ông nhấp trà, người phụ nữ cúi xem cuộn giấy trên bàn, lồng đèn giấy ấm và dãy núi mờ phía xa.'
 heroCredit: 'Minh họa phong cách tranh khắc gỗ ukiyo-e, ảnh minh họa tạo bằng AI'
 topic: tu-than-duong-chi
-tags: []
+tags: [tu-than]
 ---
 
 Tư Mã Ca

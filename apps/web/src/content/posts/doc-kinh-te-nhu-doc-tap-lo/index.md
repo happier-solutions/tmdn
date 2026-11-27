@@ -6,7 +6,7 @@ heroImage: hero.jpg
 heroAlt: 'Tranh cuộn cổ phong: viên quan đứng cạnh chiếc cân đène cân vàng xu và thỏi bạc, bên cạnh hòm đầy xu tiền cổ, lính hầu đứng hai bên trong điện đường.'
 heroCredit: 'Minh họa phong cách tranh cuộn cổ phong, ảnh minh họa tạo bằng AI'
 topic: kinh-te-va-dia-chinh-tri
-tags: []
+tags: [kinh-te]
 ---
 
 *Kinh tế vĩ mô* · Nhật ký quân vương · Tư Mã Đại Nhân
@@ -26,6 +26,10 @@ Ai lái xe cũng nhìn bốn đồng hồ trên táp-lô. Nền kinh tế cũng 
 - Giá xăng = lãi suất. Đây là giá của đồng tiền. Lãi cao thì mọi thứ vay mượn đều đắt.
 - Kim nhiên liệu = ngoại tệ. Bán ra nước ngoài nhiều hơn mua vào thì bình đầy; ngược lại thì tụt.
 
+![Sơ đồ bốn chiếc đồng hồ trên táp-lô: tốc độ, nhiệt độ máy, giá xăng, kim nhiên liệu, đối chiếu thế giới và Việt Nam](so-do-dong-ho.png)
+
+*Đồ họa: Tư Mã Đại Nhân*
+
 Bây giờ nhìn vào táp-lô hôm nay (số liệu đến 27/11/2026):
 
 | Đồng hồ | Thế giới | Việt Nam |
@@ -42,6 +46,10 @@ Người lái giỏi, khi thấy máy nóng và nhiên liệu tụt, sẽ nhấc
 ## Chúng ta đang ở mùa nào?
 
 Kinh tế chạy theo chu kỳ, giống bốn mùa. Chỉ cần hỏi hai câu: tăng trưởng đang nhanh hay chậm, và giá cả đang nóng hay nguội. Mỗi mùa có người thắng riêng.
+
+![Sơ đồ bốn mùa chu kỳ kinh tế: Xuân phục hồi, Hạ nóng, Thu đình lạm, Đông suy giảm; thế giới đang sang Thu, Việt Nam còn giữa Hạ](so-do-bon-mua.png)
+
+*Đồ họa: Tư Mã Đại Nhân*
 
 | Mùa | Tăng trưởng | Giá cả | Ngân hàng trung ương thường làm gì | Ai thắng |
 | --- | --- | --- | --- | --- |

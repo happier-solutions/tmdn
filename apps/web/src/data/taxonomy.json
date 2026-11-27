@@ -250,9 +250,37 @@
 		}
 	],
 	"tags": [
-		{ "slug": "xay-dung-to-chuc", "label": "Xây dựng tổ chức" },
-		{ "slug": "bo-nhiem-nhan-su", "label": "Bổ nhiệm nhân sự" },
-		{ "slug": "ceo-lan-dau", "label": "CEO lần đầu" },
-		{ "slug": "doanh-nghiep-cong-nghe", "label": "Doanh nghiệp công nghệ" }
+		{
+			"slug": "xay-dung-to-chuc",
+			"label": "Xây dựng tổ chức"
+		},
+		{
+			"slug": "bo-nhiem-nhan-su",
+			"label": "Bổ nhiệm nhân sự"
+		},
+		{
+			"slug": "ceo-lan-dau",
+			"label": "CEO lần đầu"
+		},
+		{
+			"slug": "doanh-nghiep-cong-nghe",
+			"label": "Doanh nghiệp công nghệ"
+		},
+		{
+			"slug": "kinh-te",
+			"label": "Kinh tế"
+		},
+		{
+			"slug": "tu-than",
+			"label": "Tu thân"
+		},
+		{
+			"slug": "giao-viec",
+			"label": "Giao việc"
+		},
+		{
+			"slug": "bao-cao",
+			"label": "Báo cáo"
+		}
 	]
 }

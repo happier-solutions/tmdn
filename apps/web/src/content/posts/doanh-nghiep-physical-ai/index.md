@@ -1,12 +1,12 @@
 ---
-title: 'Kỳ 4 — Riêng với doanh nghiệp Physical AI'
+title: 'Kỳ 4 — Physical AI ra khỏi màn hình: sáu nước cờ cho doanh nghiệp'
 description: 'Physical AI là AI ra khỏi màn hình: robot, xe tự hành, UAV, dây chuyền tự động. Gió thuận, gió ngược và sáu nước cờ cho doanh nghiệp trong một thế giới đắt tiền.'
 pubDate: '2026-11-27T12:20:00+07:00'
 heroImage: hero.jpg
 heroAlt: 'Tranh cuộn cổ phong: xưởng cơ khí gỗ với automata cơ khí, bánh răng gỗ và đòn bẩy, thợ thủ công đang lắp ráp dưới ánh sáng xuyên qua cửa sổ lưới.'
 heroCredit: 'Minh họa phong cách tranh cuộn cổ phong, ảnh minh họa tạo bằng AI'
 topic: cong-nghe-va-tuong-lai-doanh-nghiep
-tags: [doanh-nghiep-cong-nghe]
+tags: [doanh-nghiep-cong-nghe, kinh-te]
 ---
 
 *Kinh tế vĩ mô* · Nhật ký quân vương · Tư Mã Đại Nhân

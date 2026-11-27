@@ -6,7 +6,7 @@ heroImage: hero.jpg
 heroAlt: 'Tranh khắc gỗ phong cách ukiyo-e: đoạn tường đá lớn sụp một góc, khói bốc lên từ đống đổ nát, người trẻ cầm cờ trắng có huy hiệu đứng giữa, ba người áo choàng cầm giấy tờ đọc bên cạnh.'
 heroCredit: 'Minh họa phong cách tranh khắc gỗ ukiyo-e, ảnh minh họa tạo bằng AI'
 topic: nghe-thuat-tham-muu
-tags: []
+tags: [tu-than]
 ---
 
 *Binh pháp công sở* · Tư Mã Đại Nhân
