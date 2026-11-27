@@ -1,5 +1,5 @@
 ---
-title: 'Ba kịch bản 2027 và bản đồ hành động cho từng người'
+title: 'Kỳ 3 — Ba kịch bản 2027 và bản đồ hành động cho từng người'
 description: 'Kỳ cuối series "Tiền đắt, máy nóng": ba kịch bản cho 2027 kèm dấu hiệu nhận biết, bản đồ hành động cho từng đối tượng từ lao động phổ thông đến doanh nghiệp, và năm việc nên làm ngay.'
 pubDate: '2026-11-27T12:15:00+07:00'
 heroImage: hero.jpg

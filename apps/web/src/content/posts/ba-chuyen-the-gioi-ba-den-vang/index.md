@@ -1,5 +1,5 @@
 ---
-title: 'Ba chuyện của thế giới, ba đèn vàng của Việt Nam'
+title: 'Kỳ 2 — Ba chuyện của thế giới, ba đèn vàng của Việt Nam'
 description: 'Kỳ 2 series "Tiền đắt, máy nóng": tiền đắt quay lại, AI bị định giá lại, Trung Quốc thừa hàng; ba đèn vàng cần canh chừng của Việt Nam và cơ hội ẩn ngay trong rủi ro.'
 pubDate: '2026-11-27T12:10:00+07:00'
 heroImage: hero.jpg

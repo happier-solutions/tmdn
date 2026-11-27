@@ -1,5 +1,5 @@
 ---
-title: 'Riêng với doanh nghiệp Physical AI'
+title: 'Kỳ 4 — Riêng với doanh nghiệp Physical AI'
 description: 'Physical AI là AI ra khỏi màn hình: robot, xe tự hành, UAV, dây chuyền tự động. Gió thuận, gió ngược và sáu nước cờ cho doanh nghiệp trong một thế giới đắt tiền.'
 pubDate: '2026-11-27T12:20:00+07:00'
 heroImage: hero.jpg

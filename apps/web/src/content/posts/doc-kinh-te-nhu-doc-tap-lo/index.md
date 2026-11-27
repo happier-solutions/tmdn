@@ -1,5 +1,5 @@
 ---
-title: 'Đọc kinh tế như đọc táp-lô ô tô'
+title: 'Kỳ 1 — Đọc kinh tế như đọc táp-lô ô tô'
 description: 'Kỳ 1 series "Tiền đắt, máy nóng": bốn chiếc đồng hồ để đọc nền kinh tế và bốn mùa của chu kỳ, trả lời vì sao kinh tế tăng trưởng gần 10% mà đi chợ vẫn đắt.'
 pubDate: '2026-11-27T12:05:00+07:00'
 heroImage: hero.jpg
