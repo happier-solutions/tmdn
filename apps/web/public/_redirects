@@ -6,7 +6,3 @@
 /nhat-ky-hoc-tap/* /tang-thu-quan-the/chu-de/nhat-ky-chiem-nghiem/ 301
 # Tags moved from /chu-de/ to /tu-khoa/, since "chủ đề" now names a pillar's topics.
 /chu-de/* /tu-khoa/ 301
-
-# The first-time leadership article moved to match its new title.
-/binh-phap-cong-so/khi-chuyen-gia-lan-dau-cam-quan/ /binh-phap-cong-so/khi-tuong-lan-dau-lam-soai/ 301
-/binh-phap-cong-so/khi-chuyen-gia-lan-dau-cam-quan /binh-phap-cong-so/khi-tuong-lan-dau-lam-soai/ 301
