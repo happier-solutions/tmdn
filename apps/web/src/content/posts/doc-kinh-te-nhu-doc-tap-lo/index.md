@@ -3,7 +3,7 @@ title: 'Kỳ 1 — Đọc kinh tế như đọc táp-lô ô tô'
 description: 'Kỳ 1 series "Tiền đắt, máy nóng": bốn chiếc đồng hồ để đọc nền kinh tế và bốn mùa của chu kỳ, trả lời vì sao kinh tế tăng trưởng gần 10% mà đi chợ vẫn đắt.'
 pubDate: '2026-11-27T12:05:00+07:00'
 heroImage: hero.jpg
-heroAlt: 'Tranh cuộn cổ phong: viên quan đứng cạnh chiếc cân đène cân vàng xu và thỏi bạc, bên cạnh hòm đầy xu tiền cổ, lính hầu đứng hai bên trong điện đường.'
+heroAlt: 'Trong điện đường, một viên quan đứng xem cân tiền cổ, bên cạnh hòm đựng tiền và hai lính hầu.'
 heroCredit: 'Minh họa phong cách tranh cuộn cổ phong, ảnh minh họa tạo bằng AI'
 topic: kinh-te-va-dia-chinh-tri
 tags: [kinh-te]
