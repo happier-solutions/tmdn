@@ -1,5 +1,5 @@
 ---
-title: 'Giỏi cầm quân chưa chắc giỏi cầm tướng'
+title: 'Khi Tướng lần đầu làm Soái'
 description: 'Người đứng đầu không cần giỏi hơn tất cả thuộc cấp. Nhưng phải biết chọn đúng người, giao đúng việc và khiến các tướng cùng nhìn về một hướng.'
 pubDate: '2026-11-26T17:45:00+07:00'
 heroImage: './hero.jpg'
