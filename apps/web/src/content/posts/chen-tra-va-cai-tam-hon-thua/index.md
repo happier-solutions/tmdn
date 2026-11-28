@@ -7,6 +7,7 @@ heroAlt: 'Tranh phong cách ukiyo-e: hai người ngồi đối diện qua chi�
 heroCredit: 'Minh họa phong cách tranh khắc gỗ ukiyo-e, ảnh minh họa tạo bằng AI'
 topic: tu-than-duong-chi
 tags: [tu-than]
+featured: true
 ---
 
 Tư Mã Ca
